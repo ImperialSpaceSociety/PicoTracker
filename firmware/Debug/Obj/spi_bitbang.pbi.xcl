@@ -1,4 +1,4 @@
-"C:\Users\Richard\Documents\HAB\HC12\spi_bitbang.c"
+"C:\Users\Richard\Documents\GitHub\PicoTracker\firmware\spi_bitbang.c"
 -std=c99
 -ferror-limit=0
 -I

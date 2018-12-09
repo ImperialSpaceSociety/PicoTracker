@@ -2098,6 +2098,18 @@
         </settings>
     </configuration>
     <file>
+        <name>$PROJ_DIR$\energy.c</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\energy.h</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\gps.c</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\gps.h</name>
+    </file>
+    <file>
         <name>$PROJ_DIR$\HC12Board.h</name>
     </file>
     <file>

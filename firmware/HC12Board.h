@@ -57,11 +57,11 @@
 * GPIO2 Antenna switch 2
 * GPIO3 Antenna switch 1
 * nIRQ  Receive detected
-
-
-
 */
+
+
 
 #define SI406X_TCXO_FREQUENCY	30000000L  // si4463 clock frequency
 #define HSCLK_FREQUENCY         16000000L  // Processor internal clock frequency
 
+#define GPS_UART        UART1

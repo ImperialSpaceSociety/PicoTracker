@@ -25,7 +25,7 @@ if not "%~1" == "" goto debugFile
 
 @echo on 
 
-"D:\Program Files\IAR\common\bin\cspybat" -f "D:\High Altitude Ballooning\Github data\Pico Tracker\PicoTracker\settings\HC12Tracker.Debug.general.xcl" --backend -f "D:\High Altitude Ballooning\Github data\Pico Tracker\PicoTracker\settings\HC12Tracker.Debug.driver.xcl" 
+"C:\Program Files (x86)\IAR Systems\Embedded Workbench 8.0\common\bin\cspybat" -f "C:\Users\Richard\Documents\GitHub\PicoTracker\firmware\settings\HC12Tracker.Debug.general.xcl" --backend -f "C:\Users\Richard\Documents\GitHub\PicoTracker\firmware\settings\HC12Tracker.Debug.driver.xcl" 
 
 @echo off 
 goto end 
@@ -34,7 +34,7 @@ goto end
 
 @echo on 
 
-"D:\Program Files\IAR\common\bin\cspybat" -f "D:\High Altitude Ballooning\Github data\Pico Tracker\PicoTracker\settings\HC12Tracker.Debug.general.xcl" "--debug_file=%~1" --backend -f "D:\High Altitude Ballooning\Github data\Pico Tracker\PicoTracker\settings\HC12Tracker.Debug.driver.xcl" 
+"C:\Program Files (x86)\IAR Systems\Embedded Workbench 8.0\common\bin\cspybat" -f "C:\Users\Richard\Documents\GitHub\PicoTracker\firmware\settings\HC12Tracker.Debug.general.xcl" "--debug_file=%~1" --backend -f "C:\Users\Richard\Documents\GitHub\PicoTracker\firmware\settings\HC12Tracker.Debug.driver.xcl" 
 
 @echo off 
 :end
