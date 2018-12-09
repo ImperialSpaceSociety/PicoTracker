@@ -119,13 +119,13 @@ __interrupt void UART1_IRQHandler(void)
   uint8_t data = UART1_DR;
   if(data == '\n')
   {
-     UART1_rx_buffer[UART1_buffer_pointer++] = data;
+     UART1_rx_buffer[UART1_buffer_pointer] = data;
      UART_send_buffer(UART1_rx_buffer, UART1_buffer_pointer);
      UART1_buffer_pointer = 0;
   }
   else
   {     
-      if(UART1_buffer_pointer < UART_RX_BUFFER_LENGTH)
+      if(UART1_buffer_pointer < UART_RX_BUFFER_LENGTH -1)
       {
       UART1_rx_buffer[UART1_buffer_pointer++] = data;
       }
