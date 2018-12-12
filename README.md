@@ -1,7 +1,7 @@
-#Simple and Low cost Pico Balloon Tracker Version 1.0
+# Simple and Low cost Pico Balloon Tracker Version 1.0
 
 
-##Objectives
+## Objectives
 This Pico balloon tracker is designed to offer an easy to build and low cost entry for people who want to launch small Helium filled balloons with a small tracking payload.
 
 * Low mass: less than 25g
