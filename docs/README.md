@@ -20,7 +20,7 @@
 
 
 
-##H C12
+## HC12
 
 [Serial Module Manual](https://www.elecrow.com/download/HC-12.pdf)
 
