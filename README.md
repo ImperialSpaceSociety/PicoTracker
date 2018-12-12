@@ -27,14 +27,14 @@ This Pico balloon tracker is designed to offer an easy to build and low cost ent
 * Power consumption: None of the modules is especially designed for low power operation and no power switching is available. We need to determine how we can reduce the power consumption of each module using firmware
 * Low temperature: The GPS appears to have a Temperature Compensated Crystal Oscillator (TXC0), the radio a crystal, and the processor runs from internal clock. Some ingenuity and testing will be required to allow operation at outside temperatures of -50degC.
 
-##Status
+## Status
 * Done: Prototype build, Processor initialization, Radio code, RTTY and pips
 
 * Working on: GPS and message string creation
 
 * To Do:  Power Management, Temperature issues, final packaging, Testing
 
-##License
+## License
 
 Hardware is Licensed under CERN OHL v.1.2 or later https://www.ohwr.org/documents/294 No warranty is provided for this documentation implied or otherwise.
 
