@@ -27,6 +27,10 @@
 * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+
+
+
+
 #include <stdint.h>
 #include <iostm8s003f3.h>
 #include "HC12Board.h"
@@ -64,7 +68,7 @@ int main( void )
     
     
     // start up the radio    
-    /* Initialise Si4060 interface */
+    //Initialise Si4060 interface 
     si_trx_init();
     
     
@@ -87,3 +91,6 @@ int main( void )
     
     }
 }
+          
+
+

@@ -16,7 +16,7 @@
         <ShowSource>1</ShowSource>
     </Trace1>
     <DebugChecksum>
-        <Checksum>376726467</Checksum>
+        <Checksum>2716874511</Checksum>
     </DebugChecksum>
     <CodeCoverage>
         <Enabled>_ 0</Enabled>
@@ -86,8 +86,9 @@
     <Breakpoints>
         <Bp0>_ "STD_DATA" "si_trx_get_part_info" 0 0 0 3 0 "" 0 ""</Bp0>
         <Bp1>_ "STD_CODE" "0x0002B5" 1 0 0 0 "" 0 ""</Bp1>
-        <Bp2>_ "STD_CODE" "{$PROJ_DIR$\gps.c}.142.1" 0 0 0 0 "" 0 ""</Bp2>
-        <Count>3</Count>
+        <Bp2>_ "STD_CODE" "{$PROJ_DIR$\gps.c}.132.6" 1 0 0 0 "" 0 ""</Bp2>
+        <Bp3>_ "STD_CODE" "{$PROJ_DIR$\gps.c}.130.6" 1 0 0 0 "" 0 ""</Bp3>
+        <Count>4</Count>
     </Breakpoints>
     <LogFile>
         <LoggingEnabled>_ 0</LoggingEnabled>
