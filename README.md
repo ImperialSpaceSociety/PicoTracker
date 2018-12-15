@@ -21,7 +21,7 @@ This Pico balloon tracker is designed to offer an easy to build and low cost ent
 
 * Firmware: The firmware will be derived from existing firmware created and developed by  [Bristol SEDS](http://www.bristol-seds.co.uk/pico-tracker/) The firmware will require substantial changes to support the much more limited processor.
 
-* Firmware Development: The firmware is developed using the [IAR Embedded Workbench Free Code limited version](https://www.iar.com/iar-embedded-workbench/#!?architecture=STM8&device=STM8S003F3). The processor is programmed and debugged using the [ST-Link/V2](https://www.st.com/en/development-tools/st-link-v2.html) . Clones are available on eBay for around £4.
+* [Firmware Development](https://github.com/ImperialSpaceSociety/PicoTracker/blob/master/Development.md): The firmware is developed using the [IAR Embedded Workbench Free Code limited version](https://www.iar.com/iar-embedded-workbench/#!?architecture=STM8&device=STM8S003F3). The processor is programmed and debugged using the [ST-Link/V2](https://www.st.com/en/development-tools/st-link-v2.html) . Clones are available on eBay for around £4.
 
 ## Design Challenges
 * Power consumption: None of the modules is especially designed for low power operation and no power switching is available. We need to determine how we can reduce the power consumption of each module using firmware
