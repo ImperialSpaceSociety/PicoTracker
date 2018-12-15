@@ -9,6 +9,10 @@
 
 [Examples](https://github.com/EMBEDONIX/stm8)
 
+[More suitable for this STM8 variant Examples](https://github.com/NevynUK/The-Way-of-the-Register)
+
+
+
 
 ## Si4468
 [Datasheet](https://www.silabs.com/documents/public/data-sheets/Si4464-63-61-60.pdf)
