@@ -38,8 +38,6 @@
 #include <intrinsics.h>
 
 
-
-
 void delay_ms(unsigned long ms) {
 	//The best naive delay @16MHz
 	//the 960 comes from the number of instructions to perform the do/while loop
@@ -61,13 +59,15 @@ int main( void )
     InitialiseSystemClock();
     __enable_interrupt();
 
-// Start the UART
-    InitialiseUART();
+    // Start the UART
+    InitialiseUART(); // set up the uart
     
-// start up the radio    
-  
+    
+    // start up the radio    
     /* Initialise Si4060 interface */
     si_trx_init();
+    
+    
     
     
     while (1)

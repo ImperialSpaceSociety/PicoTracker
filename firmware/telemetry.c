@@ -43,7 +43,7 @@
 
 #define TIMER1_PRESCALE  (HSCLK_FREQUENCY/1000)
    
-char telemetry_string[TELEMETRY_STRING_MAX] = "$$helloworldhello";   
+char telemetry_string[TELEMETRY_STRING_MAX] = "$$helloworldhello\n";   
 
 /**
  * CYCLIC REDUNDANCY CHECK (CRC)
