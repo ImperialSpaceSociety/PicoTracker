@@ -27,6 +27,14 @@
 * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+/*
+Things to do 17 December 2018
+
+make the program parse the gps coordinates
+form the telemetry string
+transmit the telemetry string
+Try to reduce memory usage when sending the pubx strings to disable nmea
+*/
 
 
 
@@ -65,14 +73,8 @@ int main( void )
     // Start the UART
     InitialiseUART(); // set up the uart
     
-     // Disable ALL automatic NMEA mesages for polling
-    uart_write("$PUBX,40,VTG,0,0,0,0*5E\r\n");
-    uart_write("$PUBX,40,GSV,0,0,0,0*59\r\n");
-    uart_write("$PUBX,40,GSA,0,0,0,0*4E\r\n");
-    uart_write("$PUBX,40,RMC,0,0,0,0*47\r\n");    
-    uart_write("$PUBX,40,GLL,0,0,0,0*5C\r\n");
-    uart_write("$PUBX,40,GGA,0,0,0,0*5A\r\n");
-    //TODO: make sure the acknoledgement packet is received. Currently it works
+    uart_disable_nema();
+
     __enable_interrupt();
 
     //poll the gps
@@ -89,6 +91,10 @@ int main( void )
     // maybe try to disable the UART interrupt after it is interrupted once.
     /*
     Strategy:
+
+    put into flight mode
+    
+    loop start
     get gps position and disable gps interrupts
     create telemetry string
     transmit telemetry string

@@ -31,12 +31,13 @@
 #include <iostm8s003f3.h>
 #include "gps.h"
 #include <string.h> //for strlen()
+#include <stdio.h>
 
 
 uint8_t UART1_rx_buffer[UART_RX_BUFFER_LENGTH]; // buffer for UART receive characters
 uint8_t UART1_buffer_pointer;
-
-
+// names of the different types of nmea strings
+const char nema_string_names[6][3] ={"VTG","GSV","GSA","RMC","GLL","GGA"};
 
 
 
@@ -144,7 +145,57 @@ int uart_write(const char *str) {
 	return(i); // Bytes sent
 }
 
+int calculateChecksum (const char *msg)
+{
+    int checksum = 0;
+    for (int i = 0; msg[i] && i < 32; i++)
+        checksum ^= (unsigned char)msg[i];
 
+    return checksum;
+}
+
+int nemaMsgSend (const char *msg)
+{
+    char checksum[8];
+    snprintf(checksum, sizeof(checksum)-1, "*%.2X", calculateChecksum(msg));
+    uart_write("$");
+    uart_write(msg);
+    uart_write(checksum);
+    
+    return 1;
+}
+
+int nemaMsgDisable (const char *nema)
+{
+    if (strlen(nema) != 3) return 0;
+
+    char tmp[32];
+    snprintf(tmp, sizeof(tmp)-1, "PUBX,40,%s,0,0,0,0", nema); // see if I can make this a constant in flash
+    //snprintf(tmp, sizeof(tmp)-1, F("PUBX,40,%s,0,0,0,0,0,0"), nema);
+    nemaMsgSend(tmp);
+
+    return 1;
+}
+
+/*
+     // Disable ALL automatic NMEA mesages for polling
+    uart_write("$PUBX,40,VTG,0,0,0,0*5E\r\n");
+    uart_write("$PUBX,40,GSV,0,0,0,0*59\r\n");
+    uart_write("$PUBX,40,GSA,0,0,0,0*4E\r\n");
+    uart_write("$PUBX,40,RMC,0,0,0,0*47\r\n");    
+    uart_write("$PUBX,40,GLL,0,0,0,0*5C\r\n");
+    uart_write("$PUBX,40,GGA,0,0,0,0*5A\r\n");
+    //TODO: make sure the acknoledgement packet is received. Currently it works
+*/
+
+
+
+void uart_disable_nema(){
+  for(int i = 0; i < 6; i++)
+  {
+    nemaMsgSend(nema_string_names[i]);
+  }
+}
 /*
  Wonderful summary reference taken from: https://github.com/zoomx/stm8-samples/blob/master/blinky/blinky.c
  ********************* UART ********************
@@ -217,7 +268,8 @@ __interrupt void UART1_IRQHandler(void)
   */
 
   //if(data == '\n') // Check if the end of nmea line is reached
-  if(data == '*') // check if we have reached the checksum in pubx string
+  if(data == '*') // check if we have reached the checksum in pubx string. doesnt verify the data at the moment.
+    // TODO: make a parser for the data.
 
   {
      UART1_rx_buffer[UART1_buffer_pointer] = data; // puts the data into the buffer
