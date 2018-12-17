@@ -50,6 +50,16 @@ Try to reduce memory usage when sending the pubx strings to disable nmea
 #include <intrinsics.h>
 
 
+/*
+const char disableRMC[] = "PUBX,40,RMC,0,0,0,0,0,0";
+const char disableGLL[] = "PUBX,40,GLL,0,0,0,0,0,0";
+const char disableGSV[] = "PUBX,40,GSV,0,0,0,0,0,0";
+const char disableGSA[] = "PUBX,40,GSA,0,0,0,0,0,0";
+const char disableGGA[] = "PUBX,40,GGA,0,0,0,0,0,0";
+const char disableVTG[] = "PUBX,40,VTG,0,0,0,0,0,0";
+const char disableZDA[] = "PUBX,40,ZDA,0,0,0,0,0,0";
+*/
+
 void delay_ms(unsigned long ms) {
 	//The best naive delay @16MHz
 	//the 960 comes from the number of instructions to perform the do/while loop
@@ -74,7 +84,8 @@ int main( void )
     InitialiseUART(); // set up the uart
     
     uart_disable_nema();
-
+    
+    
     __enable_interrupt();
 
     //poll the gps

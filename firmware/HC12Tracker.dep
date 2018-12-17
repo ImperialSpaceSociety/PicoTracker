@@ -96,10 +96,6 @@
             <name>$PROJ_DIR$\gps.c</name>
             <outputs>
                 <tool>
-                    <name>ICCSTM8</name>
-                    <file> 55</file>
-                </tool>
-                <tool>
                     <name>BICOMP</name>
                     <file> 45</file>
                 </tool>
@@ -115,7 +111,7 @@
                 </tool>
                 <tool>
                     <name>BICOMP</name>
-                    <file> 51 58 54 38 30 4 11 53 52 48 44 20 17 14 29</file>
+                    <file> 20 51 44 30 4 17 58 52 48 54 11 38 53 14 29</file>
                 </tool>
             </inputs>
         </file>

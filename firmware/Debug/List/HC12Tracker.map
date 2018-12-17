@@ -1,6 +1,6 @@
 ###############################################################################
 #
-# IAR ELF Linker V3.10.1.201 for STM8                     17/Dec/2018  18:54:54
+# IAR ELF Linker V3.10.1.201 for STM8                     17/Dec/2018  20:24:59
 # Copyright 2010-2017 IAR Systems AB.
 #
 #    Output file  =  
@@ -10,7 +10,7 @@
 #        D:\High Altitude Ballooning\Github data\Pico
 #        Tracker\PicoTracker\firmware\Debug\List\HC12Tracker.map
 #    Command line =  
-#        -f C:\Users\medad\AppData\Local\Temp\EW9519.tmp ("D:\High Altitude
+#        -f C:\Users\medad\AppData\Local\Temp\EWDDF.tmp ("D:\High Altitude
 #        Ballooning\Github data\Pico
 #        Tracker\PicoTracker\firmware\Debug\Obj\energy.o" "D:\High Altitude
 #        Ballooning\Github data\Pico
@@ -35,18 +35,6 @@
 #        __iar_program_start --debug_lib)
 #
 ###############################################################################
-
-*******************************************************************************
-*** MESSAGES
-***
-
-Error[Lp011]: section placement failed
-            unable to allocate space for sections/blocks with a total estimated
-                      minimum size of 0x2556 bytes (max align 0x1) in
-                      <[0x008000-0x009fff]> (total uncommitted space 0x1f80).
-Error[Li016]: size limit exceeded. The application needs 0x25c4 (9 668) bytes,
-          which is greater than the limit of 0x2000 (8 192) bytes.
-
 
 *******************************************************************************
 *** RUNTIME MODEL ATTRIBUTES
@@ -110,16 +98,16 @@ initialize by copy {
     .near.data       inited   0x000011   0x100  telemetry.o [1]
                             - 0x000111   0x101
 
-"P2", part 2 of 2:                        0x39
-  .near.bss          zero     0x000111    0x32  gps.o [1]
-  .near.bss          zero     0x000143     0x1  gps.o [1]
-  .near.bss          zero     0x000144     0x1  rtty.o [1]
-  .near.bss          zero     0x000145     0x1  rtty.o [1]
-  .near.bss          zero     0x000146     0x1  telemetry.o [1]
-  .near.bss          zero     0x000147     0x1  telemetry.o [1]
-  .near.bss          zero     0x000148     0x1  telemetry.o [1]
-  .near.bss          zero     0x000149     0x1  telemetry.o [1]
-                            - 0x00014a    0x39
+"P2", part 2 of 2:                        0x7f
+  .near.bss          zero     0x000111    0x78  gps.o [1]
+  .near.bss          zero     0x000189     0x1  gps.o [1]
+  .near.bss          zero     0x00018a     0x1  rtty.o [1]
+  .near.bss          zero     0x00018b     0x1  rtty.o [1]
+  .near.bss          zero     0x00018c     0x1  telemetry.o [1]
+  .near.bss          zero     0x00018d     0x1  telemetry.o [1]
+  .near.bss          zero     0x00018e     0x1  telemetry.o [1]
+  .near.bss          zero     0x00018f     0x1  telemetry.o [1]
+                            - 0x000190    0x7f
 
 "A1":                                    0x100
   CSTACK                      0x000300   0x100  <Block>
@@ -201,121 +189,75 @@ Absolute sections, part 10 of 10:          0x4
     .intvec          const    0x008000    0x80  interrupt.o [4]
                             - 0x008080    0x80
 
-"P3-P5" (*** FAILED ***):               0x2556
-  .near_func.text    ro code             0x4b8  float.o [4]
-  .near_func.text    ro code             0x45d  xprintffull_nomb.o [4]
-  .near_func.text    ro code             0x412  xprintffull_nomb.o [4]
-  .near_func.text    ro code             0x3f3  si_trx.o [1]
-  .near_func.text    ro code             0x383  xprintffull_nomb.o [4]
-  .near_func.text    ro code             0x1e3  long.o [4]
-  .near_func.text    ro code             0x176  xprintffull_nomb.o [4]
-  .near_func.text    ro code             0x161  float_libsup.o [4]
-  .near_func.text    ro code             0x145  vreg_util.o [4]
-  Initializer bytes  const               0x101  <for P2-1> (used: 0x0)
-  .near_func.text    ro code              0x82  long_util.o [4]
-  .near_func.text    ro code              0x76  si_trx.o [1]
-  .near_func.text    ro code              0x71  telemetry.o [1]
-  .near_func.text    ro code              0x6f  rtty.o [1]
-  .near_func.text    ro code              0x6b  gps.o [1]
-  .near_func.text    ro code              0x46  short.o [4]
-  .near_func.text    ro code              0x43  gps.o [1]
-  .near_func.text    ro code              0x43  xprintffull_nomb.o [4]
-  .near_func.text    ro code              0x41  xprintffull_nomb.o [4]
-  .near_func.text    ro code              0x40  energy.o [1]
-  .near_func.text    ro code              0x3f  si_trx.o [1]
-  .near_func.text    ro code              0x3f  spi_bitbang.o [1]
-  .near_func.text    ro code              0x3e  snprintf.o [4]
-  .near_func.text    const                0x3c  xprintffull_nomb.o [4]
-  .near_func.text    ro code              0x3b  gps.o [1]
-  .near_func.text    ro code              0x38  gps.o [1]
-  .near_func.text    ro code              0x38  gps.o [1]
-  .near_func.text    ro code              0x37  xprintffull_nomb.o [4]
-  .near_func.text    ro code              0x34  telemetry.o [1]
-  .near_func.text    ro code              0x33  main.o [1]
-  .near_func.text    ro code              0x33  xprintffull_nomb.o [4]
-  .near_func.text    ro code              0x30  div.o [4]
-  .near_func.text    ro code              0x2f  xprintffull_nomb.o [4]
-  .near_func.text    ro code              0x2d  spi_bitbang.o [1]
-  .near_func.text    ro code              0x2d  xsnprout.o [4]
-  .near_func.text    ro code              0x28  gps.o [1]
-  .near_func.text    ro code              0x28  init_small.o [4]
-  .near_func.text    ro code              0x21  telemetry.o [1]
-  .near_func.text    ro code              0x21  memchr.o [4]
-  .iar.init_table    const                0x12  - Linker created -
-  .near_func.text    ro code              0x1f  dc_util.o [4]
-  .near_func.text    ro code              0x1f  memcpy.o [4]
-  .near_func.text    ro code              0x1e  init_small.o [4]
-  .near_func.text    ro code              0x1b  telemetry.o [1]
-  .near_func.text    ro code              0x1a  telemetry.o [1]
-  .near_func.text    ro code              0x15  strchr.o [4]
-  .near_func.text    ro code              0x14  init.o [4]
-  .near_func.text    ro code              0x14  xprintffull_nomb.o [4]
-  .near_func.text    ro code              0x14  __dbg_xxexit.o [3]
-  .near_func.text    ro code              0x13  cstartup.o [4]
-  .near.rodata       const                0x12  gps.o [1]
-  .near_func.text    ro code              0x12  si_trx.o [1]
-  .near_func.text    ro code               0xf  telemetry.o [1]
-  .near.rodata       const                 0xe  main.o [1]
-  .near_func.text    ro code               0xd  strlen.o [4]
-  .near_func.text    ro code               0xd  move.o [4]
-  .near_func.text    ro code               0xc  xprintffull_nomb.o [4]
-  .near_func.text    ro code               0xc  switch.o [4]
-  .near_func.text    ro code               0xb  telemetry.o [1]
-  .near_func.text    ro code               0xb  xprintffull_nomb.o [4]
-  .near_func.text    ro code               0xb  xprintffull_nomb.o [4]
-  .near_func.text    ro code               0xb  xprintffull_nomb.o [4]
-  .near_func.text    ro code               0xa  xprintffull_nomb.o [4]
-  .near_func.text    ro code               0x9  telemetry.o [1]
-  .near_func.text    ro code               0x9  xprintffull_nomb.o [4]
-  .near_func.text    ro code               0x9  xprintffull_nomb.o [4]
-  .near_func.text    ro code               0x9  xprintffull_nomb.o [4]
-  .near_func.text    ro code               0x8  rtty.o [1]
-  .near_func.text    ro code               0x8  xprintffull_nomb.o [4]
-  .near_func.text    ro code               0x8  xprintffull_nomb.o [4]
-  .near_func.text    ro code               0x8  xprintffull_nomb.o [4]
-  .near_func.text    ro code               0x8  xprintffull_nomb.o [4]
-  .near.rodata       const                 0x7  xprintffull_nomb.o [4]
-  .near_func.text    ro code               0x7  xprintffull_nomb.o [4]
-  .near_func.text    ro code               0x7  xprintffull_nomb.o [4]
-  .near.rodata       const                 0x6  gps.o [1]
-  .near_func.text    ro code               0x6  xprintffull_nomb.o [4]
-  .near_func.text    ro code               0x6  xprintffull_nomb.o [4]
-  .near_func.text    ro code               0x6  xprintffull_nomb.o [4]
-  .near_func.text    ro code               0x6  xprintffull_nomb.o [4]
-  .near_func.text    ro code               0x6  xprintffull_nomb.o [4]
-  .near_func.text    ro code               0x5  rtty.o [1]
-  .near_func.text    ro code               0x5  char.o [4]
-  .near_func.text    ro code               0x5  xprintffull_nomb.o [4]
-  .near_func.text    ro code               0x5  cexit.o [4]
-  .near.rodata       const                 0x4  xprintffull_nomb.o [4]
-  .near.rodata       const                 0x4  xprintffull_nomb.o [4]
-  .near.rodata       const                 0x4  xprintffull_nomb.o [4]
-  .near.rodata       const                 0x4  xprintffull_nomb.o [4]
-  .near_func.text    ro code               0x3  interrupt.o [4]
-  .near_func.text    ro code               0x3  low_level_init.o [4]
-  .near_func.text    ro code               0x3  exit.o [4]
-  .near_func.text    ro code               0x3  unhandled_exception.o [4]
-  .near.rodata       const                 0x2  gps.o [1]
-  .near.rodata       const                 0x2  xprintffull_nomb.o [4]
-  .near_func.text    ro code               0x1  __dbg_break.o [3]
-                                        0x2556
+"P3-P5":                                0x11e5
+  .near_func.text    ro code  0x008080   0x42c  float.o [4]
+  .near_func.text    ro code  0x0084ac   0x3f3  si_trx.o [1]
+  .near_func.text    ro code  0x00889f   0x194  long.o [4]
+  .near_func.text    ro code  0x008a33   0x111  vreg_util.o [4]
+  Initializer bytes  const    0x008b44   0x101  <for P2-1>
+  .near_func.text    ro code  0x008c45    0x76  si_trx.o [1]
+  .near_func.text    ro code  0x008cbb    0x71  telemetry.o [1]
+  .near_func.text    ro code  0x008d2c    0x6f  rtty.o [1]
+  .near_func.text    ro code  0x008d9b    0x6b  gps.o [1]
+  .near_func.text    ro code  0x008e06    0x5f  gps.o [1]
+  .near_func.text    ro code  0x008e65    0x57  long_util.o [4]
+  .near_func.text    ro code  0x008ebc    0x43  gps.o [1]
+  .near_func.text    ro code  0x008eff    0x40  energy.o [1]
+  .near_func.text    ro code  0x008f3f    0x3f  si_trx.o [1]
+  .near_func.text    ro code  0x008f7e    0x3f  spi_bitbang.o [1]
+  .near_func.text    ro code  0x008fbd    0x34  telemetry.o [1]
+  .near_func.text    ro code  0x008ff1    0x33  main.o [1]
+  .near_func.text    ro code  0x009024    0x2d  spi_bitbang.o [1]
+  .near_func.text    ro code  0x009051    0x28  init_small.o [4]
+  .near_func.text    ro code  0x009079    0x21  telemetry.o [1]
+  .iar.init_table    const    0x00909a    0x12  - Linker created -
+  .near_func.text    ro code  0x0090ac    0x1e  init_small.o [4]
+  .near_func.text    ro code  0x0090ca    0x1b  telemetry.o [1]
+  .near_func.text    ro code  0x0090e5    0x1a  telemetry.o [1]
+  .near.rodata       const    0x0090ff    0x18  gps.o [1]
+  .near.rodata       const    0x009117    0x18  gps.o [1]
+  .near.rodata       const    0x00912f    0x18  gps.o [1]
+  .near.rodata       const    0x009147    0x18  gps.o [1]
+  .near.rodata       const    0x00915f    0x18  gps.o [1]
+  .near.rodata       const    0x009177    0x18  gps.o [1]
+  .near_func.text    ro code  0x00918f    0x18  dc_util.o [4]
+  .near_func.text    ro code  0x0091a7    0x14  init.o [4]
+  .near_func.text    ro code  0x0091bb    0x14  __dbg_xxexit.o [3]
+  .near_func.text    ro code  0x0091cf    0x13  cstartup.o [4]
+  .near_func.text    ro code  0x0091e2    0x12  si_trx.o [1]
+  .near_func.text    ro code  0x0091f4     0xf  telemetry.o [1]
+  .near_func.text    ro code  0x009203     0xf  short.o [4]
+  .near.rodata       const    0x009212     0xe  main.o [1]
+  .near_func.text    ro code  0x009220     0xd  strlen.o [4]
+  .near_func.text    ro code  0x00922d     0xb  telemetry.o [1]
+  .near_func.text    ro code  0x009238     0x9  telemetry.o [1]
+  .near_func.text    ro code  0x009241     0x8  rtty.o [1]
+  .near_func.text    ro code  0x009249     0x5  rtty.o [1]
+  .near_func.text    ro code  0x00924e     0x5  char.o [4]
+  .near_func.text    ro code  0x009253     0x5  cexit.o [4]
+  .near_func.text    ro code  0x009258     0x3  interrupt.o [4]
+  .near_func.text    ro code  0x00925b     0x3  low_level_init.o [4]
+  .near_func.text    ro code  0x00925e     0x3  exit.o [4]
+  .near_func.text    ro code  0x009261     0x3  unhandled_exception.o [4]
+  .near_func.text    ro code  0x009264     0x1  __dbg_break.o [3]
+                            - 0x009265  0x11e5
 
 
 *******************************************************************************
 *** INIT TABLE
 ***
 
-          Address     Size
-          -------     ----
+          Address   Size
+          -------   ----
 Zero (__iar_zero_init2)
-    1 destination range, total size 0x39:
-            0x000111   0x39
+    1 destination range, total size 0x7f:
+          0x000111   0x7f
 
 Copy (__iar_copy_init2)
     1 source range, total size 0x101:
-          0x00001a9c  0x101
+          0x008b44  0x101
     1 destination range, total size 0x101:
-            0x000010  0x101
+          0x000010  0x101
 
 
 
@@ -328,14 +270,14 @@ Copy (__iar_copy_init2)
     ------                 -------  -------  -------  -------
 D:\High Altitude Ballooning\Github data\Pico Tracker\PicoTracker\firmware\Debug\Obj: [1]
     energy.o                    64                         10
-    gps.o                      385       26       51       11
+    gps.o                      269      144      121       11
     main.o                      51       14
     rtty.o                     124        1        3
     si_trx.o                 1 210                          7
     spi_bitbang.o              108                          5
     telemetry.o                286      256      260        7
     ---------------------------------------------------------
-    Total:                   2 228      297      314       40
+    Total:                   2 112      415      384       40
 
 command line: [2]
     ---------------------------------------------------------
@@ -351,338 +293,275 @@ dlstm8smn.a: [4]
     cexit.o                      5
     char.o                       5
     cstartup.o                  19
-    dc_util.o                   31
-    div.o                       48
+    dc_util.o                   24
     exit.o                       3
-    float.o                  1 208
-    float_libsup.o             353
+    float.o                  1 068
     init.o                      20
     init_small.o                70
     interrupt.o                  3      128
-    long.o                     483
-    long_util.o                130
+    long.o                     404
+    long_util.o                 87
     low_level_init.o             3
-    memchr.o                    33
-    memcpy.o                    31
-    move.o                      13
-    short.o                     70
-    snprintf.o                  62
-    strchr.o                    21
+    short.o                     15
     strlen.o                    13
-    switch.o                    12
     unhandled_exception.o        3
-    vreg_util.o                325
+    vreg_util.o                273
     vregs.o                                       16
-    xprintffull_nomb.o       3 900       85
-    xsnprout.o                  45
     ---------------------------------------------------------
-    Total:                   6 909      213       16
+    Total:                   2 015      128       16
 
     Linker created                       18      256
 -------------------------------------------------------------
-    Grand Total:             9 158      528      586       40
+    Grand Total:             4 148      561      656       40
 
 
 *******************************************************************************
 *** ENTRY LIST
 ***
 
-Entry                      Address   Size  Type      Object
------                      -------   ----  ----      ------
-.iar.init_table$$Base   0x000022ec          --   Gb  - Linker created -
-.iar.init_table$$Limit  0x000022fe          --   Gb  - Linker created -
-?and32_l0_l0_0x         0x0000160f         Code  Gb  long.o [4]
-?and32_l0_l0_l1         0x0000160c         Code  Gb  long.o [4]
-?b0                       0x000000         Data  Gb  vregs.o [4]
-?b1                       0x000001         Data  Gb  vregs.o [4]
-?b10                      0x00000a         Data  Gb  vregs.o [4]
-?b11                      0x00000b         Data  Gb  vregs.o [4]
-?b12                      0x00000c         Data  Gb  vregs.o [4]
-?b13                      0x00000d         Data  Gb  vregs.o [4]
-?b14                      0x00000e         Data  Gb  vregs.o [4]
-?b15                      0x00000f         Data  Gb  vregs.o [4]
-?b2                       0x000002         Data  Gb  vregs.o [4]
-?b3                       0x000003         Data  Gb  vregs.o [4]
-?b4                       0x000004         Data  Gb  vregs.o [4]
-?b5                       0x000005         Data  Gb  vregs.o [4]
-?b6                       0x000006         Data  Gb  vregs.o [4]
-?b7                       0x000007         Data  Gb  vregs.o [4]
-?b8                       0x000008         Data  Gb  vregs.o [4]
-?b9                       0x000009         Data  Gb  vregs.o [4]
-?dc32_l1                0x00002305         Code  Gb  dc_util.o [4]
-?dc32_px                0x00002312         Code  Gb  dc_util.o [4]
-?dc8_px                 0x000022fe         Code  Gb  dc_util.o [4]
-?e0                       0x000001         Data  Gb  vregs.o [4]
-?e1                       0x000005         Data  Gb  vregs.o [4]
-?e2                       0x000009         Data  Gb  vregs.o [4]
-?e3                       0x00000d         Data  Gb  vregs.o [4]
-?epilogue_l2            0x00001a08         Code  Gb  vreg_util.o [4]
-?epilogue_l2_l3         0x00001a05         Code  Gb  vreg_util.o [4]
-?epilogue_w4            0x00001a0c         Code  Gb  vreg_util.o [4]
-?fadd32_l0_l0_l1        0x00000023         Code  Gb  float.o [4]
-?fcastf32s32_l0_l0      0x00000373         Code  Gb  float.o [4]
-?fcastf32u16_l0_x       0x000002a8         Code  Gb  float.o [4]
-?fcastf32u32_l0_l0      0x0000037e         Code  Gb  float.o [4]
-?fcasts16f32_x_l0       0x000002c6         Code  Gb  float.o [4]
-?fcasts32f32_l0_l0      0x00000312         Code  Gb  float.o [4]
-?fcastu32f32_l0_l0      0x000002fb         Code  Gb  float.o [4]
-?fcmpge32_c_l0_0x       0x00000249         Code  Gb  float.o [4]
-?fcmpge32_c_l0_dc32     0x00000244         Code  Gb  float.o [4]
-?fcmplt32_c_l0_0x       0x00000252         Code  Gb  float.o [4]
-?fcmplt32_c_l0_dc32     0x0000024d         Code  Gb  float.o [4]
-?fdiv32_l0_l0_dc32      0x00000191         Code  Gb  float.o [4]
-?fdiv32_l0_l0_l1        0x00000196         Code  Gb  float.o [4]
-?fmul32_l0_l0_dc32      0x000000f1         Code  Gb  float.o [4]
-?fmul32_l0_l0_l1        0x000000f6         Code  Gb  float.o [4]
-?fsub32_l0_l0_l1        0x0000001d         Code  Gb  float.o [4]
-?l0                       0x000000         Data  Gb  vregs.o [4]
-?l1                       0x000004         Data  Gb  vregs.o [4]
-?l2                       0x000008         Data  Gb  vregs.o [4]
-?l3                       0x00000c         Data  Gb  vregs.o [4]
-?load32_0x_l0           0x00001bf2         Code  Gb  long_util.o [4]
-?load32_0x_l2           0x00001c11         Code  Gb  long_util.o [4]
-?load32_asp_l0          0x00001be6         Code  Gb  long_util.o [4]
-?load32_asp_l2          0x00001c05         Code  Gb  long_util.o [4]
-?load32_dbsp_l0         0x00001be1         Code  Gb  long_util.o [4]
-?load32_dbsp_l2         0x00001c00         Code  Gb  long_util.o [4]
-?load32_l0_0x           0x00001bad         Code  Gb  long_util.o [4]
-?load32_l0_asp          0x00001ba2         Code  Gb  long_util.o [4]
-?load32_l0_dbsp         0x00001b9d         Code  Gb  long_util.o [4]
-?load32_l0_xsp          0x00001ba4         Code  Gb  long_util.o [4]
-?load32_l1_0x           0x00001bc9         Code  Gb  long_util.o [4]
-?load32_l1_asp          0x00001bbe         Code  Gb  long_util.o [4]
-?load32_l1_dbsp         0x00001bb9         Code  Gb  long_util.o [4]
-?load32_l1_xsp          0x00001bc0         Code  Gb  long_util.o [4]
-?load32_l2_0x           0x00001bd5         Code  Gb  long_util.o [4]
-?load32_xsp_l0          0x00001be8         Code  Gb  long_util.o [4]
-?load32_xsp_l2          0x00001c07         Code  Gb  long_util.o [4]
-?mov_e0_e1              0x00001a44         Code  Gb  vreg_util.o [4]
-?mov_e0_e2              0x00001a51         Code  Gb  vreg_util.o [4]
-?mov_e0_e3              0x00001a5e         Code  Gb  vreg_util.o [4]
-?mov_e1_e0              0x00001a6b         Code  Gb  vreg_util.o [4]
-?mov_e1_e2              0x00001a78         Code  Gb  vreg_util.o [4]
-?mov_e2_e0              0x00001a85         Code  Gb  vreg_util.o [4]
-?mov_e3_e0              0x00001a92         Code  Gb  vreg_util.o [4]
-?mov_l0_l1              0x00001a41         Code  Gb  vreg_util.o [4]
-?mov_l0_l2              0x00001a4e         Code  Gb  vreg_util.o [4]
-?mov_l0_l3              0x00001a5b         Code  Gb  vreg_util.o [4]
-?mov_l1_l0              0x00001a68         Code  Gb  vreg_util.o [4]
-?mov_l1_l2              0x00001a75         Code  Gb  vreg_util.o [4]
-?mov_l2_l0              0x00001a82         Code  Gb  vreg_util.o [4]
-?mov_l3_l0              0x00001a8f         Code  Gb  vreg_util.o [4]
-?mov_w0_w5              0x00001a10         Code  Gb  vreg_util.o [4]
-?mov_w1_w3              0x00001a47         Code  Gb  vreg_util.o [4]
-?mov_w1_w5              0x00001a54         Code  Gb  vreg_util.o [4]
-?mov_w1_w7              0x00001a61         Code  Gb  vreg_util.o [4]
-?mov_w2_w0              0x00001a17         Code  Gb  vreg_util.o [4]
-?mov_w2_w1              0x00001a1e         Code  Gb  vreg_util.o [4]
-?mov_w3_w1              0x00001a6e         Code  Gb  vreg_util.o [4]
-?mov_w3_w5              0x00001a7b         Code  Gb  vreg_util.o [4]
-?mov_w4_w0              0x00001a25         Code  Gb  vreg_util.o [4]
-?mov_w4_w1              0x00001a2c         Code  Gb  vreg_util.o [4]
-?mov_w5_w0              0x00001a33         Code  Gb  vreg_util.o [4]
-?mov_w5_w1              0x00001a88         Code  Gb  vreg_util.o [4]
-?mov_w7_w0              0x00001a3a         Code  Gb  vreg_util.o [4]
-?mov_w7_w1              0x00001a95         Code  Gb  vreg_util.o [4]
-?move1616_v_x_y_a       0x00002441         Code  Gb  move.o [4]
-?mul16_x_x_w0           0x00001de0         Code  Gb  short.o [4]
-?mul32_l0_l0_0x         0x000014b0         Code  Gb  long.o [4]
-?mul32_l0_l0_dl         0x000014ad         Code  Gb  long.o [4]
-?mul32_l0_l0_l1         0x000014b9         Code  Gb  long.o [4]
-?neg32_l0_l0            0x0000149d         Code  Gb  long.o [4]
-?or32_l0_l0_0x          0x0000162a         Code  Gb  long.o [4]
-?or32_l0_l0_l1          0x00001627         Code  Gb  long.o [4]
-?pop_l0                 0x000019d1         Code  Gb  vreg_util.o [4]
-?pop_l1                 0x000019dc         Code  Gb  vreg_util.o [4]
-?pop_l2                 0x000019e7         Code  Gb  vreg_util.o [4]
-?pop_l3                 0x000019f2         Code  Gb  vreg_util.o [4]
-?pop_w4                 0x00001983         Code  Gb  vreg_util.o [4]
-?pop_w5                 0x0000198a         Code  Gb  vreg_util.o [4]
-?pop_w6                 0x00001991         Code  Gb  vreg_util.o [4]
-?push_l0                0x000019a0         Code  Gb  vreg_util.o [4]
-?push_l1                0x000019a5         Code  Gb  vreg_util.o [4]
-?push_l2                0x000019aa         Code  Gb  vreg_util.o [4]
-?push_l3                0x000019af         Code  Gb  vreg_util.o [4]
-?push_w0                0x00001957         Code  Gb  vreg_util.o [4]
-?push_w1                0x0000195c         Code  Gb  vreg_util.o [4]
-?push_w4                0x00001961         Code  Gb  vreg_util.o [4]
-?push_w5                0x00001966         Code  Gb  vreg_util.o [4]
-?push_w6                0x0000196b         Code  Gb  vreg_util.o [4]
-?scmp32_c_l0_l1         0x000015f5         Code  Gb  long.o [4]
-?sdiv16_x_x_y           0x00001dfe         Code  Gb  short.o [4]
-?sdiv32_l0_l0_dl        0x000015ac         Code  Gb  long.o [4]
-?sdiv32_l0_l0_l1        0x000015af         Code  Gb  long.o [4]
-?sext16_x_a             0x00001e1f         Code  Gb  short.o [4]
-?sext32_l0_a            0x00001673         Code  Gb  long.o [4]
-?sext32_l0_x            0x00001668         Code  Gb  long.o [4]
-?sll32_0x_0x_a          0x00001645         Code  Gb  long.o [4]
-?sll32_l0_l0_a          0x00001642         Code  Gb  long.o [4]
-?smod32_l1_l0_l1        0x000015af         Code  Gb  long.o [4]
-?sra16_x_x_a            0x00001e17         Code  Gb  short.o [4]
-?sra32_0x_0x_a          0x0000165a         Code  Gb  long.o [4]
-?sra32_l0_l0_a          0x00001657         Code  Gb  long.o [4]
-?sra32_l0_l0_db         0x00001653         Code  Gb  long.o [4]
-?srl8_a_a_5             0x00002526         Code  Gb  char.o [4]
-?switch8vlt_0x_a_0x     0x0000245a         Code  Gb  switch.o [4]
-?udiv32_l0_l0_dl        0x0000153c         Code  Gb  long.o [4]
-?udiv32_l0_l0_l1        0x0000153f         Code  Gb  long.o [4]
-?umod32_l1_l0_dl        0x00001537         Code  Gb  long.o [4]
-?umod32_l1_l0_l1        0x0000153f         Code  Gb  long.o [4]
-?w0                       0x000000         Data  Gb  vregs.o [4]
-?w1                       0x000002         Data  Gb  vregs.o [4]
-?w2                       0x000004         Data  Gb  vregs.o [4]
-?w3                       0x000006         Data  Gb  vregs.o [4]
-?w4                       0x000008         Data  Gb  vregs.o [4]
-?w5                       0x00000a         Data  Gb  vregs.o [4]
-?w6                       0x00000c         Data  Gb  vregs.o [4]
-?w7                       0x00000e         Data  Gb  vregs.o [4]
-CLK_PCKENR1               0x0050c7    0x1  Data  Gb  energy.o [1]
-CLK_PCKENR2               0x0050ca    0x1  Data  Gb  energy.o [1]
-CLK_SWR                   0x0050c4    0x1  Data  Gb  energy.o [1]
-CSTACK$$Base              0x000300          --   Gb  - Linker created -
-CSTACK$$Limit             0x000400          --   Gb  - Linker created -
-INTVEC$$Base              0x008000          --   Gb  - Linker created -
-INTVEC$$Limit             0x008080          --   Gb  - Linker created -
-InitialiseSystemClock   0x00001eed   0x40  Code  Gb  energy.o [1]
-InitialiseUART          0x00001d75   0x6b  Code  Gb  gps.o [1]
-LoadInt                 0x00001eac   0x41  Code  Lc  xprintffull_nomb.o [4]
-Region$$Table$$Base     0x000022ec          --   Gb  - Linker created -
-Region$$Table$$Limit    0x000022fe          --   Gb  - Linker created -
-TIM1_ARRH                 0x005262    0x1  Data  Gb  telemetry.o [1]
-TIM1_ARRL                 0x005263    0x1  Data  Gb  telemetry.o [1]
-TIM1_PSCRH                0x005260    0x1  Data  Gb  telemetry.o [1]
-TIM1_PSCRL                0x005261    0x1  Data  Gb  telemetry.o [1]
+Entry                    Address   Size  Type      Object
+-----                    -------   ----  ----      ------
+.iar.init_table$$Base   0x00909a          --   Gb  - Linker created -
+.iar.init_table$$Limit  0x0090ac          --   Gb  - Linker created -
+?and32_l0_l0_0x         0x0089ef         Code  Gb  long.o [4]
+?and32_l0_l0_l1         0x0089ec         Code  Gb  long.o [4]
+?b0                     0x000000         Data  Gb  vregs.o [4]
+?b1                     0x000001         Data  Gb  vregs.o [4]
+?b10                    0x00000a         Data  Gb  vregs.o [4]
+?b11                    0x00000b         Data  Gb  vregs.o [4]
+?b12                    0x00000c         Data  Gb  vregs.o [4]
+?b13                    0x00000d         Data  Gb  vregs.o [4]
+?b14                    0x00000e         Data  Gb  vregs.o [4]
+?b15                    0x00000f         Data  Gb  vregs.o [4]
+?b2                     0x000002         Data  Gb  vregs.o [4]
+?b3                     0x000003         Data  Gb  vregs.o [4]
+?b4                     0x000004         Data  Gb  vregs.o [4]
+?b5                     0x000005         Data  Gb  vregs.o [4]
+?b6                     0x000006         Data  Gb  vregs.o [4]
+?b7                     0x000007         Data  Gb  vregs.o [4]
+?b8                     0x000008         Data  Gb  vregs.o [4]
+?b9                     0x000009         Data  Gb  vregs.o [4]
+?dc32_l1                0x00918f         Code  Gb  dc_util.o [4]
+?dc32_px                0x00919c         Code  Gb  dc_util.o [4]
+?e0                     0x000001         Data  Gb  vregs.o [4]
+?e1                     0x000005         Data  Gb  vregs.o [4]
+?e2                     0x000009         Data  Gb  vregs.o [4]
+?e3                     0x00000d         Data  Gb  vregs.o [4]
+?epilogue_l2            0x008ada         Code  Gb  vreg_util.o [4]
+?epilogue_l2_l3         0x008ad7         Code  Gb  vreg_util.o [4]
+?epilogue_w4            0x008ade         Code  Gb  vreg_util.o [4]
+?fadd32_l0_l0_l1        0x0080a3         Code  Gb  float.o [4]
+?fcastf32s32_l0_l0      0x008367         Code  Gb  float.o [4]
+?fcastf32u16_l0_x       0x0082c4         Code  Gb  float.o [4]
+?fcastf32u32_l0_l0      0x008372         Code  Gb  float.o [4]
+?fcasts16f32_x_l0       0x0082e2         Code  Gb  float.o [4]
+?fcastu32f32_l0_l0      0x008317         Code  Gb  float.o [4]
+?fdiv32_l0_l0_dc32      0x008211         Code  Gb  float.o [4]
+?fdiv32_l0_l0_l1        0x008216         Code  Gb  float.o [4]
+?fmul32_l0_l0_dc32      0x008171         Code  Gb  float.o [4]
+?fmul32_l0_l0_l1        0x008176         Code  Gb  float.o [4]
+?fsub32_l0_l0_l1        0x00809d         Code  Gb  float.o [4]
+?l0                     0x000000         Data  Gb  vregs.o [4]
+?l1                     0x000004         Data  Gb  vregs.o [4]
+?l2                     0x000008         Data  Gb  vregs.o [4]
+?l3                     0x00000c         Data  Gb  vregs.o [4]
+?load32_0x_l0           0x008eae         Code  Gb  long_util.o [4]
+?load32_asp_l0          0x008ea2         Code  Gb  long_util.o [4]
+?load32_dbsp_l0         0x008e9d         Code  Gb  long_util.o [4]
+?load32_l0_0x           0x008e75         Code  Gb  long_util.o [4]
+?load32_l0_asp          0x008e6a         Code  Gb  long_util.o [4]
+?load32_l0_dbsp         0x008e65         Code  Gb  long_util.o [4]
+?load32_l0_xsp          0x008e6c         Code  Gb  long_util.o [4]
+?load32_l1_0x           0x008e91         Code  Gb  long_util.o [4]
+?load32_l1_asp          0x008e86         Code  Gb  long_util.o [4]
+?load32_l1_dbsp         0x008e81         Code  Gb  long_util.o [4]
+?load32_l1_xsp          0x008e88         Code  Gb  long_util.o [4]
+?load32_xsp_l0          0x008ea4         Code  Gb  long_util.o [4]
+?mov_e0_e1              0x008aec         Code  Gb  vreg_util.o [4]
+?mov_e0_e2              0x008af9         Code  Gb  vreg_util.o [4]
+?mov_e0_e3              0x008b06         Code  Gb  vreg_util.o [4]
+?mov_e1_e0              0x008b13         Code  Gb  vreg_util.o [4]
+?mov_e1_e2              0x008b20         Code  Gb  vreg_util.o [4]
+?mov_e2_e0              0x008b2d         Code  Gb  vreg_util.o [4]
+?mov_e3_e0              0x008b3a         Code  Gb  vreg_util.o [4]
+?mov_l0_l1              0x008ae9         Code  Gb  vreg_util.o [4]
+?mov_l0_l2              0x008af6         Code  Gb  vreg_util.o [4]
+?mov_l0_l3              0x008b03         Code  Gb  vreg_util.o [4]
+?mov_l1_l0              0x008b10         Code  Gb  vreg_util.o [4]
+?mov_l1_l2              0x008b1d         Code  Gb  vreg_util.o [4]
+?mov_l2_l0              0x008b2a         Code  Gb  vreg_util.o [4]
+?mov_l3_l0              0x008b37         Code  Gb  vreg_util.o [4]
+?mov_w1_w3              0x008aef         Code  Gb  vreg_util.o [4]
+?mov_w1_w5              0x008afc         Code  Gb  vreg_util.o [4]
+?mov_w1_w7              0x008b09         Code  Gb  vreg_util.o [4]
+?mov_w3_w1              0x008b16         Code  Gb  vreg_util.o [4]
+?mov_w3_w5              0x008b23         Code  Gb  vreg_util.o [4]
+?mov_w5_w1              0x008b30         Code  Gb  vreg_util.o [4]
+?mov_w7_w0              0x008ae2         Code  Gb  vreg_util.o [4]
+?mov_w7_w1              0x008b3d         Code  Gb  vreg_util.o [4]
+?mul32_l0_l0_0x         0x0088b2         Code  Gb  long.o [4]
+?mul32_l0_l0_dl         0x0088af         Code  Gb  long.o [4]
+?mul32_l0_l0_l1         0x0088bb         Code  Gb  long.o [4]
+?neg32_l0_l0            0x00889f         Code  Gb  long.o [4]
+?or32_l0_l0_0x          0x008a0a         Code  Gb  long.o [4]
+?or32_l0_l0_l1          0x008a07         Code  Gb  long.o [4]
+?pop_l0                 0x008aa3         Code  Gb  vreg_util.o [4]
+?pop_l1                 0x008aae         Code  Gb  vreg_util.o [4]
+?pop_l2                 0x008ab9         Code  Gb  vreg_util.o [4]
+?pop_l3                 0x008ac4         Code  Gb  vreg_util.o [4]
+?pop_w4                 0x008a55         Code  Gb  vreg_util.o [4]
+?pop_w5                 0x008a5c         Code  Gb  vreg_util.o [4]
+?pop_w6                 0x008a63         Code  Gb  vreg_util.o [4]
+?push_l0                0x008a72         Code  Gb  vreg_util.o [4]
+?push_l1                0x008a77         Code  Gb  vreg_util.o [4]
+?push_l2                0x008a7c         Code  Gb  vreg_util.o [4]
+?push_l3                0x008a81         Code  Gb  vreg_util.o [4]
+?push_w4                0x008a33         Code  Gb  vreg_util.o [4]
+?push_w5                0x008a38         Code  Gb  vreg_util.o [4]
+?push_w6                0x008a3d         Code  Gb  vreg_util.o [4]
+?sdiv32_l0_l0_l1        0x0089a6         Code  Gb  long.o [4]
+?sext16_x_a             0x00920b         Code  Gb  short.o [4]
+?sll32_0x_0x_a          0x008a25         Code  Gb  long.o [4]
+?sll32_l0_l0_a          0x008a22         Code  Gb  long.o [4]
+?smod32_l1_l0_l1        0x0089a6         Code  Gb  long.o [4]
+?sra16_x_x_a            0x009203         Code  Gb  short.o [4]
+?srl8_a_a_5             0x00924e         Code  Gb  char.o [4]
+?udiv32_l0_l0_l1        0x008939         Code  Gb  long.o [4]
+?umod32_l1_l0_l1        0x008939         Code  Gb  long.o [4]
+?w0                     0x000000         Data  Gb  vregs.o [4]
+?w1                     0x000002         Data  Gb  vregs.o [4]
+?w2                     0x000004         Data  Gb  vregs.o [4]
+?w3                     0x000006         Data  Gb  vregs.o [4]
+?w4                     0x000008         Data  Gb  vregs.o [4]
+?w5                     0x00000a         Data  Gb  vregs.o [4]
+?w6                     0x00000c         Data  Gb  vregs.o [4]
+?w7                     0x00000e         Data  Gb  vregs.o [4]
+CLK_PCKENR1             0x0050c7    0x1  Data  Gb  energy.o [1]
+CLK_PCKENR2             0x0050ca    0x1  Data  Gb  energy.o [1]
+CLK_SWR                 0x0050c4    0x1  Data  Gb  energy.o [1]
+CSTACK$$Base            0x000300          --   Gb  - Linker created -
+CSTACK$$Limit           0x000400          --   Gb  - Linker created -
+INTVEC$$Base            0x008000          --   Gb  - Linker created -
+INTVEC$$Limit           0x008080          --   Gb  - Linker created -
+InitialiseSystemClock   0x008eff   0x40  Code  Gb  energy.o [1]
+InitialiseUART          0x008d9b   0x6b  Code  Gb  gps.o [1]
+Region$$Table$$Base     0x00909a          --   Gb  - Linker created -
+Region$$Table$$Limit    0x0090ac          --   Gb  - Linker created -
+TIM1_ARRH               0x005262    0x1  Data  Gb  telemetry.o [1]
+TIM1_ARRL               0x005263    0x1  Data  Gb  telemetry.o [1]
+TIM1_PSCRH              0x005260    0x1  Data  Gb  telemetry.o [1]
+TIM1_PSCRL              0x005261    0x1  Data  Gb  telemetry.o [1]
 TIM1_UPD_OVF_IRQHandler
-                        0x00002375   0x1a  Code  Gb  telemetry.o [1]
-UART1_BRR1                0x005232    0x1  Data  Gb  gps.o [1]
-UART1_BRR2                0x005233    0x1  Data  Gb  gps.o [1]
-UART1_DR                  0x005231    0x1  Data  Gb  gps.o [1]
-UART1_GTR                 0x005239    0x1  Data  Gb  gps.o [1]
-UART1_IRQHandler        0x00001e26   0x43  Code  Gb  gps.o [1]
-UART1_PSCR                0x00523a    0x1  Data  Gb  gps.o [1]
-UART1_buffer_pointer      0x000143    0x1  Data  Gb  gps.o [1]
-UART1_rx_buffer           0x000111   0x32  Data  Gb  gps.o [1]
-_A_CLK_CCOR               0x0050c9    0x1  Data  Gb  energy.o [1]
-_A_CLK_CKDIVR             0x0050c6    0x1  Data  Gb  energy.o [1]
-_A_CLK_ECKR               0x0050c1    0x1  Data  Gb  energy.o [1]
-_A_CLK_HSITRIMR           0x0050cc    0x1  Data  Gb  energy.o [1]
-_A_CLK_ICKR               0x0050c0    0x1  Data  Gb  energy.o [1]
-_A_CLK_SWCR               0x0050c5    0x1  Data  Gb  energy.o [1]
-_A_CLK_SWIMCCR            0x0050cd    0x1  Data  Gb  energy.o [1]
-_A_PB_CR1                 0x005008    0x1  Data  Gb  si_trx.o [1]
-_A_PB_CR2                 0x005009    0x1  Data  Gb  si_trx.o [1]
-_A_PB_DDR                 0x005007    0x1  Data  Gb  si_trx.o [1]
-_A_PC_CR1                 0x00500d    0x1  Data  Gb  spi_bitbang.o [1]
-_A_PC_CR2                 0x00500e    0x1  Data  Gb  spi_bitbang.o [1]
-_A_PC_DDR                 0x00500c    0x1  Data  Gb  spi_bitbang.o [1]
-_A_PC_IDR                 0x00500b    0x1  Data  Gb  spi_bitbang.o [1]
-_A_PC_ODR                 0x00500a    0x1  Data  Gb  spi_bitbang.o [1]
-_A_PD_CR1                 0x005012    0x1  Data  Gb  si_trx.o [1]
-_A_PD_CR2                 0x005013    0x1  Data  Gb  si_trx.o [1]
-_A_PD_DDR                 0x005011    0x1  Data  Gb  si_trx.o [1]
-_A_PD_ODR                 0x00500f    0x1  Data  Gb  si_trx.o [1]
-_A_TIM1_CR1               0x005250    0x1  Data  Gb  telemetry.o [1]
-_A_TIM1_IER               0x005254    0x1  Data  Gb  telemetry.o [1]
-_A_TIM1_SR1               0x005255    0x1  Data  Gb  telemetry.o [1]
-_A_UART1_CR1              0x005234    0x1  Data  Gb  gps.o [1]
-_A_UART1_CR2              0x005235    0x1  Data  Gb  gps.o [1]
-_A_UART1_CR3              0x005236    0x1  Data  Gb  gps.o [1]
-_A_UART1_CR4              0x005237    0x1  Data  Gb  gps.o [1]
-_A_UART1_CR5              0x005238    0x1  Data  Gb  gps.o [1]
-_A_UART1_SR               0x005230    0x1  Data  Gb  gps.o [1]
-_GenldFullNoMb          0x0000111a  0x383  Code  Lc  xprintffull_nomb.o [4]
-_LdtobFullNoMb          0x00000915  0x412  Code  Lc  xprintffull_nomb.o [4]
-_LitobFullNoMb          0x00001680  0x176  Code  Lc  xprintffull_nomb.o [4]
-_PrintfFullNoMb         0x000004b8  0x45d  Code  Gb  xprintffull_nomb.o [4]
-_PutcharFullNoMb        0x000021d1   0x2f  Code  Lc  xprintffull_nomb.o [4]
-_PutcharsFullNoMb       0x0000216e   0x33  Code  Lc  xprintffull_nomb.o [4]
-_SNProut                0x0000222d   0x2d  Code  Gb  xsnprout.o [4]
-__DebugBreak            0x00002555    0x1  Code  Gb  __dbg_break.o [3]
-__exit                  0x000023cc   0x14  Code  Gb  __dbg_xxexit.o [3]
-__iar_Dnorm             0x000017f6         Code  Gb  float_libsup.o [4]
-__iar_Dscale            0x00001884         Code  Gb  float_libsup.o [4]
-__iar_Dunscale          0x00001832         Code  Gb  float_libsup.o [4]
-__iar_Memchr            0x000022cb   0x21  Code  Gb  memchr.o [4]
-__iar_Strchr            0x0000238f   0x15  Code  Gb  strchr.o [4]
-__iar_copy_init2        0x00002282         Code  Gb  init_small.o [4]
-__iar_data_init2        0x000023a4   0x14  Code  Gb  init.o [4]
-__iar_program_start     0x000023e0         Code  Gb  cstartup.o [4]
+                        0x0090e5   0x1a  Code  Gb  telemetry.o [1]
+UART1_BRR1              0x005232    0x1  Data  Gb  gps.o [1]
+UART1_BRR2              0x005233    0x1  Data  Gb  gps.o [1]
+UART1_DR                0x005231    0x1  Data  Gb  gps.o [1]
+UART1_GTR               0x005239    0x1  Data  Gb  gps.o [1]
+UART1_IRQHandler        0x008ebc   0x43  Code  Gb  gps.o [1]
+UART1_PSCR              0x00523a    0x1  Data  Gb  gps.o [1]
+UART1_buffer_pointer    0x000189    0x1  Data  Gb  gps.o [1]
+UART1_rx_buffer         0x000111   0x78  Data  Gb  gps.o [1]
+_A_CLK_CCOR             0x0050c9    0x1  Data  Gb  energy.o [1]
+_A_CLK_CKDIVR           0x0050c6    0x1  Data  Gb  energy.o [1]
+_A_CLK_ECKR             0x0050c1    0x1  Data  Gb  energy.o [1]
+_A_CLK_HSITRIMR         0x0050cc    0x1  Data  Gb  energy.o [1]
+_A_CLK_ICKR             0x0050c0    0x1  Data  Gb  energy.o [1]
+_A_CLK_SWCR             0x0050c5    0x1  Data  Gb  energy.o [1]
+_A_CLK_SWIMCCR          0x0050cd    0x1  Data  Gb  energy.o [1]
+_A_PB_CR1               0x005008    0x1  Data  Gb  si_trx.o [1]
+_A_PB_CR2               0x005009    0x1  Data  Gb  si_trx.o [1]
+_A_PB_DDR               0x005007    0x1  Data  Gb  si_trx.o [1]
+_A_PC_CR1               0x00500d    0x1  Data  Gb  spi_bitbang.o [1]
+_A_PC_CR2               0x00500e    0x1  Data  Gb  spi_bitbang.o [1]
+_A_PC_DDR               0x00500c    0x1  Data  Gb  spi_bitbang.o [1]
+_A_PC_IDR               0x00500b    0x1  Data  Gb  spi_bitbang.o [1]
+_A_PC_ODR               0x00500a    0x1  Data  Gb  spi_bitbang.o [1]
+_A_PD_CR1               0x005012    0x1  Data  Gb  si_trx.o [1]
+_A_PD_CR2               0x005013    0x1  Data  Gb  si_trx.o [1]
+_A_PD_DDR               0x005011    0x1  Data  Gb  si_trx.o [1]
+_A_PD_ODR               0x00500f    0x1  Data  Gb  si_trx.o [1]
+_A_TIM1_CR1             0x005250    0x1  Data  Gb  telemetry.o [1]
+_A_TIM1_IER             0x005254    0x1  Data  Gb  telemetry.o [1]
+_A_TIM1_SR1             0x005255    0x1  Data  Gb  telemetry.o [1]
+_A_UART1_CR1            0x005234    0x1  Data  Gb  gps.o [1]
+_A_UART1_CR2            0x005235    0x1  Data  Gb  gps.o [1]
+_A_UART1_CR3            0x005236    0x1  Data  Gb  gps.o [1]
+_A_UART1_CR4            0x005237    0x1  Data  Gb  gps.o [1]
+_A_UART1_CR5            0x005238    0x1  Data  Gb  gps.o [1]
+_A_UART1_SR             0x005230    0x1  Data  Gb  gps.o [1]
+__DebugBreak            0x009264    0x1  Code  Gb  __dbg_break.o [3]
+__exit                  0x0091bb   0x14  Code  Gb  __dbg_xxexit.o [3]
+__iar_copy_init2        0x009051         Code  Gb  init_small.o [4]
+__iar_data_init2        0x0091a7   0x14  Code  Gb  init.o [4]
+__iar_program_start     0x0091cf         Code  Gb  cstartup.o [4]
 __iar_unhandled_exception
-                        0x0000254e         Code  Gb  unhandled_exception.o [4]
-__iar_zero_init2        0x0000233c         Code  Gb  init_small.o [4]
-__intvec                  0x008000         Data  Gb  interrupt.o [4]
-__low_level_init        0x00002548    0x3  Code  Gb  low_level_init.o [4]
-_exit                   0x00002530         Code  Gb  cexit.o [4]
-_interrupt_13           0x00002375         Code  Gb  telemetry.o [1]
-_interrupt_20           0x00001e26         Code  Gb  gps.o [1]
+                        0x009261         Code  Gb  unhandled_exception.o [4]
+__iar_zero_init2        0x0090ac         Code  Gb  init_small.o [4]
+__intvec                0x008000         Data  Gb  interrupt.o [4]
+__low_level_init        0x00925b    0x3  Code  Gb  low_level_init.o [4]
+_exit                   0x009253         Code  Gb  cexit.o [4]
+_interrupt_13           0x0090e5         Code  Gb  telemetry.o [1]
+_interrupt_20           0x008ebc         Code  Gb  gps.o [1]
 _si_trx_set_property_16
-                        0x00000d50   0x2b  Code  Lc  si_trx.o [1]
+                        0x0084d5   0x2b  Code  Lc  si_trx.o [1]
 _si_trx_set_property_24
-                        0x00000d7b   0x31  Code  Lc  si_trx.o [1]
+                        0x008500   0x31  Code  Lc  si_trx.o [1]
 _si_trx_set_property_32
-                        0x00000dac   0x35  Code  Lc  si_trx.o [1]
-_si_trx_set_property_8  0x00000d27   0x29  Code  Lc  si_trx.o [1]
-_si_trx_transfer        0x00001c1f   0x76  Code  Gb  si_trx.o [1]
+                        0x008531   0x35  Code  Lc  si_trx.o [1]
+_si_trx_set_property_8  0x0084ac   0x29  Code  Lc  si_trx.o [1]
+_si_trx_transfer        0x008c45   0x76  Code  Gb  si_trx.o [1]
 _si_trx_transfer_uint16
-                        0x00002405   0x12  Code  Lc  si_trx.o [1]
-calculateChecksum       0x00002060   0x38  Code  Gb  gps.o [1]
-div                     0x000021a1   0x30  Code  Gb  div.o [4]
-exit                    0x0000254b    0x3  Code  Gb  exit.o [4]
-is_telemetry_finished   0x000022aa   0x21  Code  Gb  telemetry.o [1]
-main                    0x0000213b   0x33  Code  Gb  main.o [1]
-memcpy                  0x0000231d   0x1f  Code  Gb  memcpy.o [4]
-nemaMsgSend             0x00002098   0x38  Code  Gb  gps.o [1]
-nema_string_names       0x000023f3   0x12  Data  Gb  gps.o [1]
-pad                     0x000020d0   0x37  Code  Lc  xprintffull_nomb.o [4]
-radio_on                  0x000149    0x1  Data  Gb  telemetry.o [1]
-rtty_data                 0x000144    0x1  Data  Gb  rtty.o [1]
-rtty_phase                0x000010    0x1  Data  Gb  rtty.o [1]
-rtty_preamble           0x00002521    0x5  Code  Gb  rtty.o [1]
-rtty_preamble_count       0x000145    0x1  Data  Gb  rtty.o [1]
-rtty_start              0x000024c0    0x8  Code  Gb  rtty.o [1]
-rtty_tick               0x00001d06   0x6f  Code  Gb  rtty.o [1]
-scale                   0x00001e69   0x43  Code  Lc  xprintffull_nomb.o [4]
+                        0x0091e2   0x12  Code  Lc  si_trx.o [1]
+exit                    0x00925e    0x3  Code  Gb  exit.o [4]
+is_telemetry_finished   0x009079   0x21  Code  Gb  telemetry.o [1]
+main                    0x008ff1   0x33  Code  Gb  main.o [1]
+radio_on                0x00018f    0x1  Data  Gb  telemetry.o [1]
+rtty_data               0x00018a    0x1  Data  Gb  rtty.o [1]
+rtty_phase              0x000010    0x1  Data  Gb  rtty.o [1]
+rtty_preamble           0x009249    0x5  Code  Gb  rtty.o [1]
+rtty_preamble_count     0x00018b    0x1  Data  Gb  rtty.o [1]
+rtty_start              0x009241    0x8  Code  Gb  rtty.o [1]
+rtty_tick               0x008d2c   0x6f  Code  Gb  rtty.o [1]
 si_trx_clear_pending_interrupts
-                        0x00000e3d   0x25  Code  Lc  si_trx.o [1]
+                        0x0085c2   0x25  Code  Lc  si_trx.o [1]
 si_trx_frequency_control_set_band
-                        0x00000ef2    0xf  Code  Lc  si_trx.o [1]
+                        0x008677    0xf  Code  Lc  si_trx.o [1]
 si_trx_frequency_control_set_divider
-                        0x00000eb8   0x3a  Code  Lc  si_trx.o [1]
-si_trx_get_part_info    0x00000e12   0x2b  Code  Lc  si_trx.o [1]
-si_trx_init             0x00001f2d   0x3f  Code  Gb  si_trx.o [1]
+                        0x00863d   0x3a  Code  Lc  si_trx.o [1]
+si_trx_get_part_info    0x008597   0x2b  Code  Lc  si_trx.o [1]
+si_trx_init             0x008f3f   0x3f  Code  Gb  si_trx.o [1]
 si_trx_modem_set_deviation
-                        0x00000f01    0xc  Code  Lc  si_trx.o [1]
+                        0x008686    0xc  Code  Lc  si_trx.o [1]
 si_trx_modem_set_modulation
-                        0x00000f16   0x13  Code  Lc  si_trx.o [1]
+                        0x00869b   0x13  Code  Lc  si_trx.o [1]
 si_trx_modem_set_offset
-                        0x00000f0d    0x9  Code  Lc  si_trx.o [1]
-si_trx_off              0x0000110c    0xb  Code  Gb  si_trx.o [1]
-si_trx_on               0x00001105    0x7  Code  Gb  si_trx.o [1]
-si_trx_power_up         0x00000de1   0x31  Code  Lc  si_trx.o [1]
-si_trx_reset            0x00001071   0x94  Code  Gb  si_trx.o [1]
-si_trx_set_frequency    0x00000f34  0x13d  Code  Lc  si_trx.o [1]
+                        0x008692    0x9  Code  Lc  si_trx.o [1]
+si_trx_off              0x008891    0xb  Code  Gb  si_trx.o [1]
+si_trx_on               0x00888a    0x7  Code  Gb  si_trx.o [1]
+si_trx_power_up         0x008566   0x31  Code  Lc  si_trx.o [1]
+si_trx_reset            0x0087f6   0x94  Code  Gb  si_trx.o [1]
+si_trx_set_frequency    0x0086b9  0x13d  Code  Lc  si_trx.o [1]
 si_trx_set_gpio_configuration
-                        0x00000e62   0x31  Code  Lc  si_trx.o [1]
-si_trx_set_tx_power     0x00000f29    0xb  Code  Lc  si_trx.o [1]
-si_trx_start_tx         0x00000e93   0x25  Code  Lc  si_trx.o [1]
-si_trx_switch_channel   0x00001117    0x3  Code  Gb  si_trx.o [1]
-snprintf                0x00001fab   0x3e  Code  Gb  snprintf.o [4]
-spi_bitbang_init        0x00002200   0x2d  Code  Gb  spi_bitbang.o [1]
-spi_bitbang_transfer    0x00001f6c   0x3f  Code  Gb  spi_bitbang.o [1]
-strlen                  0x00002434    0xd  Code  Gb  strlen.o [4]
-telemetry_active        0x00002417    0xf  Code  Gb  telemetry.o [1]
-telemetry_index           0x000148    0x1  Data  Gb  telemetry.o [1]
-telemetry_start         0x00002107   0x34  Code  Gb  telemetry.o [1]
-telemetry_string          0x000011  0x100  Data  Gb  telemetry.o [1]
+                        0x0085e7   0x31  Code  Lc  si_trx.o [1]
+si_trx_set_tx_power     0x0086ae    0xb  Code  Lc  si_trx.o [1]
+si_trx_start_tx         0x008618   0x25  Code  Lc  si_trx.o [1]
+si_trx_switch_channel   0x00889c    0x3  Code  Gb  si_trx.o [1]
+spi_bitbang_init        0x009024   0x2d  Code  Gb  spi_bitbang.o [1]
+spi_bitbang_transfer    0x008f7e   0x3f  Code  Gb  spi_bitbang.o [1]
+strlen                  0x009220    0xd  Code  Gb  strlen.o [4]
+telemetry_active        0x0091f4    0xf  Code  Gb  telemetry.o [1]
+telemetry_index         0x00018e    0x1  Data  Gb  telemetry.o [1]
+telemetry_start         0x008fbd   0x34  Code  Gb  telemetry.o [1]
+telemetry_string        0x000011  0x100  Data  Gb  telemetry.o [1]
 telemetry_string_length
-                          0x000147    0x1  Data  Gb  telemetry.o [1]
-telemetry_tick          0x00001c95   0x71  Code  Gb  telemetry.o [1]
-telemetry_type            0x000146    0x1  Data  Gb  telemetry.o [1]
-timer1_tick_deinit      0x00002466    0xb  Code  Gb  telemetry.o [1]
-timer1_tick_init        0x0000235a   0x1b  Code  Gb  telemetry.o [1]
-timer1_tick_time        0x0000249c    0x9  Code  Gb  telemetry.o [1]
-uart_disable_nema       0x0000225a   0x28  Code  Gb  gps.o [1]
-uart_write              0x00002025   0x3b  Code  Gb  gps.o [1]
+                        0x00018d    0x1  Data  Gb  telemetry.o [1]
+telemetry_tick          0x008cbb   0x71  Code  Gb  telemetry.o [1]
+telemetry_type          0x00018c    0x1  Data  Gb  telemetry.o [1]
+timer1_tick_deinit      0x00922d    0xb  Code  Gb  telemetry.o [1]
+timer1_tick_init        0x0090ca   0x1b  Code  Gb  telemetry.o [1]
+timer1_tick_time        0x009238    0x9  Code  Gb  telemetry.o [1]
+uart_disable_nema       0x008e41   0x24  Code  Gb  gps.o [1]
+uart_write              0x008e06   0x3b  Code  Gb  gps.o [1]
 
 
 [1] = D:\High Altitude Ballooning\Github data\Pico Tracker\PicoTracker\firmware\Debug\Obj
@@ -690,9 +569,9 @@ uart_write              0x00002025   0x3b  Code  Gb  gps.o [1]
 [3] = dbgstm8smd.a
 [4] = dlstm8smn.a
 
-  9 158 bytes of readonly  code memory
-    528 bytes of readonly  data memory
-    586 bytes of readwrite data memory (+ 40 absolute)
+  4 148 bytes of readonly  code memory
+    561 bytes of readonly  data memory
+    656 bytes of readwrite data memory (+ 40 absolute)
 
-Errors: 2
+Errors: none
 Warnings: none

@@ -33,7 +33,7 @@
 #include <iostm8s003f3.h>
 
 
-#define UART_RX_BUFFER_LENGTH   50
+#define UART_RX_BUFFER_LENGTH   120
 
 
 void InitialiseUART(void);
@@ -41,6 +41,8 @@ void UART_send_buffer(uint8_t *tx_data, uint8_t length);
 void UART_send_chars(uint8_t chars, uint8_t length);
 int uart_write(const char *str);
 void uart_disable_nema();
+
+
 
 
 

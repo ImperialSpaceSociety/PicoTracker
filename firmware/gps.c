@@ -36,9 +36,6 @@
 
 uint8_t UART1_rx_buffer[UART_RX_BUFFER_LENGTH]; // buffer for UART receive characters
 uint8_t UART1_buffer_pointer;
-// names of the different types of nmea strings
-const char nema_string_names[6][3] ={"VTG","GSV","GSA","RMC","GLL","GGA"};
-
 
 
 /**
@@ -110,14 +107,27 @@ They have some important bits in them, namely TXE and RXNE
 TODO: read more about what is a shift register
 
 more information on the registrs is found on the Refernce Manual, page 363.
+
+https://github.com/thasti/utrak is the source of the gps code
+and : https://github.com/DL7AD/pecanpico9/blob/3008ff27fe6a80bf22438779077a0475d33bd389/tracker/software/drivers/ublox.c
 */
 
+/*
+void uart_disable_nema(){
+    // Disable ALL automatic NMEA mesages for polling
+    uart_write("$PUBX,40,VTG,0,0,0,0*5E");
+    uart_write("$PUBX,40,GSV,0,0,0,0*59");
+    uart_write("$PUBX,40,GSA,0,0,0,0*4E");
+    uart_write("$PUBX,40,RMC,0,0,0,0*47");    
+    uart_write("$PUBX,40,GLL,0,0,0,0*5C");
+    uart_write("$PUBX,40,GGA,0,0,0,0*5A");
+}
+*/
 
-
-//
-//  Send the message in the string to UART1.
-//
-void UART_send_buffer(uint8_t *tx_data, uint8_t length)
+/**
+* Send the message in the string to UART1.
+*/
+void gps_transmit_string(uint8_t *tx_data, uint8_t length)
 {       
     /*
     *tx_data: using the * gets the value of the variable the pointer is
@@ -134,114 +144,132 @@ void UART_send_buffer(uint8_t *tx_data, uint8_t length)
                                       
     }
 }
-
-
-int uart_write(const char *str) {
+/**
+*int uart_write(const char *str,const char size) {
 	char i;
-	for(i = 0; i < strlen(str); i++) {
+	for(i = 0; i < size; i++) {
 		while(!UART1_SR_TXE);
 		UART1_DR = str[i];
 	}
 	return(i); // Bytes sent
 }
 
-int calculateChecksum (const char *msg)
-{
-    int checksum = 0;
-    for (int i = 0; msg[i] && i < 32; i++)
-        checksum ^= (unsigned char)msg[i];
-
-    return checksum;
-}
-
-int nemaMsgSend (const char *msg)
-{
-    char checksum[8];
-    snprintf(checksum, sizeof(checksum)-1, "*%.2X", calculateChecksum(msg));
-    uart_write("$");
-    uart_write(msg);
-    uart_write(checksum);
-    
-    return 1;
-}
-
-int nemaMsgDisable (const char *nema)
-{
-    if (strlen(nema) != 3) return 0;
-
-    char tmp[32];
-    snprintf(tmp, sizeof(tmp)-1, "PUBX,40,%s,0,0,0,0", nema); // see if I can make this a constant in flash
-    //snprintf(tmp, sizeof(tmp)-1, F("PUBX,40,%s,0,0,0,0,0,0"), nema);
-    nemaMsgSend(tmp);
-
-    return 1;
-}
-
-/*
-     // Disable ALL automatic NMEA mesages for polling
-    uart_write("$PUBX,40,VTG,0,0,0,0*5E\r\n");
-    uart_write("$PUBX,40,GSV,0,0,0,0*59\r\n");
-    uart_write("$PUBX,40,GSA,0,0,0,0*4E\r\n");
-    uart_write("$PUBX,40,RMC,0,0,0,0*47\r\n");    
-    uart_write("$PUBX,40,GLL,0,0,0,0*5C\r\n");
-    uart_write("$PUBX,40,GGA,0,0,0,0*5A\r\n");
-    //TODO: make sure the acknoledgement packet is received. Currently it works
 */
+/**
+  * gps_receive_ack
+  *
+  * waits for transmission of an ACK/NAK message from the GPS.
+  *
+  * returns 1 if ACK was received, 0 if NAK was received or timeout
+  *
+  */
+uint8_t gps_receive_ack(uint8_t class_id, uint8_t msg_id, uint16_t timeout) {
+	int match_count = 0;
+	int msg_ack = 0;
+	uint8_t rx_byte;
+	uint8_t ack[] = {0xB5, 0x62, 0x05, 0x01, 0x02, 0x00, 0x00, 0x00};
+	uint8_t nak[] = {0xB5, 0x62, 0x05, 0x00, 0x02, 0x00, 0x00, 0x00};
+	ack[6] = class_id;
+	nak[6] = class_id;
+	ack[7] = msg_id;
+	nak[7] = msg_id;
 
+	// runs until ACK/NAK packet is received
+	systime_t sTimeout = chVTGetSystemTimeX() + MS2ST(timeout);
+	while(sTimeout >= chVTGetSystemTimeX()) {
 
+		// Receive one byte
+		;
+		if(!gps_receive_byte(&rx_byte)) {
+			chThdSleepMilliseconds(10);
+			continue;
+		}
 
-void uart_disable_nema(){
-  for(int i = 0; i < 6; i++)
-  {
-    nemaMsgSend(nema_string_names[i]);
-  }
+		// Process one byte
+		if (rx_byte == ack[match_count] || rx_byte == nak[match_count]) {
+			if (match_count == 3) {	/* test ACK/NAK byte */
+				if (rx_byte == ack[match_count]) {
+					msg_ack = 1;
+				} else {
+					msg_ack = 0;
+				}
+			}
+			if (match_count == 7) { 
+				return msg_ack;
+			}
+			match_count++;
+		} else {
+			match_count = 0;
+		}
+
+	}
+
+	return 0;
 }
-/*
- Wonderful summary reference taken from: https://github.com/zoomx/stm8-samples/blob/master/blinky/blinky.c
- ********************* UART ********************
- * baud rate: regs UART_BRR1/2  !!!VERY STUPID!!!
- * f_{UART} = f_{master} / UART_DIV
- * if UART_DIV = 0xABCD then
- * 		UART_BRR1 = UART_DIV[11:4] = 0xBC;
- * 		UART_BRR2 = UART_DIV[15:12|3:0] = 0xAD
- *           registers
- * UART_SR:  | TXE | TC | RXNE | IDLE | OR/LHE | NF | FE | PE |
- * 		TXE: Transmit data register empty
- * 		TC: Transmission complete
- * 		RXNE: Read data register not empty
- * 		IDLE: IDLE line detected
- * 		OR: Overrun error / LHE: LIN Header Error (LIN slave mode)
- * 		NF: Noise flag
- * 		FE: Framing error
- * 		PE: Parity error
- * UART_DR: data register (when readed returns coming byte, when writed fills output shift register)
- * UART_BRR1 / UART_BRR2 - see upper
- * UART_CR1: | R8 | T8 | UARTD | M | WAKE | PCEN | PS | PIEN |
- * 		R8, T8 - ninth bit (in 9-bit mode)
- * 		UARTD: UART Disable (for low power consumption)
- * 		M: word length (0 - 8bits, 1 - 9bits)
- * 		WAKE: Wakeup method
- * 		PCEN: Parity control enable
- * 		PS: Parity selection (0 - even)
- * 		PIEN: Parity interrupt enable
- * UART_CR2: | TIEN | TCEN | RIEN | ILIEN | TEN | REN | RWU | SBK |
- * 		TIEN: Transmitter interrupt enable
- * 		TCIEN: Transmission complete interrupt enable
- * 		RIEN: Receiver interrupt enable
- * 		ILIEN: IDLE Line interrupt enable
- * 		TEN: Transmitter enable   <----------------------------------------
- * 		REN: Receiver enable      <----------------------------------------
- * 		RWU: Receiver wakeup
- * 		SBK: Send break
- * UART_CR3: | - | LINEN | STOP[1:0] | CLCEN | CPOL | CPHA | LBCL |
- *		LINEN: LIN mode enable
- * 		STOP: STOP bits
- * 		CLKEN: Clock enable (CLC pin)
- * 		CPOL: Clock polarity
- * 		CPHA: Clock phase
- * 		LBCL: Last bit clock pulse
- */
+/**
+  * gps_disable_nmea_output
+  *
+  * disables all NMEA messages to be output from the GPS.
+  * even though the parser can cope with NMEA messages and ignores them, it 
+  * may save power to disable them completely.
+  *
+  * returns if ACKed by GPS
+  *
+  */
+uint8_t gps_disable_nmea_output(void) {
+	uint8_t nonmea[] = {
+		0xB5, 0x62, 0x06, 0x00, 20, 0x00,	// UBX-CFG-PRT
+		0x01, 0x00, 0x00, 0x00, 			// UART1, reserved, no TX ready
+		0xe0, 0x08, 0x00, 0x00,				// UART mode (8N1)
+		0x80, 0x25, 0x00, 0x00,				// UART baud rate (9600)
+              0x01, 0x00,							// input protocols (uBx only)
+              0x01, 0x00,							// output protocols (uBx only)
+              0x00, 0x00,							// flags
+              0x00, 0x00,							// reserved
+              0xaa, 0x79							// checksum
+	};
 
+	gps_transmit_string(nonmea, sizeof(nonmea));
+	return gps_receive_ack(0x06, 0x00, 1000);
+}
+/**
+  * gps_set_airborne_model
+  *
+  * tells the GPS to use the airborne positioning model. Should be used to
+  * get stable lock up to 50km altitude
+  *
+  * working uBlox MAX-M8Q
+  *
+  * returns if ACKed by GPS
+  *
+  */
+uint8_t gps_set_airborne_model(void) {
+	uint8_t model6[] = {
+		0xB5, 0x62, 0x06, 0x24, 0x24, 0x00, 	// UBX-CFG-NAV5
+		0xFF, 0xFF, 							// parameter bitmask
+		0x06, 									// dynamic model
+		0x03, 									// fix mode
+		0x00, 0x00, 0x00, 0x00, 				// 2D fix altitude
+		0x10, 0x27, 0x00, 0x00,					// 2D fix altitude variance
+		0x05, 									// minimum elevation
+		0x00, 									// reserved
+		0xFA, 0x00, 							// position DOP
+		0xFA, 0x00, 							// time DOP
+		0x64, 0x00, 							// position accuracy
+		0x2C, 0x01, 							// time accuracy
+		0x00,									// static hold threshold 
+		0x3C, 									// DGPS timeout
+		0x00, 									// min. SVs above C/No thresh
+		0x00, 									// C/No threshold
+		0x00, 0x00, 							// reserved
+		0xc8, 0x00,								// static hold max. distance
+		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 	// reserved
+		0x1a, 0x28								// checksum
+	};
+
+	gps_transmit_string(model6, sizeof(model6));
+	return gps_receive_ack(0x06, 0x24, 1000);
+}
 /**
  * UART Rx Interupt. 
  */
@@ -268,9 +296,9 @@ __interrupt void UART1_IRQHandler(void)
   */
 
   //if(data == '\n') // Check if the end of nmea line is reached
-  if(data == '*') // check if we have reached the checksum in pubx string. doesnt verify the data at the moment.
+  // TODO: find the last character of the pubx string
+  if(data == 0x0d)// check if we have reached the end of the pubx string. doesnt verify the data at the moment.
     // TODO: make a parser for the data.
-
   {
      UART1_rx_buffer[UART1_buffer_pointer] = data; // puts the data into the buffer
 
