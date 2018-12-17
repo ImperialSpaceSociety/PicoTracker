@@ -30,9 +30,16 @@
 #include <stdint.h>
 #include <iostm8s003f3.h>
 #include "gps.h"
+#include <string.h> //for strlen()
+
 
 uint8_t UART1_rx_buffer[UART_RX_BUFFER_LENGTH]; // buffer for UART receive characters
 uint8_t UART1_buffer_pointer;
+
+
+
+
+#define disable_GLL_str "$PUBX,40,GLL,0,0,0,0*5C\r\n"
 
 
 /**
@@ -114,9 +121,6 @@ more information on the registrs is found on the Refernce Manual, page 363.
 void UART_send_buffer(uint8_t *tx_data, uint8_t length)
 {       
     /*
-    Somehow, by transmitting the data back over uart, the uart can 
-    restart listening over again. and doesn't return an error
-
     *tx_data: using the * gets the value of the variable the pointer is
     pointing to.
     */
@@ -130,6 +134,16 @@ void UART_send_buffer(uint8_t *tx_data, uint8_t length)
         while (UART1_SR_TXE == 0);          //  Wait for transmission to complete.
                                       
     }
+}
+
+
+int uart_write(const char *str) {
+	char i;
+	for(i = 0; i < strlen(str); i++) {
+		while(!UART1_SR_TXE);
+		UART1_DR = str[i];
+	}
+	return(i); // Bytes sent
 }
 
 
@@ -189,10 +203,14 @@ void UART_send_buffer(uint8_t *tx_data, uint8_t length)
 
 __interrupt void UART1_IRQHandler(void)
 {  
-  unsigned char status = UART1_SR; // try to see the Status Register. IT turns out, the status HAS to be
+  //unsigned char status = UART1_SR; // try to see the Status Register. IT turns out, the status HAS to be
   //read each time before UART1_DR to prevent it from throwing errors when reading UART1_DR. This is very important.
   // The idea comes from the question: https://electronics.stackexchange.com/questions/222638/clearing-usart-uart-interrupt-flags-in-an-stm32
-
+  // also shown in the code at the bottom of : http://www.micromouseonline.com/2009/12/31/stm32-usart-basics/
+  
+  while (!UART1_SR_RXNE); // wait until a status has been received
+  //while(!UART1_SR); // wait to fully receive the data
+  
   unsigned char data = UART1_DR; // this is the data byte that has been received. Reads
                             // the UART1_DR, the data register. Seems to be an error often
   /*
@@ -200,7 +218,9 @@ __interrupt void UART1_IRQHandler(void)
   IT indicates that Over run error detected and LIN error detected
   */
 
-  if(data == '\n') // echo back the data via uart when the end of the line is reached.
+  //if(data == '\n') // echo back the data via uart when the end of the line is reached.
+  if(data == '*') // echo back the data via uart when the end of the line is reached.
+
   {
      UART1_rx_buffer[UART1_buffer_pointer] = data; // puts the data into the buffer
 

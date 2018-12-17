@@ -66,30 +66,62 @@ int main( void )
     // Start the UART
     InitialiseUART(); // set up the uart
     
+     // Disable ALL automatic NMEA mesages for polling
+    __disable_interrupt();
+    uart_write("$PUBX,40,VTG,0,0,0,0*5E\r\n");
+    uart_write("$PUBX,40,GSV,0,0,0,0*59\r\n");
+    uart_write("$PUBX,40,GSA,0,0,0,0*4E\r\n");
+    uart_write("$PUBX,40,RMC,0,0,0,0*47\r\n");    
+    uart_write("$PUBX,40,GLL,0,0,0,0*5C\r\n");
+    uart_write("$PUBX,40,GGA,0,0,0,0*5A\r\n");
+    //TODO: make sure the acknoledgement packet is received. Currently it works
+    __enable_interrupt();
+
+    //poll the gps
+    uart_write("$PUBX,00*33\r\n");
+    // should expect to receive::
+    //$PUBX,00,hhmmss.ss,Latitude,N,Longitude,E,AltRef,NavStat,Hacc,Vacc,SOG,COG,Vvel,ageC,HDOP,VDOP,TDOP,GU,RU,DR,*cs<CR><LF>
+
+
     
     // start up the radio    
     //Initialise Si4060 interface 
     si_trx_init();
     
     // maybe try to disable the UART interrupt after it is interrupted once.
-    
-    
+    /*
+    Strategy:
+    get gps position and disable gps interrupts
+    create telemetry string
+    transmit telemetry string
+    loop.
+    */
+
+
+
+    //Serial.print("$PUBX,40,GSA,0,0,0,0*4E\r\n");
+    //Serial.print("$PUBX,40,RMC,0,0,0,0*47\r\n");
+    while (1);
+
+
+    /*
     while (1)
     {
    
 
     telemetry_start(TELEMETRY_PIPS, 5);
 
-    /* Sleep Wait */
+    // Sleep Wait 
     while (telemetry_active());
     
     telemetry_start(TELEMETRY_RTTY, 20);
 
-    /* Sleep Wait */
+    // Sleep Wait 
     while (telemetry_active());
     
     
     }
+    */
 }
           
 

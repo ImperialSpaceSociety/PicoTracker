@@ -111,11 +111,11 @@
             <inputs>
                 <tool>
                     <name>ICCSTM8</name>
-                    <file> 14 58 44 20 11 38 54 17 52 53 4</file>
+                    <file> 14 58 44 20 11 38 54 17 52 53 4 48 30</file>
                 </tool>
                 <tool>
                     <name>BICOMP</name>
-                    <file> 11 44 20 38 58 52 54 17 53 14 4</file>
+                    <file> 17 44 14 4 20 58 52 48 54 11 38 53 30</file>
                 </tool>
             </inputs>
         </file>

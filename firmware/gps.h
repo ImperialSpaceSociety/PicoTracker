@@ -38,6 +38,9 @@
 
 void InitialiseUART(void);
 void UART_send_buffer(uint8_t *tx_data, uint8_t length);
+void UART_send_chars(uint8_t chars, uint8_t length);
+int uart_write(const char *str);
+
 
 
 #endif /* GPS_H */
