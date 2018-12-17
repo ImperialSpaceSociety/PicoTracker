@@ -133,6 +133,51 @@ void UART_send_buffer(uint8_t *tx_data, uint8_t length)
 }
 
 
+/*
+ Wonderful summary reference taken from: https://github.com/zoomx/stm8-samples/blob/master/blinky/blinky.c
+ ********************* UART ********************
+ * baud rate: regs UART_BRR1/2  !!!VERY STUPID!!!
+ * f_{UART} = f_{master} / UART_DIV
+ * if UART_DIV = 0xABCD then
+ * 		UART_BRR1 = UART_DIV[11:4] = 0xBC;
+ * 		UART_BRR2 = UART_DIV[15:12|3:0] = 0xAD
+ *           registers
+ * UART_SR:  | TXE | TC | RXNE | IDLE | OR/LHE | NF | FE | PE |
+ * 		TXE: Transmit data register empty
+ * 		TC: Transmission complete
+ * 		RXNE: Read data register not empty
+ * 		IDLE: IDLE line detected
+ * 		OR: Overrun error / LHE: LIN Header Error (LIN slave mode)
+ * 		NF: Noise flag
+ * 		FE: Framing error
+ * 		PE: Parity error
+ * UART_DR: data register (when readed returns coming byte, when writed fills output shift register)
+ * UART_BRR1 / UART_BRR2 - see upper
+ * UART_CR1: | R8 | T8 | UARTD | M | WAKE | PCEN | PS | PIEN |
+ * 		R8, T8 - ninth bit (in 9-bit mode)
+ * 		UARTD: UART Disable (for low power consumption)
+ * 		M: word length (0 - 8bits, 1 - 9bits)
+ * 		WAKE: Wakeup method
+ * 		PCEN: Parity control enable
+ * 		PS: Parity selection (0 - even)
+ * 		PIEN: Parity interrupt enable
+ * UART_CR2: | TIEN | TCEN | RIEN | ILIEN | TEN | REN | RWU | SBK |
+ * 		TIEN: Transmitter interrupt enable
+ * 		TCIEN: Transmission complete interrupt enable
+ * 		RIEN: Receiver interrupt enable
+ * 		ILIEN: IDLE Line interrupt enable
+ * 		TEN: Transmitter enable   <----------------------------------------
+ * 		REN: Receiver enable      <----------------------------------------
+ * 		RWU: Receiver wakeup
+ * 		SBK: Send break
+ * UART_CR3: | - | LINEN | STOP[1:0] | CLCEN | CPOL | CPHA | LBCL |
+ *		LINEN: LIN mode enable
+ * 		STOP: STOP bits
+ * 		CLKEN: Clock enable (CLC pin)
+ * 		CPOL: Clock polarity
+ * 		CPHA: Clock phase
+ * 		LBCL: Last bit clock pulse
+ */
 
 /**
  * UART Rx Interupt. 
