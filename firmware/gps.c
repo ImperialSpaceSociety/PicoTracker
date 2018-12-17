@@ -51,7 +51,7 @@ void InitialiseUART(void)
     //  to the UART1_SR register followed by a Read to the UART1_DR register.
     //
     unsigned char tmp = UART1_SR;
-    tmp = UART1_DR;
+    unsigned char tmp1 = UART1_DR;
     //
     //  Reset the UART registers to the reset values.
     //
@@ -115,7 +115,10 @@ void UART_send_buffer(uint8_t *tx_data, uint8_t length)
 {       
     /*
     Somehow, by transmitting the data back over uart, the uart can 
-    restart listening over again.
+    restart listening over again. and doesn't return an error
+
+    *tx_data: using the * gets the value of the variable the pointer is
+    pointing to.
     */
    
     uint8_t count =0;
@@ -140,20 +143,28 @@ void UART_send_buffer(uint8_t *tx_data, uint8_t length)
 // RXNE stands for - "Receive Data register not empty"
 
 __interrupt void UART1_IRQHandler(void)
-{
-  uint8_t data = UART1_DR; // this is the data byte that has been received. Reads
-                            // the UART1_DR, the data register.
+{  
+  unsigned char status = UART1_SR; // try to see the Status Register. IT turns out, the status HAS to be
+  //read each time before UART1_DR to prevent it from throwing errors when reading UART1_DR. This is very important.
+  // The idea comes from the question: https://electronics.stackexchange.com/questions/222638/clearing-usart-uart-interrupt-flags-in-an-stm32
+
+  unsigned char data = UART1_DR; // this is the data byte that has been received. Reads
+                            // the UART1_DR, the data register. Seems to be an error often
+  /*
+  the value of UART1_SR is 0b11011000
+  IT indicates that Over run error detected and LIN error detected
+  */
+
   if(data == '\n') // echo back the data via uart when the end of the line is reached.
   {
      UART1_rx_buffer[UART1_buffer_pointer] = data; // puts the data into the buffer
 
-     UART_send_buffer(UART1_rx_buffer, UART1_buffer_pointer);
+     //UART_send_buffer(UART1_rx_buffer, UART1_buffer_pointer);
      /*
       see if it is possible to clear some flag such that it can receive data
-      again.
+      again. THe problem appears to be UART1_DR which returns an error some times.
+      Maybe disable the receiving when needed and then transmit.
       */
-     while (UART1_SR_TXE == 0);          //  Wait for transmission to complete.
-
      UART1_buffer_pointer = 0;
   }
   else
