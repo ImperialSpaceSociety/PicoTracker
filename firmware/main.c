@@ -61,13 +61,11 @@ int main( void )
 {
     __disable_interrupt();
     InitialiseSystemClock();
-    __enable_interrupt();
 
     // Start the UART
     InitialiseUART(); // set up the uart
     
      // Disable ALL automatic NMEA mesages for polling
-    __disable_interrupt();
     uart_write("$PUBX,40,VTG,0,0,0,0*5E\r\n");
     uart_write("$PUBX,40,GSV,0,0,0,0*59\r\n");
     uart_write("$PUBX,40,GSA,0,0,0,0*4E\r\n");
@@ -97,18 +95,15 @@ int main( void )
     loop.
     */
 
+    // todo: find a way to turn off all uart rx interrupts while transmitting telemetry
 
 
-    //Serial.print("$PUBX,40,GSA,0,0,0,0*4E\r\n");
-    //Serial.print("$PUBX,40,RMC,0,0,0,0*47\r\n");
-    while (1);
 
 
-    /*
+    // start telemetry
     while (1)
     {
-   
-
+  
     telemetry_start(TELEMETRY_PIPS, 5);
 
     // Sleep Wait 
@@ -121,7 +116,7 @@ int main( void )
     
     
     }
-    */
+    
 }
           
 

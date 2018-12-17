@@ -1,6 +1,6 @@
 ###############################################################################
 #
-# IAR ELF Linker V3.10.1.201 for STM8                     17/Dec/2018  09:19:23
+# IAR ELF Linker V3.10.1.201 for STM8                     17/Dec/2018  09:36:59
 # Copyright 2010-2017 IAR Systems AB.
 #
 #    Output file  =  
@@ -10,7 +10,7 @@
 #        D:\High Altitude Ballooning\Github data\Pico
 #        Tracker\PicoTracker\firmware\Debug\List\HC12Tracker.map
 #    Command line =  
-#        -f C:\Users\medad\AppData\Local\Temp\EWAC11.tmp ("D:\High Altitude
+#        -f C:\Users\medad\AppData\Local\Temp\EWC9EC.tmp ("D:\High Altitude
 #        Ballooning\Github data\Pico
 #        Tracker\PicoTracker\firmware\Debug\Obj\energy.o" "D:\High Altitude
 #        Ballooning\Github data\Pico
@@ -177,17 +177,19 @@ Absolute sections, part 9 of 10:           0x2
   .near.noinit       uninit   0x005255     0x1  telemetry.o [1]
                             - 0x005256     0x2
 
-Absolute sections, part 10 of 10:          0x2
+Absolute sections, part 10 of 10:          0x4
+  .near.noinit       uninit   0x005260     0x1  telemetry.o [1]
+  .near.noinit       uninit   0x005261     0x1  telemetry.o [1]
   .near.noinit       uninit   0x005262     0x1  telemetry.o [1]
   .near.noinit       uninit   0x005263     0x1  telemetry.o [1]
-                            - 0x005264     0x2
+                            - 0x005264     0x4
 
 "A2":                                     0x80
   INTVEC                      0x008000    0x80  <Block>
     .intvec          const    0x008000    0x80  interrupt.o [4]
                             - 0x008080    0x80
 
-"P3-P5":                                0x1176
+"P3-P5":                                0x11ee
   .near_func.text    ro code  0x008080   0x42c  float.o [4]
   .near_func.text    ro code  0x0084ac   0x3f3  si_trx.o [1]
   .near_func.text    ro code  0x00889f   0x194  long.o [4]
@@ -198,45 +200,47 @@ Absolute sections, part 10 of 10:          0x2
   .near_func.text    ro code  0x008d2c    0x6f  rtty.o [1]
   .near_func.text    ro code  0x008d9b    0x6b  gps.o [1]
   .near_func.text    ro code  0x008e06    0x57  long_util.o [4]
-  .near_func.text    ro code  0x008e5d    0x43  gps.o [1]
-  .near_func.text    ro code  0x008ea0    0x3f  si_trx.o [1]
-  .near_func.text    ro code  0x008edf    0x3f  spi_bitbang.o [1]
-  .near_func.text    ro code  0x008f1e    0x3b  gps.o [1]
-  .near_func.text    ro code  0x008f59    0x39  main.o [1]
-  .near_func.text    ro code  0x008f92    0x32  energy.o [1]
-  .near_func.text    ro code  0x008fc4    0x2d  spi_bitbang.o [1]
-  .near_func.text    ro code  0x008ff1    0x28  init_small.o [4]
-  .near_func.text    ro code  0x009019    0x21  telemetry.o [1]
-  .iar.init_table    const    0x00903a    0x12  - Linker created -
-  .near_func.text    ro code  0x00904c    0x1e  init_small.o [4]
-  .near.rodata       const    0x00906a    0x1a  main.o [1]
-  .near.rodata       const    0x009084    0x1a  main.o [1]
-  .near.rodata       const    0x00909e    0x1a  main.o [1]
-  .near.rodata       const    0x0090b8    0x1a  main.o [1]
-  .near.rodata       const    0x0090d2    0x1a  main.o [1]
-  .near.rodata       const    0x0090ec    0x1a  main.o [1]
-  .near_func.text    ro code  0x009106    0x1a  telemetry.o [1]
-  .near_func.text    ro code  0x009120    0x18  dc_util.o [4]
-  .near_func.text    ro code  0x009138    0x14  init.o [4]
-  .near_func.text    ro code  0x00914c    0x14  __dbg_xxexit.o [3]
-  .near_func.text    ro code  0x009160    0x13  cstartup.o [4]
-  .near_func.text    ro code  0x009173    0x12  si_trx.o [1]
-  .near_func.text    ro code  0x009185     0xf  telemetry.o [1]
-  .near_func.text    ro code  0x009194     0xf  short.o [4]
-  .near.rodata       const    0x0091a3     0xe  main.o [1]
-  .near_func.text    ro code  0x0091b1     0xd  strlen.o [4]
-  .near_func.text    ro code  0x0091be     0xb  telemetry.o [1]
-  .near_func.text    ro code  0x0091c9     0x9  telemetry.o [1]
-  .near_func.text    ro code  0x0091d2     0x8  rtty.o [1]
-  .near_func.text    ro code  0x0091da     0x5  rtty.o [1]
-  .near_func.text    ro code  0x0091df     0x5  char.o [4]
-  .near_func.text    ro code  0x0091e4     0x5  cexit.o [4]
-  .near_func.text    ro code  0x0091e9     0x3  interrupt.o [4]
-  .near_func.text    ro code  0x0091ec     0x3  low_level_init.o [4]
-  .near_func.text    ro code  0x0091ef     0x3  exit.o [4]
-  .near_func.text    ro code  0x0091f2     0x3  unhandled_exception.o [4]
-  .near_func.text    ro code  0x0091f5     0x1  __dbg_break.o [3]
-                            - 0x0091f6  0x1176
+  .near_func.text    ro code  0x008e5d    0x54  main.o [1]
+  .near_func.text    ro code  0x008eb1    0x43  gps.o [1]
+  .near_func.text    ro code  0x008ef4    0x40  energy.o [1]
+  .near_func.text    ro code  0x008f34    0x3f  si_trx.o [1]
+  .near_func.text    ro code  0x008f73    0x3f  spi_bitbang.o [1]
+  .near_func.text    ro code  0x008fb2    0x3b  gps.o [1]
+  .near_func.text    ro code  0x008fed    0x34  telemetry.o [1]
+  .near_func.text    ro code  0x009021    0x2d  spi_bitbang.o [1]
+  .near_func.text    ro code  0x00904e    0x28  init_small.o [4]
+  .near_func.text    ro code  0x009076    0x21  telemetry.o [1]
+  .iar.init_table    const    0x009097    0x12  - Linker created -
+  .near_func.text    ro code  0x0090a9    0x1e  init_small.o [4]
+  .near_func.text    ro code  0x0090c7    0x1b  telemetry.o [1]
+  .near.rodata       const    0x0090e2    0x1a  main.o [1]
+  .near.rodata       const    0x0090fc    0x1a  main.o [1]
+  .near.rodata       const    0x009116    0x1a  main.o [1]
+  .near.rodata       const    0x009130    0x1a  main.o [1]
+  .near.rodata       const    0x00914a    0x1a  main.o [1]
+  .near.rodata       const    0x009164    0x1a  main.o [1]
+  .near_func.text    ro code  0x00917e    0x1a  telemetry.o [1]
+  .near_func.text    ro code  0x009198    0x18  dc_util.o [4]
+  .near_func.text    ro code  0x0091b0    0x14  init.o [4]
+  .near_func.text    ro code  0x0091c4    0x14  __dbg_xxexit.o [3]
+  .near_func.text    ro code  0x0091d8    0x13  cstartup.o [4]
+  .near_func.text    ro code  0x0091eb    0x12  si_trx.o [1]
+  .near_func.text    ro code  0x0091fd     0xf  telemetry.o [1]
+  .near_func.text    ro code  0x00920c     0xf  short.o [4]
+  .near.rodata       const    0x00921b     0xe  main.o [1]
+  .near_func.text    ro code  0x009229     0xd  strlen.o [4]
+  .near_func.text    ro code  0x009236     0xb  telemetry.o [1]
+  .near_func.text    ro code  0x009241     0x9  telemetry.o [1]
+  .near_func.text    ro code  0x00924a     0x8  rtty.o [1]
+  .near_func.text    ro code  0x009252     0x5  rtty.o [1]
+  .near_func.text    ro code  0x009257     0x5  char.o [4]
+  .near_func.text    ro code  0x00925c     0x5  cexit.o [4]
+  .near_func.text    ro code  0x009261     0x3  interrupt.o [4]
+  .near_func.text    ro code  0x009264     0x3  low_level_init.o [4]
+  .near_func.text    ro code  0x009267     0x3  exit.o [4]
+  .near_func.text    ro code  0x00926a     0x3  unhandled_exception.o [4]
+  .near_func.text    ro code  0x00926d     0x1  __dbg_break.o [3]
+                            - 0x00926e  0x11ee
 
 
 *******************************************************************************
@@ -265,15 +269,15 @@ Copy (__iar_copy_init2)
                                                        (abs)
     ------                 -------  -------  -------  -------
 D:\High Altitude Ballooning\Github data\Pico Tracker\PicoTracker\firmware\Debug\Obj: [1]
-    energy.o                    50                         10
+    energy.o                    64                         10
     gps.o                      233                51       11
-    main.o                      57      170
+    main.o                      84      170
     rtty.o                     124        1        3
     si_trx.o                 1 210                          7
     spi_bitbang.o              108                          5
-    telemetry.o                207      256      260        5
+    telemetry.o                286      256      260        7
     ---------------------------------------------------------
-    Total:                   1 989      427      314       38
+    Total:                   2 109      427      314       40
 
 command line: [2]
     ---------------------------------------------------------
@@ -308,7 +312,7 @@ dlstm8smn.a: [4]
 
     Linker created                       18      256
 -------------------------------------------------------------
-    Grand Total:             4 025      573      586       38
+    Grand Total:             4 145      573      586       40
 
 
 *******************************************************************************
@@ -317,8 +321,8 @@ dlstm8smn.a: [4]
 
 Entry                    Address   Size  Type      Object
 -----                    -------   ----  ----      ------
-.iar.init_table$$Base   0x00903a          --   Gb  - Linker created -
-.iar.init_table$$Limit  0x00904c          --   Gb  - Linker created -
+.iar.init_table$$Base   0x009097          --   Gb  - Linker created -
+.iar.init_table$$Limit  0x0090a9          --   Gb  - Linker created -
 ?and32_l0_l0_0x         0x0089ef         Code  Gb  long.o [4]
 ?and32_l0_l0_l1         0x0089ec         Code  Gb  long.o [4]
 ?b0                     0x000000         Data  Gb  vregs.o [4]
@@ -337,8 +341,8 @@ Entry                    Address   Size  Type      Object
 ?b7                     0x000007         Data  Gb  vregs.o [4]
 ?b8                     0x000008         Data  Gb  vregs.o [4]
 ?b9                     0x000009         Data  Gb  vregs.o [4]
-?dc32_l1                0x009120         Code  Gb  dc_util.o [4]
-?dc32_px                0x00912d         Code  Gb  dc_util.o [4]
+?dc32_l1                0x009198         Code  Gb  dc_util.o [4]
+?dc32_px                0x0091a5         Code  Gb  dc_util.o [4]
 ?e0                     0x000001         Data  Gb  vregs.o [4]
 ?e1                     0x000005         Data  Gb  vregs.o [4]
 ?e2                     0x000009         Data  Gb  vregs.o [4]
@@ -416,12 +420,12 @@ Entry                    Address   Size  Type      Object
 ?push_w5                0x008a38         Code  Gb  vreg_util.o [4]
 ?push_w6                0x008a3d         Code  Gb  vreg_util.o [4]
 ?sdiv32_l0_l0_l1        0x0089a6         Code  Gb  long.o [4]
-?sext16_x_a             0x00919c         Code  Gb  short.o [4]
+?sext16_x_a             0x009214         Code  Gb  short.o [4]
 ?sll32_0x_0x_a          0x008a25         Code  Gb  long.o [4]
 ?sll32_l0_l0_a          0x008a22         Code  Gb  long.o [4]
 ?smod32_l1_l0_l1        0x0089a6         Code  Gb  long.o [4]
-?sra16_x_x_a            0x009194         Code  Gb  short.o [4]
-?srl8_a_a_5             0x0091df         Code  Gb  char.o [4]
+?sra16_x_x_a            0x00920c         Code  Gb  short.o [4]
+?srl8_a_a_5             0x009257         Code  Gb  char.o [4]
 ?udiv32_l0_l0_l1        0x008939         Code  Gb  long.o [4]
 ?umod32_l1_l0_l1        0x008939         Code  Gb  long.o [4]
 ?w0                     0x000000         Data  Gb  vregs.o [4]
@@ -439,19 +443,21 @@ CSTACK$$Base            0x000300          --   Gb  - Linker created -
 CSTACK$$Limit           0x000400          --   Gb  - Linker created -
 INTVEC$$Base            0x008000          --   Gb  - Linker created -
 INTVEC$$Limit           0x008080          --   Gb  - Linker created -
-InitialiseSystemClock   0x008f92   0x32  Code  Gb  energy.o [1]
+InitialiseSystemClock   0x008ef4   0x40  Code  Gb  energy.o [1]
 InitialiseUART          0x008d9b   0x6b  Code  Gb  gps.o [1]
-Region$$Table$$Base     0x00903a          --   Gb  - Linker created -
-Region$$Table$$Limit    0x00904c          --   Gb  - Linker created -
+Region$$Table$$Base     0x009097          --   Gb  - Linker created -
+Region$$Table$$Limit    0x0090a9          --   Gb  - Linker created -
 TIM1_ARRH               0x005262    0x1  Data  Gb  telemetry.o [1]
 TIM1_ARRL               0x005263    0x1  Data  Gb  telemetry.o [1]
+TIM1_PSCRH              0x005260    0x1  Data  Gb  telemetry.o [1]
+TIM1_PSCRL              0x005261    0x1  Data  Gb  telemetry.o [1]
 TIM1_UPD_OVF_IRQHandler
-                        0x009106   0x1a  Code  Gb  telemetry.o [1]
+                        0x00917e   0x1a  Code  Gb  telemetry.o [1]
 UART1_BRR1              0x005232    0x1  Data  Gb  gps.o [1]
 UART1_BRR2              0x005233    0x1  Data  Gb  gps.o [1]
 UART1_DR                0x005231    0x1  Data  Gb  gps.o [1]
 UART1_GTR               0x005239    0x1  Data  Gb  gps.o [1]
-UART1_IRQHandler        0x008e5d   0x43  Code  Gb  gps.o [1]
+UART1_IRQHandler        0x008eb1   0x43  Code  Gb  gps.o [1]
 UART1_PSCR              0x00523a    0x1  Data  Gb  gps.o [1]
 UART1_buffer_pointer    0x000143    0x1  Data  Gb  gps.o [1]
 UART1_rx_buffer         0x000111   0x32  Data  Gb  gps.o [1]
@@ -483,19 +489,19 @@ _A_UART1_CR3            0x005236    0x1  Data  Gb  gps.o [1]
 _A_UART1_CR4            0x005237    0x1  Data  Gb  gps.o [1]
 _A_UART1_CR5            0x005238    0x1  Data  Gb  gps.o [1]
 _A_UART1_SR             0x005230    0x1  Data  Gb  gps.o [1]
-__DebugBreak            0x0091f5    0x1  Code  Gb  __dbg_break.o [3]
-__exit                  0x00914c   0x14  Code  Gb  __dbg_xxexit.o [3]
-__iar_copy_init2        0x008ff1         Code  Gb  init_small.o [4]
-__iar_data_init2        0x009138   0x14  Code  Gb  init.o [4]
-__iar_program_start     0x009160         Code  Gb  cstartup.o [4]
+__DebugBreak            0x00926d    0x1  Code  Gb  __dbg_break.o [3]
+__exit                  0x0091c4   0x14  Code  Gb  __dbg_xxexit.o [3]
+__iar_copy_init2        0x00904e         Code  Gb  init_small.o [4]
+__iar_data_init2        0x0091b0   0x14  Code  Gb  init.o [4]
+__iar_program_start     0x0091d8         Code  Gb  cstartup.o [4]
 __iar_unhandled_exception
-                        0x0091f2         Code  Gb  unhandled_exception.o [4]
-__iar_zero_init2        0x00904c         Code  Gb  init_small.o [4]
+                        0x00926a         Code  Gb  unhandled_exception.o [4]
+__iar_zero_init2        0x0090a9         Code  Gb  init_small.o [4]
 __intvec                0x008000         Data  Gb  interrupt.o [4]
-__low_level_init        0x0091ec    0x3  Code  Gb  low_level_init.o [4]
-_exit                   0x0091e4         Code  Gb  cexit.o [4]
-_interrupt_13           0x009106         Code  Gb  telemetry.o [1]
-_interrupt_20           0x008e5d         Code  Gb  gps.o [1]
+__low_level_init        0x009264    0x3  Code  Gb  low_level_init.o [4]
+_exit                   0x00925c         Code  Gb  cexit.o [4]
+_interrupt_13           0x00917e         Code  Gb  telemetry.o [1]
+_interrupt_20           0x008eb1         Code  Gb  gps.o [1]
 _si_trx_set_property_16
                         0x0084d5   0x2b  Code  Lc  si_trx.o [1]
 _si_trx_set_property_24
@@ -505,16 +511,16 @@ _si_trx_set_property_32
 _si_trx_set_property_8  0x0084ac   0x29  Code  Lc  si_trx.o [1]
 _si_trx_transfer        0x008c45   0x76  Code  Gb  si_trx.o [1]
 _si_trx_transfer_uint16
-                        0x009173   0x12  Code  Lc  si_trx.o [1]
-exit                    0x0091ef    0x3  Code  Gb  exit.o [4]
-is_telemetry_finished   0x009019   0x21  Code  Gb  telemetry.o [1]
-main                    0x008f59   0x39  Code  Gb  main.o [1]
+                        0x0091eb   0x12  Code  Lc  si_trx.o [1]
+exit                    0x009267    0x3  Code  Gb  exit.o [4]
+is_telemetry_finished   0x009076   0x21  Code  Gb  telemetry.o [1]
+main                    0x008e5d   0x54  Code  Gb  main.o [1]
 radio_on                0x000149    0x1  Data  Gb  telemetry.o [1]
 rtty_data               0x000144    0x1  Data  Gb  rtty.o [1]
 rtty_phase              0x000010    0x1  Data  Gb  rtty.o [1]
-rtty_preamble           0x0091da    0x5  Code  Gb  rtty.o [1]
+rtty_preamble           0x009252    0x5  Code  Gb  rtty.o [1]
 rtty_preamble_count     0x000145    0x1  Data  Gb  rtty.o [1]
-rtty_start              0x0091d2    0x8  Code  Gb  rtty.o [1]
+rtty_start              0x00924a    0x8  Code  Gb  rtty.o [1]
 rtty_tick               0x008d2c   0x6f  Code  Gb  rtty.o [1]
 si_trx_clear_pending_interrupts
                         0x0085c2   0x25  Code  Lc  si_trx.o [1]
@@ -523,7 +529,7 @@ si_trx_frequency_control_set_band
 si_trx_frequency_control_set_divider
                         0x00863d   0x3a  Code  Lc  si_trx.o [1]
 si_trx_get_part_info    0x008597   0x2b  Code  Lc  si_trx.o [1]
-si_trx_init             0x008ea0   0x3f  Code  Gb  si_trx.o [1]
+si_trx_init             0x008f34   0x3f  Code  Gb  si_trx.o [1]
 si_trx_modem_set_deviation
                         0x008686    0xc  Code  Lc  si_trx.o [1]
 si_trx_modem_set_modulation
@@ -540,19 +546,21 @@ si_trx_set_gpio_configuration
 si_trx_set_tx_power     0x0086ae    0xb  Code  Lc  si_trx.o [1]
 si_trx_start_tx         0x008618   0x25  Code  Lc  si_trx.o [1]
 si_trx_switch_channel   0x00889c    0x3  Code  Gb  si_trx.o [1]
-spi_bitbang_init        0x008fc4   0x2d  Code  Gb  spi_bitbang.o [1]
-spi_bitbang_transfer    0x008edf   0x3f  Code  Gb  spi_bitbang.o [1]
-strlen                  0x0091b1    0xd  Code  Gb  strlen.o [4]
-telemetry_active        0x009185    0xf  Code  Gb  telemetry.o [1]
+spi_bitbang_init        0x009021   0x2d  Code  Gb  spi_bitbang.o [1]
+spi_bitbang_transfer    0x008f73   0x3f  Code  Gb  spi_bitbang.o [1]
+strlen                  0x009229    0xd  Code  Gb  strlen.o [4]
+telemetry_active        0x0091fd    0xf  Code  Gb  telemetry.o [1]
 telemetry_index         0x000148    0x1  Data  Gb  telemetry.o [1]
+telemetry_start         0x008fed   0x34  Code  Gb  telemetry.o [1]
 telemetry_string        0x000011  0x100  Data  Gb  telemetry.o [1]
 telemetry_string_length
                         0x000147    0x1  Data  Gb  telemetry.o [1]
 telemetry_tick          0x008cbb   0x71  Code  Gb  telemetry.o [1]
 telemetry_type          0x000146    0x1  Data  Gb  telemetry.o [1]
-timer1_tick_deinit      0x0091be    0xb  Code  Gb  telemetry.o [1]
-timer1_tick_time        0x0091c9    0x9  Code  Gb  telemetry.o [1]
-uart_write              0x008f1e   0x3b  Code  Gb  gps.o [1]
+timer1_tick_deinit      0x009236    0xb  Code  Gb  telemetry.o [1]
+timer1_tick_init        0x0090c7   0x1b  Code  Gb  telemetry.o [1]
+timer1_tick_time        0x009241    0x9  Code  Gb  telemetry.o [1]
+uart_write              0x008fb2   0x3b  Code  Gb  gps.o [1]
 
 
 [1] = D:\High Altitude Ballooning\Github data\Pico Tracker\PicoTracker\firmware\Debug\Obj
@@ -560,9 +568,9 @@ uart_write              0x008f1e   0x3b  Code  Gb  gps.o [1]
 [3] = dbgstm8smd.a
 [4] = dlstm8smn.a
 
-  4 025 bytes of readonly  code memory
+  4 145 bytes of readonly  code memory
     573 bytes of readonly  data memory
-    586 bytes of readwrite data memory (+ 38 absolute)
+    586 bytes of readwrite data memory (+ 40 absolute)
 
 Errors: none
 Warnings: none

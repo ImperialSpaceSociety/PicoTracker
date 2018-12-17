@@ -39,8 +39,6 @@ uint8_t UART1_buffer_pointer;
 
 
 
-#define disable_GLL_str "$PUBX,40,GLL,0,0,0,0*5C\r\n"
-
 
 /**
  * UART Serial Port Functions
@@ -218,8 +216,8 @@ __interrupt void UART1_IRQHandler(void)
   IT indicates that Over run error detected and LIN error detected
   */
 
-  //if(data == '\n') // echo back the data via uart when the end of the line is reached.
-  if(data == '*') // echo back the data via uart when the end of the line is reached.
+  //if(data == '\n') // Check if the end of nmea line is reached
+  if(data == '*') // check if we have reached the checksum in pubx string
 
   {
      UART1_rx_buffer[UART1_buffer_pointer] = data; // puts the data into the buffer
