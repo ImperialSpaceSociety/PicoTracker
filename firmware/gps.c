@@ -97,23 +97,39 @@ void InitialiseUART(void)
 }
 
 
+/*
+Comments by Medad Newman 17 December 2018
+UART_SR,UART_DR  are 8 bit registers that seem very important
+They have some important bits in them, namely TXE and RXNE
+TODO: read more about what is a shift register
+
+more information on the registrs is found on the Refernce Manual, page 363.
+*/
+
+
 
 //
 //  Send the message in the string to UART1.
 //
 void UART_send_buffer(uint8_t *tx_data, uint8_t length)
-{
+{       
+    /*
+    Somehow, by transmitting the data back over uart, the uart can 
+    restart listening over again.
+    */
    
     uint8_t count =0;
     while (count <= length)
     {
-        UART1_DR =  tx_data[count++];     //  Put the next character into the data transmission register.
+        UART1_DR =  tx_data[count++];     //  Put the next character into the
+                                          //data transmission register.
+        //TXE stands for "Transmit Data register empty"
         while (UART1_SR_TXE == 0);          //  Wait for transmission to complete.
                                       
     }
 }
 
-// wo hoo!
+
 
 /**
  * UART Rx Interupt. 
@@ -121,14 +137,23 @@ void UART_send_buffer(uint8_t *tx_data, uint8_t length)
 
 
 #pragma vector = UART1_R_RXNE_vector //a special instruction to compiler
+// RXNE stands for - "Receive Data register not empty"
 
 __interrupt void UART1_IRQHandler(void)
 {
-  uint8_t data = UART1_DR;
-  if(data == '\n')
+  uint8_t data = UART1_DR; // this is the data byte that has been received. Reads
+                            // the UART1_DR, the data register.
+  if(data == '\n') // echo back the data via uart when the end of the line is reached.
   {
-     UART1_rx_buffer[UART1_buffer_pointer] = data;
-     //UART_send_buffer(UART1_rx_buffer, UART1_buffer_pointer);
+     UART1_rx_buffer[UART1_buffer_pointer] = data; // puts the data into the buffer
+
+     UART_send_buffer(UART1_rx_buffer, UART1_buffer_pointer);
+     /*
+      see if it is possible to clear some flag such that it can receive data
+      again.
+      */
+     while (UART1_SR_TXE == 0);          //  Wait for transmission to complete.
+
      UART1_buffer_pointer = 0;
   }
   else
@@ -139,7 +164,7 @@ __interrupt void UART1_IRQHandler(void)
       }
   }
 }
-
+// find a way to prevent the interrupts to fireing just about any time.
 
 
 

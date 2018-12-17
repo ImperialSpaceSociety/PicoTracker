@@ -71,7 +71,7 @@ int main( void )
     //Initialise Si4060 interface 
     si_trx_init();
     
-    
+    // maybe try to disable the UART interrupt after it is interrupted once.
     
     
     while (1)
