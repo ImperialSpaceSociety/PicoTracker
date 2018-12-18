@@ -48,17 +48,20 @@ Try to reduce memory usage when sending the pubx strings to disable nmea
 #include "energy.h"
 #include "gps.h"
 #include <intrinsics.h>
+#include "main.h"
 
 
-/*
-const char disableRMC[] = "PUBX,40,RMC,0,0,0,0,0,0";
-const char disableGLL[] = "PUBX,40,GLL,0,0,0,0,0,0";
-const char disableGSV[] = "PUBX,40,GSV,0,0,0,0,0,0";
-const char disableGSA[] = "PUBX,40,GSA,0,0,0,0,0,0";
-const char disableGGA[] = "PUBX,40,GGA,0,0,0,0,0,0";
-const char disableVTG[] = "PUBX,40,VTG,0,0,0,0,0,0";
-const char disableZDA[] = "PUBX,40,ZDA,0,0,0,0,0,0";
-*/
+  /*
+  Strategy:
+
+  put into flight mode
+  
+  loop start
+  get gps position and disable gps interrupts
+  create telemetry string
+  transmit telemetry string
+  loop.
+  */
 
 void delay_ms(unsigned long ms) {
 	//The best naive delay @16MHz
@@ -73,46 +76,53 @@ void delay_ms(unsigned long ms) {
 }
 
 
+/*
+ * the TX data buffer
+ * contains ASCII data, which is either transmitted as CW oder RTTY
+ */
+uint16_t tx_buf_rdy = 0;			/* the read-flag (main -> main) */
+uint16_t tx_buf_length = 0;			/* how many chars to send */
+char tx_buf[TX_BUF_MAX_LENGTH] = {SYNC_PREFIX "$$" PAYLOAD_NAME ","};	/* the actual buffer */
+
+/* current (latest) GPS fix and measurements */
+struct gps_fix current_fix;
+
+void get_fix_and_measurements(void) {
+	gps_get_fix(&current_fix);
+	//current_fix.temperature_int = get_die_temperature();
+	//current_fix.voltage_bat = get_battery_voltage();
+	//current_fix.voltage_sol = get_solar_voltage();
+}
+
 
 
 int main( void )
 {
+    // get the clock working
     __disable_interrupt();
-    InitialiseSystemClock();
-
+    InitialiseSystemClock();    
+    __enable_interrupt();
+    
     // Start the UART
     InitialiseUART(); // set up the uart
     
-    uart_disable_nema();
-    
-    
-    __enable_interrupt();
-
-    //poll the gps
-    uart_write("$PUBX,00*33\r\n");
-    // should expect to receive::
-    //$PUBX,00,hhmmss.ss,Latitude,N,Longitude,E,AltRef,NavStat,Hacc,Vacc,SOG,COG,Vvel,ageC,HDOP,VDOP,TDOP,GU,RU,DR,*cs<CR><LF>
-
-
     
     // start up the radio    
     //Initialise Si4060 interface 
     si_trx_init();
     
-    // maybe try to disable the UART interrupt after it is interrupted once.
-    /*
-    Strategy:
 
-    put into flight mode
-    
-    loop start
-    get gps position and disable gps interrupts
-    create telemetry string
-    transmit telemetry string
-    loop.
-    */
 
-    // todo: find a way to turn off all uart rx interrupts while transmitting telemetry
+    //Initialise GPS
+    //gps_startup_delay();
+    //delay_ms(1000);
+    while(!(gps_disable_nmea_output()));
+    //while(!(gps_set_gps_only()));
+    while(!(gps_set_airborne_model()));
+    while(!(gps_set_power_save()));
+    while(!(gps_power_save(0)));
+    while(!(gps_save_settings()));
+
 
 
 
