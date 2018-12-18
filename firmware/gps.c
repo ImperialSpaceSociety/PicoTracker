@@ -39,6 +39,10 @@
 
 uint8_t UART1_rx_buffer[UART_RX_BUFFER_LENGTH]; // buffer for UART receive characters
 uint8_t UART1_buffer_pointer;
+/*
+MAybe the interrupts are accidentally being triggered
+*/
+
 
 /**
  Wonderful summary reference taken from: https://github.com/zoomx/stm8-samples/blob/master/blinky/blinky.c
@@ -135,7 +139,7 @@ void InitialiseUART(void)
     //
     UART1_CR2_TIEN  = 0;     // Transmitter interrupt enable
     UART1_CR2_TCIEN = 0;     // Transmission complete interrupt enable
-    UART1_CR2_RIEN  = 1;     //  Receiver interrupt enable
+    UART1_CR2_RIEN  = 0;     //  Receiver interrupt enable
     UART1_CR2_ILIEN = 0;     //  IDLE Line interrupt enable
     //
     //  Turn on the UART transmit, receive and the UART clock.
@@ -160,10 +164,14 @@ void gps_transmit_string(char *cmd, uint8_t length) {
 	uint8_t i;
 
 	for (i = 0; i < length; i++) {
-		while(!UART1_SR_TXE);
+            while (!UART1_SR_TXE);   //  Wait for transmission to complete. THIS VERIFICATION HAS TO BE HERE!!
 		UART1_DR = cmd[i];
 	}
 }
+
+
+
+
 
 /* 
  * gps_receive_ack
@@ -173,7 +181,9 @@ void gps_transmit_string(char *cmd, uint8_t length) {
  * returns 1 if ACK was received, 0 if NAK was received
  *
  */
-uint8_t gps_receive_ack(uint8_t class_id, uint8_t msg_id) {
+uint8_t gps_receive_ack(uint8_t class_id, uint8_t msg_id) {    
+        
+
 	int match_count = 0;
 	int msg_ack = 0;
 	char rx_byte;
@@ -188,9 +198,13 @@ uint8_t gps_receive_ack(uint8_t class_id, uint8_t msg_id) {
 	/* runs until ACK/NAK packet is received, possibly add a timeout.
 	 * can crash if a message ACK is missed (watchdog resets */
 	while(1) {
-		while(!UART1_SR);
+                UART1_CR2_RIEN  = 1;
+                //while(!UART1_SR);
+		while(!UART1_SR_RXNE); // THIS VERIFICATION HAS TO BE HERE!!
+
 		//UCA0IFG &= ~UCRXIFG; // Clear the flag to avoid generating an interrupt
 		rx_byte = UART1_DR;
+
 		if (rx_byte == ack[match_count] || rx_byte == nak[match_count]) {
 			if (match_count == 3) {	/* test ACK/NAK byte */
 				if (rx_byte == ack[match_count]) {
@@ -209,6 +223,32 @@ uint8_t gps_receive_ack(uint8_t class_id, uint8_t msg_id) {
 	}
 }
 
+/* 
+ * gps_disable_nmea_output
+ *
+ * disables all NMEA messages to be output from the GPS.
+ * even though the parser can cope with NMEA messages and ignores them, it 
+ * may save power to disable them completely.
+ *
+ * returns if ACKed by GPS
+ *
+ */
+uint8_t gps_disable_nmea_output(void) {
+	char nonmea[] = {
+		0xB5, 0x62, 0x06, 0x00, 20, 0x00,		/* UBX-CFG-PRT */
+		0x01, 0x00, 0x00, 0x00, 			/* UART1, reserved, no TX ready */
+		0xe0, 0x08, 0x00, 0x00,				/* UART mode (8N1) */
+		0x80, 0x25, 0x00, 0x00,				/* UART baud rate (9600) */
+		0x01, 0x00,					/* input protocols (uBx only) */
+		0x01, 0x00,					/* output protocols (uBx only) */
+		0x00, 0x00,					/* flags */
+		0x00, 0x00,					/* reserved */
+		0xaa, 0x79					/* checksum */
+	};
+
+	gps_transmit_string(nonmea, sizeof(nonmea));
+	return gps_receive_ack(0x06, 0x00);
+}
 /*
  * gps_receive_payload
  *
@@ -315,33 +355,6 @@ void gps_get_fix(struct gps_fix *fix) {
 		fix->alt = (uint16_t) alt_tmp;
 	}
 			
-}
-
-/* 
- * gps_disable_nmea_output
- *
- * disables all NMEA messages to be output from the GPS.
- * even though the parser can cope with NMEA messages and ignores them, it 
- * may save power to disable them completely.
- *
- * returns if ACKed by GPS
- *
- */
-uint8_t gps_disable_nmea_output(void) {
-	char nonmea[] = {
-		0xB5, 0x62, 0x06, 0x00, 20, 0x00,		/* UBX-CFG-PRT */
-		0x01, 0x00, 0x00, 0x00, 			/* UART1, reserved, no TX ready */
-		0xe0, 0x08, 0x00, 0x00,				/* UART mode (8N1) */
-		0x80, 0x25, 0x00, 0x00,				/* UART baud rate (9600) */
-		0x01, 0x00,					/* input protocols (uBx only) */
-		0x01, 0x00,					/* output protocols (uBx only) */
-		0x00, 0x00,					/* flags */
-		0x00, 0x00,					/* reserved */
-		0xaa, 0x79					/* checksum */
-	};
-
-	gps_transmit_string(nonmea, sizeof(nonmea));
-	return gps_receive_ack(0x06, 0x00);
 }
 
 /*
@@ -495,6 +508,13 @@ void gps_startup_delay(void) {
 
 }
 
+#pragma vector = UART1_R_RXNE_vector //a special instruction to compiler
+// RXNE stands for - "Receive Data register not empty"
 
+ __interrupt void UART1_IRQHandler(void)
+ {  
 
+   UART1_CR2_RIEN  = 0; // turn off interrupt
+
+ }
 

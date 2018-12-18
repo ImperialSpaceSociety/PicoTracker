@@ -113,21 +113,20 @@ int main( void )
     
 
 
-    //Initialise GPS
-    //gps_startup_delay();
-    //delay_ms(1000);
+    //Initialise GPS    
+    delay_ms(1000); // gps startup delay
     while(!(gps_disable_nmea_output()));
     //while(!(gps_set_gps_only()));
     while(!(gps_set_airborne_model()));
     while(!(gps_set_power_save()));
     while(!(gps_power_save(0)));
     while(!(gps_save_settings()));
+        
 
 
-
-
-
+    
     // start telemetry
+    
     while (1)
     {
   
@@ -143,6 +142,7 @@ int main( void )
     
     
     }
+    
     
 }
           
