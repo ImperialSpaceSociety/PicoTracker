@@ -326,18 +326,23 @@ uint16_t gps_receive_payload(uint8_t class_id, uint8_t msg_id, unsigned char *pa
  */
 void gps_get_fix(struct gps_fix *fix) {
 	static uint8_t response[92];	/* PVT response length is 92 bytes */
+        /* UBX-NAV-PVT
+         * Section 33.17.14 in the Ublox M8Q reference manual
+         */
 	char pvt[] = {0xB5, 0x62, 0x01, 0x07, 0x00, 0x00, 0x08, 0x19};
 	int32_t alt_tmp;
 		
 	/* wake up from sleep */
-	while (!UART1_SR);
+	while(!UART1_SR_TXE); // THIS VERIFICATION HAS TO BE HERE!!
 	UART1_DR = 0xFF;
-	while (!UART1_SR);
+	while(!UART1_SR_RXNE); // THIS VERIFICATION HAS TO BE HERE!!
 	gps_startup_delay();
+        
 
 	/* request position */
 	gps_transmit_string(pvt, sizeof(pvt));
 	gps_receive_payload(0x01, 0x07, response);
+        // if timeout, must restart or use the watchdog to reset
 
 	fix->num_svs = response[23];
 	fix->type = response[20];
@@ -375,16 +380,37 @@ void gps_get_fix(struct gps_fix *fix) {
  *
  */
 uint8_t gps_set_gps_only(void) {
-	char gpsonly[] = {
-		0xB5, 0x62, 0x06, 0x3E, 36, 0x00,		/* UBX-CFG-GNSS */
-		0x00, 32, 32, 4,				/* use 32 channels, 4 configs following */
-		0x00, 16, 32, 0, 0x01, 0x00, 0x00, 0x00,	/* GPS enable, all channels */
-		0x03, 0, 0, 0, 0x00, 0x00, 0x00, 0x00,		/* BeiDou disable, 0 channels */
-		0x05, 0, 0, 0, 0x00, 0x00, 0x00, 0x00,		/* QZSS disable, 0 channels */
-		0x06, 0, 0, 0, 0x00, 0x00, 0x00, 0x00,		/* GLONASS disable, 0 channels */
-		0xeb, 0x72					/* checksum */
-	};
+        
+	//char gpsonly[] = {
+	//	0xB5, 0x62, 0x06, 0x3E, 36, 0x00,		/* UBX-CFG-GNSS */
+	//	0x00, 32, 32, 4,				/* use 32 channels, 4 configs following */
+	//	0x00, 16, 32, 0, 0x01, 0x00, 0x00, 0x00,	/* GPS enable, all channels */
+	//	0x03, 0, 0, 0, 0x00, 0x00, 0x00, 0x00,		/* BeiDou disable, 0 channels */
+	//	0x05, 0, 0, 0, 0x00, 0x00, 0x00, 0x00,		/* QZSS disable, 0 channels */
+	//	0x06, 0, 0, 0, 0x00, 0x00, 0x00, 0x00,		/* GLONASS disable, 0 channels */
+	//	0xeb, 0x72					/* checksum */
+	//};
+  
 
+        char gpsonly[] = {0xB5,0x62,0x06,0x3E,0x3C,0x00,
+        0x00,0x00,0x20,0x07,0x00,0x08,0x10,0x00,0x01,0x00,0x01,0x01,0x01,0x01,
+        0x03,0x00,0x00,0x00,0x01,0x01,0x02,0x04,0x08,0x00,0x00,0x00,0x01,
+        0x01,0x03,0x08,0x10,0x00,0x00,0x00,0x01,0x01,0x04,0x00,0x08,0x00,
+        0x00,0x00,0x01,0x01,0x05,0x00,0x03,0x00,0x01,0x00,0x01,0x01,0x06,
+        0x08,0x0E,0x00,0x00,0x00,0x01,0x01,0x2D,0x59
+        };
+        
+         /* GPS enable
+         * SBAS disable
+         * Galileo disable
+         * Beidou disable
+         * IMES disable
+         * QZSS enable
+         * GLONASS disable
+         *
+         */
+      
+        
 	gps_transmit_string(gpsonly, sizeof(gpsonly));
 	return gps_receive_ack(0x06, 0x3E);
 }
@@ -517,6 +543,10 @@ void gps_startup_delay(void) {
 
 }
 
+
+/*
+ * set up the interrupts for uart rx
+ */
 #pragma vector = UART1_R_RXNE_vector //a special instruction to compiler
 // RXNE stands for - "Receive Data register not empty"
 

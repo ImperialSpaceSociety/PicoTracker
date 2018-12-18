@@ -112,25 +112,29 @@ int main( void )
     //Initialise GPS    
     delay_ms(1000); // gps startup delay
     while(!(gps_disable_nmea_output()));
-    //while(!(gps_set_gps_only())); // doesn't seem to work. Find out why
+    while(!(gps_set_gps_only())); 
     while(!(gps_set_airborne_model()));
     while(!(gps_set_power_save()));
-    while(!(gps_power_save(0)));
+    while(!(gps_power_save(0))); // arg = 1 to enable power save
     while(!(gps_save_settings()));
-        
-    gps_get_fix(&current_fix); // debug
+    
+    //while(1){
+    //gps_get_fix(&current_fix); // debug
+    //current_fix;
+    //delay_ms(500); // gps startup delay
+    //}
+    
     
     /* the tracker outputs RF blips while waiting for a GPS fix */
+    
     while (current_fix.num_svs < 5 && current_fix.type < 3) {
         //WDTCTL = WDTPW + WDTCNTCL + WDTIS0; // TODO: work out how to use the watchdog timer
         if (seconds > BLIP_FIX_INTERVAL) {
                 seconds = 0;
                 gps_get_fix(&current_fix);
-                //tx_blips(1);
                 telemetry_start(TELEMETRY_PIPS, 1);
 
         } else {
-                //tx_blips(0);
                 telemetry_start(TELEMETRY_PIPS, 1);
 
         }
