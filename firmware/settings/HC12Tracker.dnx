@@ -83,6 +83,14 @@
         <GraphEnabled>0</GraphEnabled>
         <ShowTimeLog>1</ShowTimeLog>
     </DataSample>
+<<<<<<< HEAD
+=======
+    <Breakpoints>
+        <Bp0>_ "STD_DATA" "si_trx_get_part_info" 0 0 0 3 0 "" 0 ""</Bp0>
+        <Bp1>_ "STD_CODE" "0x0002B5" 1 0 0 0 "" 0 ""</Bp1>
+        <Count>2</Count>
+    </Breakpoints>
+>>>>>>> a5c06447920b646ff813c33ba16a62bd3fa65cd9
     <LogFile>
         <LoggingEnabled>_ 0</LoggingEnabled>
         <LogFile>_ ""</LogFile>
@@ -97,13 +105,7 @@
         <Count>1</Count>
     </Breakpoints>
     <Aliases>
-        <A0>_ "C:\Users\Richard\Documents\GitHub\PicoTracker\firmware\energy.c" ""</A0>
-        <A1>_ "C:\Users\Richard\Documents\GitHub\PicoTracker\firmware\gps.c" ""</A1>
-        <A2>_ "C:\Users\Richard\Documents\GitHub\PicoTracker\firmware\main.c" ""</A2>
-        <A3>_ "C:\Users\Richard\Documents\GitHub\PicoTracker\firmware\si_trx.c" ""</A3>
-        <A4>_ "C:\Users\Richard\Documents\GitHub\PicoTracker\firmware\spi_bitbang.c" ""</A4>
-        <A5>_ "C:\Users\Richard\Documents\GitHub\PicoTracker\firmware\telemetry.c" ""</A5>
-        <Count>6</Count>
+        <Count>0</Count>
         <SuppressDialog>0</SuppressDialog>
     </Aliases>
     <DebuggerSettings>

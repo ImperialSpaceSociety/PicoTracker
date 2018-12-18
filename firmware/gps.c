@@ -104,6 +104,14 @@ void delay_ms(unsigned long ms) {
  * Setup the UART to run at 115200 baud, no parity, one stop bit, 8 data bits.
  * Important: This relies upon the system clock being set to run at 16 MHz.
  */
+<<<<<<< HEAD
+=======
+//
+//  Setup the UART to run at 115200 baud, no parity, one stop bit, 8 data bits.
+//
+//  Important: This relies upon the system clock being set to run at 16 MHz.
+//
+>>>>>>> a5c06447920b646ff813c33ba16a62bd3fa65cd9
 
 void InitialiseUART(void)
 {
@@ -156,6 +164,11 @@ void InitialiseUART(void)
     UART1_CR2_REN = 1;
    
 }
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> a5c06447920b646ff813c33ba16a62bd3fa65cd9
 
 void __delay_cycles(unsigned int n)
 {
@@ -254,6 +267,7 @@ uint8_t gps_disable_nmea_output(void) {
 	return gps_receive_ack(0x06, 0x00);
 }
 
+<<<<<<< HEAD
 /*
  * gps_receive_payload
  *
@@ -309,8 +323,24 @@ uint16_t gps_receive_payload(uint8_t class_id, uint8_t msg_id, unsigned char *pa
 			default:
 				state = UBX_A;
 		}
+=======
+
+void delay_ms(unsigned long ms) {
+	//The best naive delay @16MHz
+	//the 960 comes from the number of instructions to perform the do/while loop
+	//to figure it out, have a look at the generated ASM file after compilation
+	unsigned long cycles = 960 * ms;
+	int i = 0;
+	do
+	{
+		cycles--;
+>>>>>>> a5c06447920b646ff813c33ba16a62bd3fa65cd9
 	}
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> a5c06447920b646ff813c33ba16a62bd3fa65cd9
 
 /* 
  * gps_get_fix
@@ -363,6 +393,7 @@ void gps_get_fix(struct gps_fix *fix) {
 			
 }
 
+<<<<<<< HEAD
 /*
  * gps_set_gps_only
  *
@@ -381,6 +412,10 @@ uint8_t gps_set_gps_only(void) {
 		0x06, 0, 0, 0, 0x00, 0x00, 0x00, 0x00,		/* GLONASS disable, 0 channels */
 		0xeb, 0x72					/* checksum */
 	};
+=======
+
+#pragma vector = UART1_R_RXNE_vector //a special instruction to compiler
+>>>>>>> a5c06447920b646ff813c33ba16a62bd3fa65cd9
 
 	gps_transmit_string(gpsonly, sizeof(gpsonly));
 	return gps_receive_ack(0x06, 0x3E);
@@ -424,6 +459,7 @@ uint8_t gps_set_airborne_model(void) {
 	gps_transmit_string(model6, sizeof(model6));
 	return gps_receive_ack(0x06, 0x24);
 }
+<<<<<<< HEAD
 
 /*
  * gps_set_power_save
@@ -511,12 +547,15 @@ void gps_startup_delay(void) {
 	__delay_cycles(60000);
 	__delay_cycles(60000);
 
+=======
+>>>>>>> a5c06447920b646ff813c33ba16a62bd3fa65cd9
 
 }
 
 #pragma vector = UART1_R_RXNE_vector //a special instruction to compiler
 // RXNE stands for - "Receive Data register not empty"
 
+<<<<<<< HEAD
  __interrupt void UART1_IRQHandler(void)
  {  
 
@@ -524,3 +563,5 @@ void gps_startup_delay(void) {
 
  }
 
+=======
+>>>>>>> a5c06447920b646ff813c33ba16a62bd3fa65cd9
