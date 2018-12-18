@@ -34,6 +34,10 @@ make the program parse the gps coordinates
 form the telemetry string
 transmit the telemetry string
 Try to reduce memory usage when sending the pubx strings to disable nmea
+
+https://github.com/thasti/utrak/blob/0e34389b2efc9d454e22056c00885fd32537d1ea/main.c 
+mostly taken from here.
+
 */
 
 
@@ -51,6 +55,8 @@ Try to reduce memory usage when sending the pubx strings to disable nmea
 #include "main.h"
 
 
+volatile uint16_t seconds = 0;		/* timekeeping via timer */
+
   /*
   Strategy:
 
@@ -63,17 +69,7 @@ Try to reduce memory usage when sending the pubx strings to disable nmea
   loop.
   */
 
-void delay_ms(unsigned long ms) {
-	//The best naive delay @16MHz
-	//the 960 comes from the number of instructions to perform the do/while loop
-	//to figure it out, have a look at the generated ASM file after compilation
-	unsigned long cycles = 960 * ms;
-	do
-	{
-		cycles--;
-	}
-	while(cycles > 0);
-}
+
 
 
 /*
@@ -116,13 +112,31 @@ int main( void )
     //Initialise GPS    
     delay_ms(1000); // gps startup delay
     while(!(gps_disable_nmea_output()));
-    //while(!(gps_set_gps_only()));
+    //while(!(gps_set_gps_only())); // doesn't seem to work. Find out why
     while(!(gps_set_airborne_model()));
     while(!(gps_set_power_save()));
     while(!(gps_power_save(0)));
     while(!(gps_save_settings()));
         
+    gps_get_fix(&current_fix); // debug
+    
+    /* the tracker outputs RF blips while waiting for a GPS fix */
+    while (current_fix.num_svs < 5 && current_fix.type < 3) {
+        //WDTCTL = WDTPW + WDTCNTCL + WDTIS0; // TODO: work out how to use the watchdog timer
+        if (seconds > BLIP_FIX_INTERVAL) {
+                seconds = 0;
+                gps_get_fix(&current_fix);
+                //tx_blips(1);
+                telemetry_start(TELEMETRY_PIPS, 1);
 
+        } else {
+                //tx_blips(0);
+                telemetry_start(TELEMETRY_PIPS, 1);
+
+        }
+    }
+    
+    //TODO: how to get the GPS fixes to be transmitted over radio?
 
     
     // start telemetry

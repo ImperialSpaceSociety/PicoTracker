@@ -16,7 +16,7 @@
         <ShowSource>1</ShowSource>
     </Trace1>
     <DebugChecksum>
-        <Checksum>437258630</Checksum>
+        <Checksum>3082470580</Checksum>
     </DebugChecksum>
     <CodeCoverage>
         <Enabled>_ 0</Enabled>
@@ -85,7 +85,13 @@
     </DataSample>
     <Breakpoints>
         <Bp0>_ "STD_DATA" "si_trx_get_part_info" 0 0 0 3 0 "" 0 ""</Bp0>
-        <Count>1</Count>
+        <Bp1>_ "STD_CODE" "{$PROJ_DIR$\main.c}.131.5" 1 0 0 0 "" 0 ""</Bp1>
+        <Bp2>_ "STD_CODE" "{$PROJ_DIR$\main.c}.131.5" 1 0 0 0 "" 0 ""</Bp2>
+        <Bp3>_ "STD_CODE" "{$PROJ_DIR$\main.c}.124.13" 1 0 0 0 "" 0 ""</Bp3>
+        <Bp4>_ "STD_CODE" "{$PROJ_DIR$\main.c}.131.5" 1 0 0 0 "" 0 ""</Bp4>
+        <Bp5>_ "STD_CODE" "{$PROJ_DIR$\main.c}.124.13" 1 0 0 0 "" 0 ""</Bp5>
+        <Bp6>_ "STD_CODE" "{$PROJ_DIR$\main.c}.123.5" 1 0 0 0 "" 0 ""</Bp6>
+        <Count>7</Count>
     </Breakpoints>
     <LogFile>
         <LoggingEnabled>_ 0</LoggingEnabled>

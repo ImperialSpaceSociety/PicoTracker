@@ -37,13 +37,6 @@
 
 
 
-uint8_t UART1_rx_buffer[UART_RX_BUFFER_LENGTH]; // buffer for UART receive characters
-uint8_t UART1_buffer_pointer;
-/*
-MAybe the interrupts are accidentally being triggered
-*/
-
-
 /**
  Wonderful summary reference taken from: https://github.com/zoomx/stm8-samples/blob/master/blinky/blinky.c
  ********************* UART ********************
@@ -89,7 +82,22 @@ MAybe the interrupts are accidentally being triggered
  * 		CPHA: Clock phase
  * 		LBCL: Last bit clock pulse
  */
+   
+   
+   
+/* The best naive delay @16MHz
+ * the 960 comes from the number of instructions to perform the do/while loop
+ * to figure it out, have a look at the generated ASM file after compilation
+ */
+void delay_ms(unsigned long ms) {
 
+	unsigned long cycles = 960 * ms;
+	do
+	{
+		cycles--;
+	}
+	while(cycles > 0);
+}
 
 /**
  * UART Serial Port Functions
@@ -169,10 +177,6 @@ void gps_transmit_string(char *cmd, uint8_t length) {
 	}
 }
 
-
-
-
-
 /* 
  * gps_receive_ack
  *
@@ -198,7 +202,7 @@ uint8_t gps_receive_ack(uint8_t class_id, uint8_t msg_id) {
 	/* runs until ACK/NAK packet is received, possibly add a timeout.
 	 * can crash if a message ACK is missed (watchdog resets */
 	while(1) {
-                UART1_CR2_RIEN  = 1;
+                UART1_CR2_RIEN  = 1; // turn on the interrupt enable so that a character is received.
                 //while(!UART1_SR);
 		while(!UART1_SR_RXNE); // THIS VERIFICATION HAS TO BE HERE!!
 
@@ -249,6 +253,7 @@ uint8_t gps_disable_nmea_output(void) {
 	gps_transmit_string(nonmea, sizeof(nonmea));
 	return gps_receive_ack(0x06, 0x00);
 }
+
 /*
  * gps_receive_payload
  *
@@ -266,8 +271,9 @@ uint16_t gps_receive_payload(uint8_t class_id, uint8_t msg_id, unsigned char *pa
 
 	//UCA0IFG &= ~UCRXIFG;
 	while(1) {
-		while(!UART1_SR);
-		//UCA0IFG &= ~UCRXIFG;
+                UART1_CR2_RIEN  = 1; // turn on the interrupt enable so that a character is received.
+		while(!UART1_SR_RXNE); // THIS VERIFICATION HAS TO BE HERE!!		//UCA0IFG &= ~UCRXIFG;
+                
 		rx_byte = UART1_DR;
 		switch (state) {
 			case UBX_A:
@@ -514,7 +520,7 @@ void gps_startup_delay(void) {
  __interrupt void UART1_IRQHandler(void)
  {  
 
-   UART1_CR2_RIEN  = 0; // turn off interrupt
+   UART1_CR2_RIEN  = 0; // turn off interrupt after a character has been received.
 
  }
 
