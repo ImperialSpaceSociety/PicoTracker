@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
     <fileVersion>2</fileVersion>
-    <fileChecksum>4013764680</fileChecksum>
+    <fileChecksum>373884159</fileChecksum>
     <configuration>
         <name>Debug</name>
         <outputs>
@@ -60,6 +60,7 @@
             <file>$PROJ_DIR$\Debug\Obj\tlm.o</file>
             <file>$PROJ_DIR$\Debug\Obj\tlm.pbi</file>
             <file>$PROJ_DIR$\tlm.c</file>
+            <file>$PROJ_DIR$\string.h</file>
             <file>$TOOLKIT_DIR$\inc\c\stdio.h</file>
             <file>$TOOLKIT_DIR$\inc\c\stdbool.h</file>
             <file>$TOOLKIT_DIR$\inc\c\ystdio.h</file>
@@ -164,7 +165,11 @@
             <inputs>
                 <tool>
                     <name>BICOMP</name>
-                    <file> 32 35 22 8 46 56 17 31 7 14 57 48 26 50 36 12 24 3 9 51 30 19 47 55</file>
+                    <file> 22 57 58 35 48 26 31 7 14 8 46 32 36 50 12 24 3 9 51 30 19 56</file>
+                </tool>
+                <tool>
+                    <name>ICCSTM8</name>
+                    <file> 56 35 8 30 46 26 48 19 51 58 50 31 32 36 57 12 7 24 22 3 14 9</file>
                 </tool>
             </inputs>
         </file>
@@ -222,11 +227,15 @@
                     <name>BICOMP</name>
                     <file> 53</file>
                 </tool>
+                <tool>
+                    <name>ICCSTM8</name>
+                    <file> 52</file>
+                </tool>
             </outputs>
             <inputs>
                 <tool>
                     <name>BICOMP</name>
-                    <file> 35 43 50 36 8 48 19 47 17 51 30 46 26</file>
+                    <file> 46 43 55 36 8 47 17 35 30 26 48 19</file>
                 </tool>
             </inputs>
         </file>

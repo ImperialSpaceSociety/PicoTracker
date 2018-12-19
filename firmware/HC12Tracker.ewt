@@ -2151,4 +2151,7 @@
     <file>
         <name>$PROJ_DIR$\telemetry.h</name>
     </file>
+    <file>
+        <name>$PROJ_DIR$\tlm.c</name>
+    </file>
 </project>
