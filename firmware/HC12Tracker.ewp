@@ -1610,6 +1610,9 @@
         <name>$PROJ_DIR$\energy.h</name>
     </file>
     <file>
+        <name>$PROJ_DIR$\fix.h</name>
+    </file>
+    <file>
         <name>$PROJ_DIR$\gps.c</name>
     </file>
     <file>
@@ -1620,6 +1623,9 @@
     </file>
     <file>
         <name>$PROJ_DIR$\main.c</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\main.h</name>
     </file>
     <file>
         <name>$PROJ_DIR$\pips.h</name>

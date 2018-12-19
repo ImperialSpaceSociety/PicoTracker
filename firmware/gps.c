@@ -343,7 +343,7 @@ void gps_get_fix(struct gps_fix *fix) {
 	gps_transmit_string(pvt, sizeof(pvt));
 	gps_receive_payload(0x01, 0x07, response);
         // if timeout, must restart or use the watchdog to reset
-
+        // the mapping is found in the reference manual for M8 series gps modules. Section for UBX-NAV-PVT (0x01 0x07)
 	fix->num_svs = response[23];
 	fix->type = response[20];
 	fix->year = response[4] + (response[5] << 8);
@@ -552,8 +552,8 @@ void gps_startup_delay(void) {
 
  __interrupt void UART1_IRQHandler(void)
  {  
-
+   __disable_interrupt();
    UART1_CR2_RIEN  = 0; // turn off interrupt after a character has been received.
-
+   __enable_interrupt();
  }
 

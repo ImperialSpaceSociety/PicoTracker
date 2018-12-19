@@ -101,6 +101,7 @@ int main( void )
     
     // Start the UART
     InitialiseUART(); // set up the uart
+    // TODO: put uart in disable mode when not using it to save power
     
     
     // start up the radio    
@@ -118,15 +119,14 @@ int main( void )
     while(!(gps_power_save(0))); // arg = 1 to enable power save
     while(!(gps_save_settings()));
     
-    //while(1){
-    //gps_get_fix(&current_fix); // debug
-    //current_fix;
-    //delay_ms(500); // gps startup delay
-    //}
+    while(1){
+    gps_get_fix(&current_fix); // debug
+    current_fix;
+    delay_ms(500); // gps startup delay
+    }
     
     
     /* the tracker outputs RF blips while waiting for a GPS fix */
-    
     while (current_fix.num_svs < 5 && current_fix.type < 3) {
         //WDTCTL = WDTPW + WDTCNTCL + WDTIS0; // TODO: work out how to use the watchdog timer
         if (seconds > BLIP_FIX_INTERVAL) {
@@ -141,9 +141,10 @@ int main( void )
     }
     
     //TODO: how to get the GPS fixes to be transmitted over radio?
-
+    // USE THE CODE FROM : https://github.com/thasti/utrak/blob/0e34389b2efc9d454e22056c00885fd32537d1ea/tlm.c
     
     // start telemetry
+    
     
     while (1)
     {

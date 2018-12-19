@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <settings>
     <DebugChecksum>
-        <Checksum>1495571293</Checksum>
+        <Checksum>3145943837</Checksum>
     </DebugChecksum>
     <Stack>
         <FillEnabled>0</FillEnabled>
@@ -23,11 +23,13 @@
     <struct_types>
         <Fmt0>struct gps_fix-day	3	0</Fmt0>
         <Fmt1>struct gps_fix-hour	3	0</Fmt1>
-        <Fmt2>struct gps_fix-min	3	0</Fmt2>
-        <Fmt3>struct gps_fix-month	3	0</Fmt3>
-        <Fmt4>struct gps_fix-num_svs	3	0</Fmt4>
-        <Fmt5>struct gps_fix-sec	3	0</Fmt5>
-        <Fmt6>struct gps_fix-type	3	0</Fmt6>
+        <Fmt2>struct gps_fix-lat	3	0</Fmt2>
+        <Fmt3>struct gps_fix-lon	3	0</Fmt3>
+        <Fmt4>struct gps_fix-min	3	0</Fmt4>
+        <Fmt5>struct gps_fix-month	3	0</Fmt5>
+        <Fmt6>struct gps_fix-num_svs	3	0</Fmt6>
+        <Fmt7>struct gps_fix-sec	3	0</Fmt7>
+        <Fmt8>struct gps_fix-type	3	0</Fmt8>
     </struct_types>
     <array_types>
         <Fmt0>uint8_t[92]	3	0</Fmt0>
@@ -38,8 +40,9 @@
         <ShowTimeLog>1</ShowTimeLog>
     </DataSample>
     <Breakpoints>
-        <Bp0>_ "STD_CODE" "{$PROJ_DIR$\main.c}.153.5" 1 0 0 0 "" 0 ""</Bp0>
-        <Count>1</Count>
+        <Bp0>_ "STD_CODE" "{$PROJ_DIR$\main.c}.157.5" 0 0 0 0 "" 0 ""</Bp0>
+        <Bp1>_ "STD_CODE" "{$PROJ_DIR$\main.c}.123.5" 1 0 0 0 "" 0 ""</Bp1>
+        <Count>2</Count>
     </Breakpoints>
     <LogFile>
         <LoggingEnabled>_ 0</LoggingEnabled>
