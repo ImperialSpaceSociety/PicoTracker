@@ -26,9 +26,9 @@
 #define SOLAR_POWER
 
 /* telemetry string prefix for RX syncronisation */
-#define SYNC_PREFIX		"$$"
+#define SYNC_PREFIX		"  $$"
 /* telemetry string postfix for tlm parser */
-#define TX_BUF_POSTFIX		"\n"
+#define TX_BUF_POSTFIX		"\n\n"
 
 /* number of idle bits to transmit before beginning tlm string tx */
 #define NUM_IDLE_BITS	32

@@ -46,8 +46,9 @@
 
 #define TIMER1_PRESCALE  (HSCLK_FREQUENCY/1000)
    
-//char telemetry_string[TELEMETRY_STRING_MAX] = "$$helloworldhello\n"; 
-
+/* A lot of work for the telemetry and gps communication is taken from 
+ * https://github.com/thasti/utrak
+ */
 
 /* calculated sentence ID length, used for variable length buffer */
 uint16_t tlm_sent_id_length;
@@ -60,27 +61,8 @@ extern char tx_buf[TX_BUF_MAX_LENGTH];
 
 extern char telemetry_string[TX_BUF_MAX_LENGTH];
 
-
 extern struct gps_fix current_fix;
 
-
-
-
-
-
-/**
- * TELEMETRY STRING CREATION
- * =============================================================================
- */
-
-uint8_t telemetry_putstr(char *string) // Enter string into telemetry buffer
-{
-  if (strlen(string) > TELEMETRY_STRING_MAX) return false;
-  //else strcpy(telemetry_string, string);
-  else strcpy(tx_buf, string);
-
-  return true;
-}
 
 /**
  * TELEMETRY OUTPUT
@@ -112,7 +94,6 @@ int telemetry_active(void) {
 }
 
 
-
 /**
  * Starts telemetry output
  *
@@ -142,7 +123,6 @@ int telemetry_start(enum telemetry_t type, int8_t length) {
 }
 
 
-
 uint8_t is_telemetry_finished(void) {
   if (telemetry_index >= telemetry_string_length) {
     /* All done, deactivate */
@@ -160,7 +140,6 @@ uint8_t is_telemetry_finished(void) {
   }
   return 0;
 }
-
 
 
 
@@ -186,8 +165,7 @@ void telemetry_tick(void) {
         if (is_telemetry_finished()) return;
 
         /* Let's start again */
-        //uint8_t data = telemetry_string[telemetry_index];
-        uint8_t data = tx_buf[telemetry_index]; // temp
+        uint8_t data = tx_buf[telemetry_index]; 
 
         telemetry_index++;
 
@@ -247,29 +225,19 @@ uint16_t crc_xmodem_update(uint16_t crc, uint8_t data)
 }
 
 /**
- * Calcuates the CRC checksum for a communications string
- * See http://ukhas.org.uk/communication:protocol
- */
+* Calcuates the CRC checksum for a communications string
+* See http://ukhas.org.uk/communication:protocol
+*/
 uint16_t calculate_txbuf_checksum(void)
 {
   size_t i;
   uint16_t crc;
-  //uint8_t c;
-
   crc = 0xFFFF;
   
-  
   for (i = TX_BUF_CHECKSUM_BEGIN; i < TX_BUF_CHECKSUM_END; i++) {
-		//CRCDIRB_L = tx_buf[i];
-                crc = crc_xmodem_update(crc, tx_buf[i]);
-
+    crc = crc_xmodem_update(crc, tx_buf[i]);
   }
-
-  //for (i = 0; i < strlen(string); i++) {
-  //  c = string[i];
-  //  crc = crc_xmodem_update(crc, c);
-  //}
-
+  
   return crc;
 }
 

@@ -1663,10 +1663,4 @@
     <file>
         <name>$PROJ_DIR$\telemetry.h</name>
     </file>
-    <file>
-        <name>$PROJ_DIR$\tlm.c</name>
-    </file>
-    <file>
-        <name>$PROJ_DIR$\tlm.h</name>
-    </file>
 </project>

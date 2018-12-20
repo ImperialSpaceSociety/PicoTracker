@@ -45,19 +45,14 @@ enum telemetry_t {
  */
 #define TELEMETRY_STRING_MAX	0x100
 
-uint8_t telemetry_putstr(char *string); // Enter string into telemetry buffer
-uint8_t telemetry_putstrCRC(char *string); // Enter string into telemetry buffer and append CRC
+
 int telemetry_active(void);
 int telemetry_start(enum telemetry_t type, int8_t length);
 void timer1_tick_init(uint16_t millisecs);
 void timer1_tick_time(uint16_t millisecs);
 void timer1_tick_deinit();
-
-
-void tx_blips(uint8_t reset);
 void init_tx_buffer(void);
 void prepare_tx_buffer(void);
-void tlm_init(void);
 
 
 #endif /* TELEMETRY_H */

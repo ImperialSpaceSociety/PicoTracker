@@ -50,6 +50,7 @@ uint8_t gps_save_settings(void);
 void gps_get_fix(struct gps_fix *fix);
 void gps_startup_delay(void);
 void delay_ms(unsigned long ms);
+void uart_power_save(int on);
 
 //void gps_transmit_string(char *cmd, uint8_t length);
 
