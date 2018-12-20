@@ -2146,6 +2146,12 @@
         <name>$PROJ_DIR$\spi_bitbang.h</name>
     </file>
     <file>
+        <name>$PROJ_DIR$\string.c</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\string.h</name>
+    </file>
+    <file>
         <name>$PROJ_DIR$\telemetry.c</name>
     </file>
     <file>

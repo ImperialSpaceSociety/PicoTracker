@@ -119,8 +119,8 @@ void InitialiseUART(void)
     //
     UART1_CR1 = 0;
     UART1_CR2 = 0;
-    UART1_CR4 = 0;
     UART1_CR3 = 0;
+    UART1_CR4 = 0;
     UART1_CR5 = 0;
     UART1_GTR = 0;
     UART1_PSCR = 0;
@@ -275,6 +275,8 @@ uint16_t gps_receive_payload(uint8_t class_id, uint8_t msg_id, unsigned char *pa
 	while(1) {
                 UART1_CR2_RIEN  = 1; // turn on the interrupt enable so that a character is received.
 		while(!UART1_SR_RXNE); // THIS VERIFICATION HAS TO BE HERE!!		//UCA0IFG &= ~UCRXIFG;
+                // put a watchdog timer here to make sure it is not waiting
+                // for a byte to appear forever from the GPS module.
                 
 		rx_byte = UART1_DR;
 		switch (state) {
@@ -545,6 +547,21 @@ void gps_startup_delay(void) {
 
 
 /*
+ * UART power save mode turn on or off
+ */
+void uart_power_save(int on) {
+  /* UARTD: UART Disable (for low power consumption).
+   * When this bit is set the UART prescaler and outputs are stopped at the end of the current byte
+   * transfer in order to reduce power consumption. This bit is set and cleared by software.
+   * 0: UART enabled
+   * 1: UART prescaler and outputs disabled
+   */
+    // seems like there is mistake in the mapping of iostm8s..
+    UART1_CR1_UART0 = on ;
+}
+
+
+/*
  * set up the interrupts for uart rx
  */
 #pragma vector = UART1_R_RXNE_vector //a special instruction to compiler
@@ -552,8 +569,6 @@ void gps_startup_delay(void) {
 
  __interrupt void UART1_IRQHandler(void)
  {  
-   __disable_interrupt();
    UART1_CR2_RIEN  = 0; // turn off interrupt after a character has been received.
-   __enable_interrupt();
  }
 
