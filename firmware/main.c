@@ -56,30 +56,30 @@ Try to reduce memory usage when sending the pubx strings to disable nmea
 
 
 /* A lot of work for the telemetry and gps communication is taken from 
- * https://github.com/thasti/utrak
- */
+* https://github.com/thasti/utrak
+*/
 
 //volatile uint16_t seconds = 0;		/* timekeeping via timer */
 
-  /*
-  Strategy:
+/*
+Strategy:
 
-  put into flight mode
-  
-  loop start
-  get gps position and disable gps interrupts
-  create telemetry string
-  transmit telemetry string
-  loop.
-  */
+put into flight mode
+
+loop start
+get gps position and disable gps interrupts
+create telemetry string
+transmit telemetry string
+loop.
+*/
 
 
 
 
 /*
- * the TX data buffer
- * contains ASCII data, which is either transmitted as CW over RTTY
- */
+* the TX data buffer
+* contains ASCII data, which is either transmitted as CW over RTTY
+*/
 uint16_t tx_buf_rdy = 0;			/* the read-flag (main -> main) */
 uint16_t tx_buf_length = 0;			/* how many chars to send */
 char tx_buf[TX_BUF_MAX_LENGTH] = {SYNC_PREFIX "$$" PAYLOAD_NAME ","};	/* the telemetry buffer initialised with $$ */
@@ -88,10 +88,10 @@ char tx_buf[TX_BUF_MAX_LENGTH] = {SYNC_PREFIX "$$" PAYLOAD_NAME ","};	/* the tel
 struct gps_fix current_fix;
 
 void get_fix_and_measurements(void) {
-	gps_get_fix(&current_fix);
-	//current_fix.temperature_int = get_die_temperature();
-	//current_fix.voltage_bat = get_battery_voltage();
-	//current_fix.voltage_sol = get_solar_voltage();
+    gps_get_fix(&current_fix);
+    //current_fix.temperature_int = get_die_temperature();
+    //current_fix.voltage_bat = get_battery_voltage();
+    //current_fix.voltage_sol = get_solar_voltage();
 }
 
 
@@ -111,7 +111,7 @@ int main( void )
     /* Initialise Si4060 interface */
     si_trx_init();
     
-
+    
     /* Initialise GPS */   
     delay_ms(1000); // gps startup delay
     while(!(gps_disable_nmea_output()));
@@ -120,65 +120,65 @@ int main( void )
     while(!(gps_set_power_save()));
     while(!(gps_power_save(0))); // arg = 1 to enable power save
     while(!(gps_save_settings()));
-        
-//    
-//    
-//    /* the tracker outputs RF blips while waiting for a GPS fix */
-//    while (current_fix.num_svs < 5 && current_fix.type < 3) {
-//        //WDTCTL = WDTPW + WDTCNTCL + WDTIS0; // TODO: work out how to use the watchdog timer
-//        if (seconds > BLIP_FIX_INTERVAL) {
-//                seconds = 0;
-//                gps_get_fix(&current_fix);
-//                telemetry_start(TELEMETRY_PIPS, 1);
-//
-//        } else {
-//                telemetry_start(TELEMETRY_PIPS, 5);
-//
-//        }
-//    }
-//    
+    
+    //    
+    //    
+    //    /* the tracker outputs RF blips while waiting for a GPS fix */
+    //    while (current_fix.num_svs < 5 && current_fix.type < 3) {
+    //        //WDTCTL = WDTPW + WDTCNTCL + WDTIS0; // TODO: work out how to use the watchdog timer
+    //        if (seconds > BLIP_FIX_INTERVAL) {
+    //                seconds = 0;
+    //                gps_get_fix(&current_fix);
+    //                telemetry_start(TELEMETRY_PIPS, 1);
+    //
+    //        } else {
+    //                telemetry_start(TELEMETRY_PIPS, 5);
+    //
+    //        }
+    //    }
+    //    
     
     // TODO : how to use the watchdog timer here to prevent it from getting stuck
     // one of the reasons for getting stuck is when data does not arrive from the
     // GPS module, leaving the MCU waiting for a resposnse forever.
     while (1)
     {
-  
-    /* get the gps fix */
-    gps_get_fix(&current_fix); 
-    
-    /* save gps power by putting in power save mode */
-    //gps_power_save(1); // arg = 1 to enable power save. Seems to fail to send back data sometimes.
-    
-    /* save power by putting in power save mode */
-    // TODO: work out how to wake up the uart again. It doesn't wake back up
-    //uart_power_save(1); // 1 to power save
-
-    
-    /* fill the zeros with x. For debug. Not sure why. comment on original function states
-     * that if there are the field handling errors, we get this.*/
-    init_tx_buffer();
-
-    /* create the telemetry string */
-    prepare_tx_buffer();
-    
-    /* start pips */
-    telemetry_start(TELEMETRY_PIPS, 5);
-
-    /* Sleep Wait */ 
-    while (telemetry_active());
-    
-    /* send telemetry over RTTY */
-    telemetry_start(TELEMETRY_RTTY, TX_BUF_MAX_LENGTH);
-
-    /* Sleep Wait */ 
-    while (telemetry_active());
-    
-    
+	
+	/* get the gps fix */
+	gps_get_fix(&current_fix); 
+	
+	/* save gps power by putting in power save mode */
+	//gps_power_save(1); // arg = 1 to enable power save. Seems to fail to send back data sometimes.
+	
+	/* save power by putting in power save mode */
+	// TODO: work out how to wake up the uart again. It doesn't wake back up
+	//uart_power_save(1); // 1 to power save
+	
+	
+	/* fill the zeros with x. For debug. Not sure why. comment on original function states
+	* that if there are the field handling errors, we get this.*/
+	init_tx_buffer();
+	
+	/* create the telemetry string */
+	prepare_tx_buffer();
+	
+	/* start pips */
+	telemetry_start(TELEMETRY_PIPS, 5);
+	
+	/* Sleep Wait */ 
+	while (telemetry_active());
+	
+	/* send telemetry over RTTY */
+	telemetry_start(TELEMETRY_RTTY, TX_BUF_MAX_LENGTH);
+	
+	/* Sleep Wait */ 
+	while (telemetry_active());
+	
+	
     }
     
     
 }
-          
+
 
 
