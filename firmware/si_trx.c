@@ -432,11 +432,15 @@ void si_trx_init(void)
   _si_trx_sdn_enable();
 
   /* Configure the SPI select pin */
-  
-    PD_DDR_DDR2 = 1;        //  Port D, bit 2 is output.
+#ifdef SILABS_QFN             
+    PD_DDR_DDR3 = 1;        //  Port D, bit 3 is output for QFN.
+    PD_CR1_C13 = 1;         //  Pin is set to Push-Pull mode.
+    PD_CR2_C23 = 1;         //  Pin can run upto 10 MHz. 
+#else
+    PD_DDR_DDR2 = 1;        //  Port D, bit 2 is output for TSSOP.
     PD_CR1_C12 = 1;         //  Pin is set to Push-Pull mode.
     PD_CR2_C22 = 1;         //  Pin can run upto 10 MHz. 
-  
+#endif
 
   /* Put the SEL pin in reset */
   _si_trx_cs_disable();
