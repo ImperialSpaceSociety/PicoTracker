@@ -33,87 +33,36 @@
 #include <iostm8s003f3.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include <intrinsics.h>
 #include "HC12Board.h"
 #include "telemetry.h"
 #include "rtty.h"
 #include "pips.h"
 #include "si_trx.h"
 #include "si_trx_defs.h"
-#include <intrinsics.h>
+#include "main.h"
+#include "string.h"
+#include "fix.h"
 
 #define TIMER1_PRESCALE  (HSCLK_FREQUENCY/1000)
    
-char telemetry_string[TELEMETRY_STRING_MAX] = "$$helloworldhello\n";   
-
-/**
- * CYCLIC REDUNDANCY CHECK (CRC)
- * =============================================================================
+/* A lot of work for the telemetry and gps communication is taken from 
+ * https://github.com/thasti/utrak
  */
 
-/**
- * CRC Function for the XMODEM protocol.
- * http://www.nongnu.org/avr-libc/user-manual/group__util__crc.html#gaca726c22a1900f9bad52594c8846115f
- */
-uint16_t crc_xmodem_update(uint16_t crc, uint8_t data)
-{
-  int i;
+/* calculated sentence ID length, used for variable length buffer */
+uint16_t tlm_sent_id_length;
+uint16_t tlm_alt_length;
 
-  crc = crc ^ ((uint16_t)data << 8);
-  for (i = 0; i < 8; i++) {
-    if (crc & 0x8000) {
-      crc = (crc << 1) ^ 0x1021;
-    } else {
-      crc <<= 1;
-    }
-  }
+extern volatile uint16_t tlm_tick;
+extern uint16_t tx_buf_rdy;
+extern uint16_t tx_buf_length;
+extern char tx_buf[TX_BUF_MAX_LENGTH];
 
-  return crc;
-}
+extern char telemetry_string[TX_BUF_MAX_LENGTH];
 
-/**
- * Calcuates the CRC checksum for a communications string
- * See http://ukhas.org.uk/communication:protocol
- */
-uint16_t crc_checksum(char *string)
-{
-  size_t i;
-  uint16_t crc;
-  uint8_t c;
+extern struct gps_fix current_fix;
 
-  crc = 0xFFFF;
-
-  for (i = 0; i < strlen(string); i++) {
-    c = string[i];
-    crc = crc_xmodem_update(crc, c);
-  }
-
-  return crc;
-}
-
-/**
- * TELEMETRY STRING CREATION
- * =============================================================================
- */
-
-uint8_t telemetry_putstr(char *string) // Enter string into telemetry buffer
-{
-  if (strlen(string) > TELEMETRY_STRING_MAX) return false;
-  else strcpy(telemetry_string, string);
-  return true;
-}
-
-uint8_t telemetry_putstrCRC(char *string) //Enter string into telemetry buffer and append CRC
-{
-   if (strlen(string) > (TELEMETRY_STRING_MAX - 2)) return false;
-   else
-   {
-      uint16_t checksum = crc_checksum(string);
-      strcpy(telemetry_string, string);
-      telemetry_string[sizeof(string) + 1] = checksum >> 8;
-      telemetry_string[sizeof(string) + 2] = checksum &  0xff;
-   }
-   return true;
-}
 
 /**
  * TELEMETRY OUTPUT
@@ -137,13 +86,13 @@ int8_t telemetry_index;
  */
 uint8_t radio_on = 0;
 
-
 /**
  * Returns 1 if we're currently outputting.
  */
 int telemetry_active(void) {
   return (telemetry_string_length > 0);
 }
+
 
 /**
  * Starts telemetry output
@@ -174,8 +123,6 @@ int telemetry_start(enum telemetry_t type, int8_t length) {
 }
 
 
-
-
 uint8_t is_telemetry_finished(void) {
   if (telemetry_index >= telemetry_string_length) {
     /* All done, deactivate */
@@ -193,6 +140,10 @@ uint8_t is_telemetry_finished(void) {
   }
   return 0;
 }
+
+
+
+
 /**
  * Called at the telemetry mode's baud rate
  */
@@ -214,7 +165,8 @@ void telemetry_tick(void) {
         if (is_telemetry_finished()) return;
 
         /* Let's start again */
-        uint8_t data = telemetry_string[telemetry_index];
+        uint8_t data = tx_buf[telemetry_index]; 
+
         telemetry_index++;
 
         rtty_start(data);
@@ -243,6 +195,165 @@ void telemetry_tick(void) {
     }
   }
 }
+
+
+
+
+/**
+ * CYCLIC REDUNDANCY CHECK (CRC)
+ * =============================================================================
+ */
+
+/**
+ * CRC Function for the XMODEM protocol.
+ * http://www.nongnu.org/avr-libc/user-manual/group__util__crc.html#gaca726c22a1900f9bad52594c8846115f
+ */
+uint16_t crc_xmodem_update(uint16_t crc, uint8_t data)
+{
+  int i;
+
+  crc = crc ^ ((uint16_t)data << 8);
+  for (i = 0; i < 8; i++) {
+    if (crc & 0x8000) {
+      crc = (crc << 1) ^ 0x1021;
+    } else {
+      crc <<= 1;
+    }
+  }
+
+  return crc;
+}
+
+/**
+* Calcuates the CRC checksum for a communications string
+* See http://ukhas.org.uk/communication:protocol
+*/
+uint16_t calculate_txbuf_checksum(void)
+{
+  size_t i;
+  uint16_t crc;
+  crc = 0xFFFF;
+  
+  for (i = TX_BUF_CHECKSUM_BEGIN; i < TX_BUF_CHECKSUM_END; i++) {
+    crc = crc_xmodem_update(crc, tx_buf[i]);
+  }
+  
+  return crc;
+}
+
+
+/*
+ * prepare_tx_buffer
+ *
+ * fills tx_buf with telemetry values. this depends on the
+ * GPS having a fix and telemetry being extracted before
+ *
+ * telemetry format:
+ * - callsign
+ * - sentence id
+ * - time
+ * - latitude
+ * - longitude
+ * - altitude
+ * - available satellites
+ * - voltage of the AAA cell
+ * - MSP430 temperature
+ */
+void prepare_tx_buffer(void) {
+	static uint16_t sent_id = 0;
+	int i;
+	uint16_t crc;
+
+	sent_id++;
+	tlm_sent_id_length = i16toav(sent_id, &tx_buf[TX_BUF_SENT_ID_START]);
+	tx_buf[TX_BUF_SENT_ID_START + tlm_sent_id_length] = ',';
+
+	i16toa(current_fix.hour, 2, &tx_buf[TX_BUF_TIME_START]);
+	i16toa(current_fix.min, 2, &tx_buf[TX_BUF_TIME_START + 2]);
+	i16toa(current_fix.sec, 2, &tx_buf[TX_BUF_TIME_START + 4]);
+	tx_buf[TX_BUF_TIME_START + TIME_LENGTH] = ',';
+	
+	if (current_fix.lat > 0) {
+		tx_buf[TX_BUF_LAT_START] = '+';
+		i32toa(current_fix.lat, 9, &tx_buf[TX_BUF_LAT_START + 1]);
+	} else {
+		tx_buf[TX_BUF_LAT_START] = '-';
+		i32toa(0 - current_fix.lat, 9, &tx_buf[TX_BUF_LAT_START + 1]);
+	}
+	/* copy fraction of degrees one character towards the end, insert dot */
+	/* 012XXXXXX -> 012 XXXXXX */
+	for (i = 8; i >= 3; i--) {
+		tx_buf[TX_BUF_LAT_START + i + 1] = tx_buf[TX_BUF_LAT_START + i];	
+	}
+	tx_buf[TX_BUF_LAT_START + 3] = '.';
+	tx_buf[TX_BUF_LAT_START + LAT_LENGTH + 1] = ',';
+
+	if (current_fix.lon > 0) {
+		tx_buf[TX_BUF_LON_START] = '+';
+		i32toa(current_fix.lon, 10, &tx_buf[TX_BUF_LON_START + 1]);
+	} else {
+		tx_buf[TX_BUF_LON_START] = '-';
+		i32toa(0 - current_fix.lon, 10, &tx_buf[TX_BUF_LON_START + 1]);
+	}
+	/* copy fraction of degrees one character towards the end, insert dot */
+	/* 51XXXXXX -> 51 XXXXXX */
+	for (i = 9; i >= 4; i--) {
+		tx_buf[TX_BUF_LON_START + i + 1] = tx_buf[TX_BUF_LON_START + i];	
+	}
+	tx_buf[TX_BUF_LON_START + 4] = '.';
+	tx_buf[TX_BUF_LON_START + LON_LENGTH + 1] = ',';
+	
+	tlm_alt_length = i16toav(current_fix.alt, &tx_buf[TX_BUF_ALT_START]);
+	tx_buf[TX_BUF_ALT_START + tlm_alt_length] = ',';
+	
+	i16toa(current_fix.num_svs, SAT_LENGTH, &tx_buf[TX_BUF_SAT_START]);
+	tx_buf[TX_BUF_SAT_START + SAT_LENGTH] = ',';
+	
+	i16toa(current_fix.voltage_bat, VOLT_LENGTH, &tx_buf[TX_BUF_VOLT_START]);
+	tx_buf[TX_BUF_VOLT_START + VOLT_LENGTH] = ',';
+	
+	i16toa(current_fix.voltage_sol, VSOL_LENGTH, &tx_buf[TX_BUF_VSOL_START]);
+	tx_buf[TX_BUF_VSOL_START + VSOL_LENGTH] = ',';
+
+	if (current_fix.temperature_int < 0) {
+		tx_buf[TX_BUF_TEMP_START] = '-';
+		i16toa(0 - current_fix.temperature_int, TEMP_LENGTH, &tx_buf[TX_BUF_TEMP_START + 1]);
+	} else {
+		tx_buf[TX_BUF_TEMP_START] = '+';
+		i16toa(current_fix.temperature_int, TEMP_LENGTH, &tx_buf[TX_BUF_TEMP_START + 1]);
+	}
+	
+	tx_buf[TX_BUF_TEMP_START + TEMP_LENGTH + 1] = '*';
+
+	crc = calculate_txbuf_checksum();
+	i16tox(crc, &tx_buf[TX_BUF_CHECKSUM_START]);
+	for (i = 0; i < TX_BUF_POSTFIX_LENGTH; i++)
+		tx_buf[TX_BUF_POSTFIX_START + i] = TX_BUF_POSTFIX[i];
+
+	tx_buf_length = TX_BUF_FRAME_END;
+	/* trigger transmission */
+	tx_buf_rdy = 1;
+}
+
+void tlm_init(void) {
+	tx_buf_rdy = 1;
+}
+
+/*
+ * init_tx_buffer
+ *
+ * helper routine to fill the TX buffer with "x"es - if any of those get transmitted,
+ * the field handling is not correct
+ */
+void init_tx_buffer(void) {
+	uint16_t i;
+
+	for (i = TX_BUF_START_OFFSET; i < TX_BUF_MAX_LENGTH; i++) {
+		tx_buf[i] = 'x';
+	}
+}
+
+
 
 
 /**

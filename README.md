@@ -30,7 +30,7 @@ This Pico balloon tracker is designed to offer an easy to build and low cost ent
 ## Status
 * Done: Prototype build, Processor initialization, Radio code, RTTY and pips
 
-* Working on: GPS and message string creation
+* Working on: GPS and message string creation (almost done 20 December 2018)
 
 * To Do:  Power Management, Temperature issues, final packaging, Testing
 

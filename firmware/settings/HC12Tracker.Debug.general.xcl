@@ -1,10 +1,10 @@
-"C:\Program Files (x86)\IAR Systems\Embedded Workbench 8.0\stm8\bin\stm8proc.dll" 
+"D:\Program Files\IAR\stm8\bin\stm8proc.dll" 
 
-"C:\Program Files (x86)\IAR Systems\Embedded Workbench 8.0\stm8\bin\stm8stlink.dll" 
+"D:\Program Files\IAR\stm8\bin\stm8stlink.dll" 
 
-"C:\Users\Richard\Documents\GitHub\PicoTracker\firmware\Debug\Exe\HC12Tracker.out" 
+"D:\High Altitude Ballooning\Github data\Pico Tracker\PicoTracker\firmware\Debug\Exe\HC12Tracker.out" 
 
---plugin "C:\Program Files (x86)\IAR Systems\Embedded Workbench 8.0\stm8\bin\stm8bat.dll" 
+--plugin "D:\Program Files\IAR\stm8\bin\stm8bat.dll" 
 
 
 
