@@ -79,6 +79,7 @@ volatile uint16_t seconds = 0;		/* timekeeping via timer */
 uint16_t tx_buf_rdy = 0;			/* the read-flag (main -> main) */
 uint16_t tx_buf_length = 0;			/* how many chars to send */
 char tx_buf[TX_BUF_MAX_LENGTH] = {SYNC_PREFIX "$$" PAYLOAD_NAME ","};	/* the actual buffer */
+//char telemetry_string[TX_BUF_MAX_LENGTH] = {SYNC_PREFIX "$$" PAYLOAD_NAME ","};	/* the actual buffer */
 
 /* current (latest) GPS fix and measurements */
 struct gps_fix current_fix;
@@ -119,27 +120,35 @@ int main( void )
     while(!(gps_power_save(0))); // arg = 1 to enable power save
     while(!(gps_save_settings()));
     
-    while(1){
-    gps_get_fix(&current_fix); // debug
-    current_fix;
-    delay_ms(500); // gps startup delay
-    }
     
+//    for(int a = 1; a < 100; a ++ ){
+//    gps_get_fix(&current_fix); // debug
+//        
+//    /* create the telemetry string */
+//    prepare_tx_buffer();
+//    
+//    delay_ms(500); // gps startup delay    
+//    }
     
-    /* the tracker outputs RF blips while waiting for a GPS fix */
-    while (current_fix.num_svs < 5 && current_fix.type < 3) {
-        //WDTCTL = WDTPW + WDTCNTCL + WDTIS0; // TODO: work out how to use the watchdog timer
-        if (seconds > BLIP_FIX_INTERVAL) {
-                seconds = 0;
-                gps_get_fix(&current_fix);
-                telemetry_start(TELEMETRY_PIPS, 1);
 
-        } else {
-                telemetry_start(TELEMETRY_PIPS, 1);
 
-        }
-    }
     
+//    
+//    
+//    /* the tracker outputs RF blips while waiting for a GPS fix */
+//    while (current_fix.num_svs < 5 && current_fix.type < 3) {
+//        //WDTCTL = WDTPW + WDTCNTCL + WDTIS0; // TODO: work out how to use the watchdog timer
+//        if (seconds > BLIP_FIX_INTERVAL) {
+//                seconds = 0;
+//                gps_get_fix(&current_fix);
+//                telemetry_start(TELEMETRY_PIPS, 1);
+//
+//        } else {
+//                telemetry_start(TELEMETRY_PIPS, 1);
+//
+//        }
+//    }
+//    
     //TODO: how to get the GPS fixes to be transmitted over radio?
     // USE THE CODE FROM : https://github.com/thasti/utrak/blob/0e34389b2efc9d454e22056c00885fd32537d1ea/tlm.c
     
@@ -149,14 +158,24 @@ int main( void )
     while (1)
     {
   
+    /* get the gps fix */
+    gps_get_fix(&current_fix); 
+    
+    /* fill the zeros with x */
+    init_tx_buffer();
+
+    /* create the telemetry string */
+    prepare_tx_buffer();
+    
+    /* start pips */
     telemetry_start(TELEMETRY_PIPS, 5);
 
-    // Sleep Wait 
+    /* Sleep Wait */ 
     while (telemetry_active());
     
-    telemetry_start(TELEMETRY_RTTY, 20);
+    telemetry_start(TELEMETRY_RTTY, TX_BUF_MAX_LENGTH);
 
-    // Sleep Wait 
+    /* Sleep Wait */ 
     while (telemetry_active());
     
     

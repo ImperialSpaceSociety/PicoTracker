@@ -32,6 +32,7 @@
 
 #include <iostm8s003f3.h>
 #include <stdint.h>
+#include <inttypes.h>
 
 
 enum telemetry_t {
@@ -51,6 +52,12 @@ int telemetry_start(enum telemetry_t type, int8_t length);
 void timer1_tick_init(uint16_t millisecs);
 void timer1_tick_time(uint16_t millisecs);
 void timer1_tick_deinit();
+
+
+void tx_blips(uint8_t reset);
+void init_tx_buffer(void);
+void prepare_tx_buffer(void);
+void tlm_init(void);
 
 
 #endif /* TELEMETRY_H */

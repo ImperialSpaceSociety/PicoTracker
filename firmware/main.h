@@ -9,7 +9,7 @@
 #define MAIN_H_
 
 /* payload name */
-#define PAYLOAD_NAME "0x0d"
+#define PAYLOAD_NAME "ICSEDS2"
 /* payload telemetry interval
  * can be set for APRS only and for RTTY + APRS
  */
@@ -26,9 +26,9 @@
 #define SOLAR_POWER
 
 /* telemetry string prefix for RX syncronisation */
-#define SYNC_PREFIX		"   $$"
+#define SYNC_PREFIX		"$$"
 /* telemetry string postfix for tlm parser */
-#define TX_BUF_POSTFIX		"\n\n"
+#define TX_BUF_POSTFIX		"\n"
 
 /* number of idle bits to transmit before beginning tlm string tx */
 #define NUM_IDLE_BITS	32
@@ -73,7 +73,7 @@
 				sizeof("*") - 1 + CHECKSUM_LENGTH + TX_BUF_POSTFIX_LENGTH
 
 /* buffer sizes */
-#define NMEA_BUF_SIZE	83
+//#define NMEA_BUF_SIZE	83
 
 /* Port 1 */
 #define LED_A	BIT0
@@ -101,8 +101,5 @@
 #define N_TLM	40000 - 1		/* DCO_freq / TLM rate / 2 */
 #define TLM_HZ	100			/* tlm rate in Hz */
 
-/* ADC calibration locations */
-#define CALADC10_15V_30C  *((unsigned int *)0x1A1A)   // Temperature Sensor Calibration-30 C
-#define CALADC10_15V_85C  *((unsigned int *)0x1A1C)   // Temperature Sensor Calibration-85 C
 
 #endif

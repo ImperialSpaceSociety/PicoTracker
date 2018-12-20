@@ -552,8 +552,6 @@ void gps_startup_delay(void) {
 
  __interrupt void UART1_IRQHandler(void)
  {  
-   __disable_interrupt();
    UART1_CR2_RIEN  = 0; // turn off interrupt after a character has been received.
-   __enable_interrupt();
  }
 
