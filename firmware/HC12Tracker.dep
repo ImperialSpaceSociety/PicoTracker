@@ -70,7 +70,7 @@
             <outputs>
                 <tool>
                     <name>ILINK</name>
-                    <file> 49 58</file>
+                    <file> 58 49</file>
                 </tool>
             </outputs>
         </file>
@@ -224,7 +224,7 @@
                 </tool>
                 <tool>
                     <name>BICOMP</name>
-                    <file> 37 55 40 25 50 16 17 8 3 15 10 13 22 36 33 52 48 47 18 31</file>
+                    <file> 36 55 40 25 52 47 16 17 8 33 48 15 10 13 22 37 3 50 18 31</file>
                 </tool>
             </inputs>
         </file>
