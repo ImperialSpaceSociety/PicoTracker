@@ -422,46 +422,50 @@ void si_trx_switch_channel(int16_t channel)
 */
 void si_trx_init(void)
 {
-	/* Configure the SDN pin */
-	
-	PD_DDR_DDR4 = 1;        //  Port D, bit 4 is output.
-	PD_CR1_C14 = 1;         //  Pin is set to Push-Pull mode.
-	PD_CR2_C24 = 1;         //  Pin can run upto 10 MHz. 
-	
-	/* Put the transciever in shutdown */
-	_si_trx_sdn_enable();
-	
-	/* Configure the SPI select pin */
-	
-	PD_DDR_DDR2 = 1;        //  Port D, bit 2 is output.
-	PD_CR1_C12 = 1;         //  Pin is set to Push-Pull mode.
-	PD_CR2_C22 = 1;         //  Pin can run upto 10 MHz. 
-	
-	
-	/* Put the SEL pin in reset */
-	_si_trx_cs_disable();
-	
-	/* Configure the GPIO pins */
-	PB_DDR_DDR4 = 0;        //  GPIO0 Port B, bit 4 is input.
-	PB_CR1_C14 = 1;         //  Pin is set to Pullup.
-	PB_CR2_C24 = 0;         //  Pin is set to NO Interrupt. 
-	
-	
-	
-	PC_DDR_DDR3 = 1;        //  GPIO1 Port C, bit 3 is output.
-	PC_CR1_C13 = 1;         //  Pin is set to Push-Pull mode.
-	PC_CR2_C23 = 1;         //  Pin can run upto 10 MHz. 
-	
-	PC_ODR_ODR3 = 0;        // GPIO1 Modulation = 0
-	
-	
-	
-	
-	/* Configure the IRQ pin */
-	// TODO
-	
-	/* Configure the serial port */
-	spi_bitbang_init();
+  /* Configure the SDN pin */
+ 
+    PD_DDR_DDR4 = 1;        //  Port D, bit 4 is output.
+    PD_CR1_C14 = 1;         //  Pin is set to Push-Pull mode.
+    PD_CR2_C24 = 1;         //  Pin can run upto 10 MHz. 
+ 
+  /* Put the transciever in shutdown */
+  _si_trx_sdn_enable();
+
+  /* Configure the SPI select pin */
+#ifdef SILABS_QFN             
+    PD_DDR_DDR3 = 1;        //  Port D, bit 3 is output for QFN.
+    PD_CR1_C13 = 1;         //  Pin is set to Push-Pull mode.
+    PD_CR2_C23 = 1;         //  Pin can run upto 10 MHz. 
+#else
+    PD_DDR_DDR2 = 1;        //  Port D, bit 2 is output for TSSOP.
+    PD_CR1_C12 = 1;         //  Pin is set to Push-Pull mode.
+    PD_CR2_C22 = 1;         //  Pin can run upto 10 MHz. 
+#endif
+
+  /* Put the SEL pin in reset */
+  _si_trx_cs_disable();
+
+  /* Configure the GPIO pins */
+    PB_DDR_DDR4 = 0;        //  GPIO0 Port B, bit 4 is input.
+    PB_CR1_C14 = 1;         //  Pin is set to Pullup.
+    PB_CR2_C24 = 0;         //  Pin is set to NO Interrupt. 
+    
+    
+    
+    PC_DDR_DDR3 = 1;        //  GPIO1 Port C, bit 3 is output.
+    PC_CR1_C13 = 1;         //  Pin is set to Push-Pull mode.
+    PC_CR2_C23 = 1;         //  Pin can run upto 10 MHz. 
+    
+    PC_ODR_ODR3 = 0;        // GPIO1 Modulation = 0
+    
+    
+ 
+
+  /* Configure the IRQ pin */
+  // TODO
+
+  /* Configure the serial port */
+  spi_bitbang_init();
 }
 
 

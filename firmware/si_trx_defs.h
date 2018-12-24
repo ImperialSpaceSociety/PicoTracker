@@ -31,6 +31,10 @@
 #define SI_TRX_DEFS_H
 
 
+/* define the package type QFN and TSSOP package use different CS pin
+*/
+// If the line below is commented out, then we assume that the board has a TSSOP
+//#define SILABS_QFN
 
 /**
  * =============================================================================
@@ -303,10 +307,19 @@ void _si_trx_transfer(int tx_count, int rx_count, uint8_t *data);
 /**
  * Chip Select. Active Low (High = Inactive, Low = Active)
  */
-#define _si_trx_cs_enable()			\
+
+#ifdef SILABS_QFN                               
+  #define _si_trx_cs_enable()			\
+  PD_ODR_ODR3 = 0 
+  #define _si_trx_cs_disable()                  \
+  PD_ODR_ODR3 = 1    
+#else 
+  #define _si_trx_cs_enable()			\
   PD_ODR_ODR2 = 0
-#define _si_trx_cs_disable()			\
-  PD_ODR_ODR2 = 1
+  #define _si_trx_cs_disable()                  \
+  PD_ODR_ODR2 = 1     
+#endif  /* SILABS_QFN  */                                        
+
 
 /**
  * Shutdown. Active High (High = Shutdown, Low = Run)
