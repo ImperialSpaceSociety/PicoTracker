@@ -158,6 +158,7 @@ int main( void )
 	prepare_tx_buffer();
 	
 	
+	
 	/* start pips */
 	telemetry_start(TELEMETRY_PIPS, 5);
 	

@@ -889,7 +889,7 @@
                 <expressions>
                     <item>tx_buf</item>
                     <item>current_fix</item>
-                    <item></item>
+                    <item />
                 </expressions>
                 <col-names>
                     <item>Expression</item>

@@ -6,3 +6,9 @@ firmware/Debug/Obj/HC12Tracker.pbd
 firmware/Debug/Obj/HC12Tracker.pbd.browse
 firmware/settings/HC12Tracker.dbgdt
 firmware/settings/HC12Tracker.dnx
+*.pbd
+*.browse
+*.pbi
+*.dbgdt
+*.wsdt
+*.dep
