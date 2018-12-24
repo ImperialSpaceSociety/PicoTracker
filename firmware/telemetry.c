@@ -28,7 +28,6 @@
 * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#include <stdio.h>
 #include <string.h>
 #include <iostm8s003f3.h>
 #include <stdint.h>
@@ -164,7 +163,6 @@ void telemetry_tick(void) {
 				uint8_t data = tx_buf[telemetry_index]; 
 				
 				telemetry_index++;
-				
 				rtty_start(data);
 			}
 			
@@ -191,8 +189,6 @@ void telemetry_tick(void) {
 		}
 	}
 }
-
-
 
 
 /**

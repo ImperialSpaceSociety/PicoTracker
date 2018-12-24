@@ -64,13 +64,8 @@ Try to reduce memory usage when sending the pubx strings to disable nmea
 /*
 Strategy:
 
-put into flight mode
-
-loop start
-get gps position and disable gps interrupts
-create telemetry string
-transmit telemetry string
-loop.
+todo: find out why telemetry from gps fails exactly at message 36. 
+Why does it read 2 positions at a time?
 */
 
 
@@ -161,6 +156,7 @@ int main( void )
 	
 	/* create the telemetry string */
 	prepare_tx_buffer();
+	
 	
 	/* start pips */
 	telemetry_start(TELEMETRY_PIPS, 5);

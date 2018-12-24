@@ -5,75 +5,157 @@
     <configuration>
         <name>Debug</name>
         <outputs>
-            <file>$TOOLKIT_DIR$\lib\dbgstm8smd.a</file>
-            <file>$TOOLKIT_DIR$\inc\c\DLib_Product.h</file>
-            <file>$PROJ_DIR$\tlm.h</file>
-            <file>$PROJ_DIR$\Debug\Obj\string.o</file>
-            <file>$PROJ_DIR$\Debug\Obj\spi_bitbang.o</file>
-            <file>$PROJ_DIR$\Debug\Obj\telemetry.o</file>
-            <file>$PROJ_DIR$\Debug\Obj\string.pbi</file>
-            <file>$PROJ_DIR$\Debug\Obj\main.pbi</file>
-            <file>$TOOLKIT_DIR$\inc\c\DLib_Threads.h</file>
-            <file>$TOOLKIT_DIR$\lib\dlstm8smn.a</file>
-            <file>$TOOLKIT_DIR$\inc\c\xencoding_limits.h</file>
-            <file>$TOOLKIT_DIR$\inc\c\stdio.h</file>
-            <file>$TOOLKIT_DIR$\inc\c\stdbool.h</file>
-            <file>$PROJ_DIR$\Debug\Obj\energy.o</file>
-            <file>$PROJ_DIR$\Debug\Obj\rtty.o</file>
-            <file>$TOOLKIT_DIR$\inc\c\ysizet.h</file>
-            <file>$TOOLKIT_DIR$\config\lnkstm8s003f3.icf</file>
-            <file>$PROJ_DIR$\Debug\Obj\spi_bitbang.pbi</file>
-            <file>$TOOLKIT_DIR$\lib\dlstm8smn.h</file>
-            <file>$TOOLKIT_DIR$\inc\c\stdint.h</file>
-            <file>$PROJ_DIR$\Debug\Obj\telemetry.pbi</file>
-            <file>$PROJ_DIR$\Debug\Obj\HC12Tracker.pbd</file>
-            <file>$TOOLKIT_DIR$\inc\c\DLib_Defaults.h</file>
-            <file>$TOOLKIT_DIR$\inc\io_macros.h</file>
-            <file>$PROJ_DIR$\Debug\List\HC12Tracker.map</file>
-            <file>$TOOLKIT_DIR$\inc\c\ystdio.h</file>
-            <file>$PROJ_DIR$\Debug\Obj\si_trx.pbi</file>
             <file>$TOOLKIT_DIR$\inc\c\string.h</file>
+            <file>$TOOLKIT_DIR$\inc\c\ysizet.h</file>
+            <file>$PROJ_DIR$\Debug\Obj\energy.o</file>
+            <file>$TOOLKIT_DIR$\inc\c\DLib_Defaults.h</file>
+            <file>$PROJ_DIR$\Debug\Obj\telemetry.o</file>
+            <file>$PROJ_DIR$\Debug\Obj\string.o</file>
+            <file>$PROJ_DIR$\pips.h</file>
+            <file>$PROJ_DIR$\spi_bitbang.h</file>
+            <file>$PROJ_DIR$\energy.h</file>
+            <file>$PROJ_DIR$\string.c</file>
+            <file>$PROJ_DIR$\telemetry.h</file>
+            <file>$PROJ_DIR$\spi_bitbang.c</file>
+            <file>$TOOLKIT_DIR$\inc\c\stdbool.h</file>
+            <file>$PROJ_DIR$\gps.h</file>
+            <file>$PROJ_DIR$\si_trx.c</file>
+            <file>$PROJ_DIR$\si_trx.h</file>
+            <file>$TOOLKIT_DIR$\inc\c\stdint.h</file>
+            <file>$PROJ_DIR$\HC12Board.h</file>
+            <file>$PROJ_DIR$\fix.h</file>
+            <file>$PROJ_DIR$\rtty.c</file>
+            <file>$PROJ_DIR$\energy.c</file>
+            <file>$PROJ_DIR$\gps.c</file>
+            <file>$PROJ_DIR$\main.h</file>
+            <file>$PROJ_DIR$\rtty.h</file>
+            <file>$PROJ_DIR$\string.h</file>
+            <file>$PROJ_DIR$\si_trx_defs.h</file>
+            <file>$PROJ_DIR$\telemetry.c</file>
+            <file>$PROJ_DIR$\main.c</file>
+            <file>$PROJ_DIR$\Debug\Obj\si_trx.pbi</file>
+            <file>$TOOLKIT_DIR$\lib\dlstm8smn.a</file>
             <file>$PROJ_DIR$\Debug\Obj\gps.pbi</file>
-            <file>$PROJ_DIR$\Debug\Obj\gps.o</file>
-            <file>$PROJ_DIR$\Debug\Obj\tlm.pbi</file>
-            <file>$PROJ_DIR$\Debug\Obj\main.o</file>
-            <file>$TOOLKIT_DIR$\inc\c\yvals.h</file>
-            <file>$TOOLKIT_DIR$\inc\iostm8s003f3.h</file>
-            <file>$TOOLKIT_DIR$\inc\c\ycheck.h</file>
             <file>$TOOLKIT_DIR$\inc\c\inttypes.h</file>
             <file>$PROJ_DIR$\Debug\Obj\rtty.pbi</file>
-            <file>$PROJ_DIR$\energy.h</file>
-            <file>$PROJ_DIR$\fix.h</file>
-            <file>$PROJ_DIR$\gps.c</file>
-            <file>$PROJ_DIR$\HC12Board.h</file>
-            <file>$PROJ_DIR$\gps.h</file>
-            <file>$PROJ_DIR$\main.c</file>
-            <file>$PROJ_DIR$\main.h</file>
-            <file>$PROJ_DIR$\energy.c</file>
-            <file>$PROJ_DIR$\Debug\Obj\si_trx.o</file>
-            <file>$TOOLKIT_DIR$\inc\c\intrinsics.h</file>
+            <file>$TOOLKIT_DIR$\inc\c\xencoding_limits.h</file>
+            <file>$PROJ_DIR$\Debug\Obj\spi_bitbang.pbi</file>
+            <file>$PROJ_DIR$\Debug\Obj\rtty.o</file>
+            <file>$TOOLKIT_DIR$\inc\c\ycheck.h</file>
+            <file>$TOOLKIT_DIR$\inc\c\yvals.h</file>
+            <file>$PROJ_DIR$\Debug\Obj\string.pbi</file>
             <file>$PROJ_DIR$\Debug\Obj\energy.pbi</file>
+            <file>$TOOLKIT_DIR$\inc\iostm8s003f3.h</file>
+            <file>$PROJ_DIR$\Debug\Obj\telemetry.pbi</file>
+            <file>$PROJ_DIR$\Debug\Obj\gps.o</file>
+            <file>$PROJ_DIR$\Debug\Obj\HC12Tracker.pbd</file>
+            <file>$TOOLKIT_DIR$\lib\dbgstm8smd.a</file>
             <file>$PROJ_DIR$\tlm.c</file>
+            <file>$PROJ_DIR$\Debug\Obj\spi_bitbang.o</file>
+            <file>$TOOLKIT_DIR$\inc\io_macros.h</file>
+            <file>$TOOLKIT_DIR$\inc\c\DLib_Product.h</file>
+            <file>$PROJ_DIR$\Debug\List\HC12Tracker.map</file>
+            <file>$TOOLKIT_DIR$\inc\c\DLib_Threads.h</file>
+            <file>$PROJ_DIR$\Debug\Obj\tlm.pbi</file>
+            <file>$TOOLKIT_DIR$\lib\dlstm8smn.h</file>
+            <file>$PROJ_DIR$\Debug\Obj\si_trx.o</file>
+            <file>$PROJ_DIR$\Debug\Obj\main.o</file>
+            <file>$TOOLKIT_DIR$\inc\c\intrinsics.h</file>
+            <file>$PROJ_DIR$\Debug\Obj\main.pbi</file>
+            <file>$TOOLKIT_DIR$\config\lnkstm8s003f3.icf</file>
             <file>$PROJ_DIR$\Debug\Exe\HC12Tracker.out</file>
-            <file>$PROJ_DIR$\si_trx.c</file>
-            <file>$PROJ_DIR$\pips.h</file>
-            <file>$PROJ_DIR$\rtty.c</file>
-            <file>$PROJ_DIR$\rtty.h</file>
-            <file>$PROJ_DIR$\si_trx.h</file>
-            <file>$PROJ_DIR$\spi_bitbang.c</file>
-            <file>$PROJ_DIR$\spi_bitbang.h</file>
-            <file>$PROJ_DIR$\string.h</file>
-            <file>$PROJ_DIR$\telemetry.c</file>
-            <file>$PROJ_DIR$\string.c</file>
-            <file>$PROJ_DIR$\si_trx_defs.h</file>
-            <file>$PROJ_DIR$\telemetry.h</file>
         </outputs>
         <file>
             <name>[ROOT_NODE]</name>
             <outputs>
                 <tool>
                     <name>ILINK</name>
-                    <file> 49 24</file>
+                    <file> 49 58</file>
+                </tool>
+            </outputs>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\string.c</name>
+            <outputs>
+                <tool>
+                    <name>ICCSTM8</name>
+                    <file> 5</file>
+                </tool>
+                <tool>
+                    <name>BICOMP</name>
+                    <file> 38</file>
+                </tool>
+            </outputs>
+            <inputs>
+                <tool>
+                    <name>ICCSTM8</name>
+                    <file> 31 36 16 37 3 52 48 33 50</file>
+                </tool>
+                <tool>
+                    <name>BICOMP</name>
+                    <file> 16 37 36 33 48 52 31 3 50</file>
+                </tool>
+            </inputs>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\spi_bitbang.c</name>
+            <outputs>
+                <tool>
+                    <name>ICCSTM8</name>
+                    <file> 46</file>
+                </tool>
+                <tool>
+                    <name>BICOMP</name>
+                    <file> 34</file>
+                </tool>
+            </outputs>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\si_trx.c</name>
+            <outputs>
+                <tool>
+                    <name>ICCSTM8</name>
+                    <file> 53</file>
+                </tool>
+                <tool>
+                    <name>BICOMP</name>
+                    <file> 28</file>
+                </tool>
+            </outputs>
+            <inputs>
+                <tool>
+                    <name>ICCSTM8</name>
+                    <file> 40 47 16 36 37 3 52 48 33 50 17 15 7 25</file>
+                </tool>
+                <tool>
+                    <name>BICOMP</name>
+                    <file> 3 7 17 47 37 16 15 25 50 40 36 33 52 48</file>
+                </tool>
+            </inputs>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\rtty.c</name>
+            <outputs>
+                <tool>
+                    <name>ICCSTM8</name>
+                    <file> 35</file>
+                </tool>
+                <tool>
+                    <name>BICOMP</name>
+                    <file> 32</file>
+                </tool>
+            </outputs>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\energy.c</name>
+            <outputs>
+                <tool>
+                    <name>ICCSTM8</name>
+                    <file> 2</file>
+                </tool>
+                <tool>
+                    <name>BICOMP</name>
+                    <file> 39</file>
                 </tool>
             </outputs>
         </file>
@@ -81,22 +163,45 @@
             <name>$PROJ_DIR$\gps.c</name>
             <outputs>
                 <tool>
-                    <name>BICOMP</name>
-                    <file> 28</file>
+                    <name>ICCSTM8</name>
+                    <file> 42</file>
                 </tool>
                 <tool>
-                    <name>ICCSTM8</name>
-                    <file> 29</file>
+                    <name>BICOMP</name>
+                    <file> 30</file>
                 </tool>
             </outputs>
             <inputs>
                 <tool>
-                    <name>BICOMP</name>
-                    <file> 38 34 46 23 18 35 41 19 10 1 33 32 22 8</file>
+                    <name>ICCSTM8</name>
+                    <file> 40 47 13 16 36 37 3 52 48 33 50 18 31 55</file>
                 </tool>
                 <tool>
+                    <name>BICOMP</name>
+                    <file> 36 55 52 31 13 18 47 40 33 48 16 37 3 50</file>
+                </tool>
+            </inputs>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\telemetry.c</name>
+            <outputs>
+                <tool>
                     <name>ICCSTM8</name>
-                    <file> 33 23 41 19 34 32 22 18 1 10 8 38 35 46</file>
+                    <file> 4</file>
+                </tool>
+                <tool>
+                    <name>BICOMP</name>
+                    <file> 41</file>
+                </tool>
+            </outputs>
+            <inputs>
+                <tool>
+                    <name>ICCSTM8</name>
+                    <file> 0 36 37 3 52 48 33 50 1 40 47 16 12 55 17 10 31 23 6 15 25 22 24 18</file>
+                </tool>
+                <tool>
+                    <name>BICOMP</name>
+                    <file> 33 48 6 1 36 55 24 16 10 25 52 37 31 40 12 17 23 15 22 18 3 50 47 0</file>
                 </tool>
             </inputs>
         </file>
@@ -104,44 +209,31 @@
             <name>$PROJ_DIR$\main.c</name>
             <outputs>
                 <tool>
-                    <name>BICOMP</name>
-                    <file> 7</file>
+                    <name>ICCSTM8</name>
+                    <file> 54</file>
                 </tool>
                 <tool>
-                    <name>ICCSTM8</name>
-                    <file> 31</file>
+                    <name>BICOMP</name>
+                    <file> 56</file>
                 </tool>
             </outputs>
             <inputs>
                 <tool>
-                    <name>BICOMP</name>
-                    <file> 34 46 60 18 23 33 40 37 10 1 54 61 41 43 32 22 8 35 19 38</file>
+                    <name>ICCSTM8</name>
+                    <file> 16 36 37 3 52 48 33 50 40 47 17 15 25 10 31 8 13 18 55 22</file>
                 </tool>
                 <tool>
-                    <name>ICCSTM8</name>
-                    <file> 19 34 32 22 18 1 10 8 33 23 40 54 60 61 35 37 41 38 46 43</file>
+                    <name>BICOMP</name>
+                    <file> 37 55 40 25 50 16 17 8 3 15 10 13 22 36 33 52 48 47 18 31</file>
                 </tool>
             </inputs>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\energy.c</name>
-            <outputs>
-                <tool>
-                    <name>BICOMP</name>
-                    <file> 47</file>
-                </tool>
-                <tool>
-                    <name>ICCSTM8</name>
-                    <file> 13</file>
-                </tool>
-            </outputs>
         </file>
         <file>
             <name>$PROJ_DIR$\tlm.c</name>
             <outputs>
                 <tool>
                     <name>BICOMP</name>
-                    <file> 30</file>
+                    <file> 51</file>
                 </tool>
             </outputs>
         </file>
@@ -150,108 +242,13 @@
             <outputs>
                 <tool>
                     <name>ILINK</name>
-                    <file> 24</file>
+                    <file> 49</file>
                 </tool>
             </outputs>
             <inputs>
                 <tool>
                     <name>ILINK</name>
-                    <file> 16 13 29 31 14 45 4 3 5 9 0</file>
-                </tool>
-            </inputs>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\si_trx.c</name>
-            <outputs>
-                <tool>
-                    <name>BICOMP</name>
-                    <file> 26</file>
-                </tool>
-                <tool>
-                    <name>ICCSTM8</name>
-                    <file> 45</file>
-                </tool>
-            </outputs>
-            <inputs>
-                <tool>
-                    <name>BICOMP</name>
-                    <file> 22 56 40 23 32 19 54 60 8 33 34 10 18 1</file>
-                </tool>
-                <tool>
-                    <name>ICCSTM8</name>
-                    <file> 33 23 19 34 32 22 18 1 10 8 40 54 56 60</file>
-                </tool>
-            </inputs>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\rtty.c</name>
-            <outputs>
-                <tool>
-                    <name>BICOMP</name>
-                    <file> 36</file>
-                </tool>
-                <tool>
-                    <name>ICCSTM8</name>
-                    <file> 14</file>
-                </tool>
-            </outputs>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\spi_bitbang.c</name>
-            <outputs>
-                <tool>
-                    <name>BICOMP</name>
-                    <file> 17</file>
-                </tool>
-                <tool>
-                    <name>ICCSTM8</name>
-                    <file> 4</file>
-                </tool>
-            </outputs>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\telemetry.c</name>
-            <outputs>
-                <tool>
-                    <name>BICOMP</name>
-                    <file> 20</file>
-                </tool>
-                <tool>
-                    <name>ICCSTM8</name>
-                    <file> 5</file>
-                </tool>
-            </outputs>
-            <inputs>
-                <tool>
-                    <name>BICOMP</name>
-                    <file> 34 23 53 32 18 12 43 33 40 54 38 25 10 1 35 27 19 46 61 51 60 57 15 22 8 11</file>
-                </tool>
-                <tool>
-                    <name>ICCSTM8</name>
-                    <file> 11 34 32 22 18 1 10 8 15 25 27 33 23 19 12 46 40 61 35 53 51 54 60 43 57 38</file>
-                </tool>
-            </inputs>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\string.c</name>
-            <outputs>
-                <tool>
-                    <name>BICOMP</name>
-                    <file> 6</file>
-                </tool>
-                <tool>
-                    <name>ICCSTM8</name>
-                    <file> 3</file>
-                </tool>
-            </outputs>
-            <inputs>
-                <tool>
-                    <name>BICOMP</name>
-                    <file> 19 32 34 10 1 18 35 22 8</file>
-                </tool>
-                <tool>
-                    <name>ICCSTM8</name>
-                    <file> 35 34 19 32 22 18 1 10 8</file>
+                    <file> 57 2 42 54 35 53 46 5 4 29 44</file>
                 </tool>
             </inputs>
         </file>

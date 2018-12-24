@@ -35,6 +35,7 @@
 
 
 #define UART_RX_BUFFER_LENGTH   120
+#define RX_timeout              100000
 
 
 void InitialiseUART(void);
