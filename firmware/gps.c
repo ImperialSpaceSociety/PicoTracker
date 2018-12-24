@@ -119,8 +119,8 @@ void InitialiseUART(void)
     //
     UART1_CR1 = 0;
     UART1_CR2 = 0;
-    UART1_CR4 = 0;
     UART1_CR3 = 0;
+    UART1_CR4 = 0;
     UART1_CR5 = 0;
     UART1_GTR = 0;
     UART1_PSCR = 0;
@@ -148,7 +148,7 @@ void InitialiseUART(void)
     //
     UART1_CR2_TIEN  = 0;     // Transmitter interrupt enable
     UART1_CR2_TCIEN = 0;     // Transmission complete interrupt enable
-    UART1_CR2_RIEN  = 0;     //  Receiver interrupt enable
+    UART1_CR2_RIEN  = 0;     //  Receiver interrupt disable
     UART1_CR2_ILIEN = 0;     //  IDLE Line interrupt enable
     //
     //  Turn on the UART transmit, receive and the UART clock.
@@ -200,15 +200,13 @@ uint8_t gps_receive_ack(uint8_t class_id, uint8_t msg_id) {
 	ack[7] = msg_id;
 	nak[7] = msg_id;
 	//UCA0IFG &= ~UCRXIFG; // Clear the flag to avoid generating an interrupt
+	// try to stop listening to gps once one  message is received. to prevent losses along the way
 
 	/* runs until ACK/NAK packet is received, possibly add a timeout.
 	 * can crash if a message ACK is missed (watchdog resets */
 	while(1) {
-                UART1_CR2_RIEN  = 1; // turn on the interrupt enable so that a character is received.
-                //while(!UART1_SR);
-		while(!UART1_SR_RXNE); // THIS VERIFICATION HAS TO BE HERE!!
+		while(!UART1_SR_RXNE); // check if there is any data to be read.
 
-		//UCA0IFG &= ~UCRXIFG; // Clear the flag to avoid generating an interrupt
 		rx_byte = UART1_DR;
 
 		if (rx_byte == ack[match_count] || rx_byte == nak[match_count]) {
@@ -271,12 +269,14 @@ uint16_t gps_receive_payload(uint8_t class_id, uint8_t msg_id, unsigned char *pa
 	uint16_t payload_cnt = 0;
 	uint16_t payload_len = 0;
 
-	//UCA0IFG &= ~UCRXIFG;
 	while(1) {
-                UART1_CR2_RIEN  = 1; // turn on the interrupt enable so that a character is received.
-		while(!UART1_SR_RXNE); // THIS VERIFICATION HAS TO BE HERE!!		//UCA0IFG &= ~UCRXIFG;
+		
+		while(!UART1_SR_RXNE);// THIS VERIFICATION HAS TO BE HERE!!		
+                // put a watchdog timer here to make sure it is not waiting
+                // for a byte to appear forever from the GPS module.
+		// make sure it only received only one message and not 2 or 3 at a time. Could be a cause for traffic jams
                 
-		rx_byte = UART1_DR;
+		rx_byte = UART1_DR; // get byte by byte and see what they are.
 		switch (state) {
 			case UBX_A:
 				if (rx_byte == 0xB5)	state = UBX_B;
@@ -335,15 +335,15 @@ void gps_get_fix(struct gps_fix *fix) {
 	/* wake up from sleep */
 	while(!UART1_SR_TXE); // THIS VERIFICATION HAS TO BE HERE!!
 	UART1_DR = 0xFF;
-	while(!UART1_SR_RXNE); // THIS VERIFICATION HAS TO BE HERE!!
-	gps_startup_delay();
+	//while(!UART1_SR_RXNE); // THIS VERIFICATION HAS TO BE HERE!!
+	//gps_startup_delay();
         
 
 	/* request position */
 	gps_transmit_string(pvt, sizeof(pvt));
 	gps_receive_payload(0x01, 0x07, response);
-        // if timeout, must restart or use the watchdog to reset
-        // the mapping is found in the reference manual for M8 series gps modules. Section for UBX-NAV-PVT (0x01 0x07)
+    // if timeout, must restart or use the watchdog to reset
+    // the mapping is found in the reference manual for M8 series gps modules. Section for UBX-NAV-PVT (0x01 0x07)
 	fix->num_svs = response[23];
 	fix->type = response[20];
 	fix->year = response[4] + (response[5] << 8);
@@ -545,15 +545,18 @@ void gps_startup_delay(void) {
 
 
 /*
- * set up the interrupts for uart rx
+ * UART power save mode turn on or off
  */
-#pragma vector = UART1_R_RXNE_vector //a special instruction to compiler
-// RXNE stands for - "Receive Data register not empty"
+void uart_power_save(int on) {
+  /* UARTD: UART Disable (for low power consumption).
+   * When this bit is set the UART prescaler and outputs are stopped at the end of the current byte
+   * transfer in order to reduce power consumption. This bit is set and cleared by software.
+   * 0: UART enabled
+   * 1: UART prescaler and outputs disabled
+   */
+    // seems like there is mistake in the mapping of iostm8s..
+    UART1_CR1_UART0 = on ;
+}
 
- __interrupt void UART1_IRQHandler(void)
- {  
-   __disable_interrupt();
-   UART1_CR2_RIEN  = 0; // turn off interrupt after a character has been received.
-   __enable_interrupt();
- }
+
 
