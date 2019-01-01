@@ -301,18 +301,18 @@ void prepare_tx_buffer(void) {
 	i16toa(current_fix.num_svs, SAT_LENGTH, &tx_buf[TX_BUF_SAT_START]);
 	tx_buf[TX_BUF_SAT_START + SAT_LENGTH] = ',';
 	
-	i16toa(current_fix.voltage_bat, VOLT_LENGTH, &tx_buf[TX_BUF_VOLT_START]);
+	i16toa(current_fix.voltage_radio, VOLT_LENGTH, &tx_buf[TX_BUF_VOLT_START]);
 	tx_buf[TX_BUF_VOLT_START + VOLT_LENGTH] = ',';
 	
-	i16toa(current_fix.voltage_sol, VSOL_LENGTH, &tx_buf[TX_BUF_VSOL_START]);
-	tx_buf[TX_BUF_VSOL_START + VSOL_LENGTH] = ',';
+	i16toa(current_fix.op_status, OP_STAT_LENGTH, &tx_buf[TX_BUF_OP_STAT_START]);
+	tx_buf[TX_BUF_OP_STAT_START + OP_STAT_LENGTH] = ',';
 	
-	if (current_fix.temperature_int < 0) {
+	if (current_fix.temp_radio < 0) {
 		tx_buf[TX_BUF_TEMP_START] = '-';
-		i16toa(0 - current_fix.temperature_int, TEMP_LENGTH, &tx_buf[TX_BUF_TEMP_START + 1]);
+		i16toa(0 - current_fix.temp_radio, TEMP_LENGTH, &tx_buf[TX_BUF_TEMP_START + 1]);
 	} else {
 		tx_buf[TX_BUF_TEMP_START] = '+';
-		i16toa(current_fix.temperature_int, TEMP_LENGTH, &tx_buf[TX_BUF_TEMP_START + 1]);
+		i16toa(current_fix.temp_radio, TEMP_LENGTH, &tx_buf[TX_BUF_TEMP_START + 1]);
 	}
 	
 	tx_buf[TX_BUF_TEMP_START + TEMP_LENGTH + 1] = '*';

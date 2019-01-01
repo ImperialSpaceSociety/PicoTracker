@@ -195,25 +195,64 @@ static void si_trx_get_adc_reading(uint8_t enable, uint8_t configuration,
 	buffer[0] = SI_CMD_GET_ADC_READING;
 	buffer[1] = enable;
 	buffer[2] = configuration;
+        
+        _si_trx_sdn_enable();  /* active high shutdown = reset */
 	
+	for (int i = 0; i < 15*1000; i++); /* Approx. 15ms */
+	_si_trx_sdn_disable();   /* booting */
+	for (int i = 0; i < 15*1000; i++); /* Approx. 15ms */
+	
+	
+	
+	
+	/* Power Up */
+	 si_trx_power_up(SI_POWER_UP_XTAL, VCXO_FREQUENCY);
+
 	_si_trx_transfer(3, 6, buffer);
-	
+
+        /* Physical shutdown */
+	_si_trx_sdn_enable();
+        
 	*gpio_value = ((buffer[0] & 0x7) << 8) | buffer[1];
 	*battery_value = ((buffer[2] & 0x7) << 8) | buffer[3];
 	*temperature_value = ((buffer[4] & 0x7) << 8) | buffer[5];
 }
 /**
 * Returns the measured internal die temperature of the radio
+* as integer
 */
-float si_trx_get_temperature(void)
+int16_t si_trx_get_temperature(void)
 {
-	uint16_t raw_gpio, raw_battery, raw_temperature;
+	
+        uint16_t raw_gpio, raw_battery, raw_temperature;
 	
 	/* Get the reading from the adc */
-	si_trx_get_adc_reading(SI_GET_ADC_READING_TEMPERATURE, 0,
+	si_trx_get_adc_reading(SI_GET_ADC_READING_BATTERY, 0,
 						   &raw_gpio, &raw_battery, &raw_temperature);
+        
+       
+        uint32_t result = ((899 * raw_battery) / 4096) - 293;
+        
 	
-	return (((float)raw_temperature * 568.0) / 2560.0) - 297.0;
+	return result;
+}
+
+
+/* Returns the measured supply voltage of the radio
+* in mV
+*/
+int16_t si_trx_get_voltage(void)
+{
+	
+     
+        
+        uint16_t raw_gpio, raw_battery, raw_temperature;
+	
+	/* Get the reading from the adc */
+	si_trx_get_adc_reading(SI_GET_ADC_READING_BATTERY, 0,
+						   &raw_gpio, &raw_battery, &raw_temperature);
+	uint32_t result = ((uint32_t) raw_temperature * 75) / 32; // result * 2.34375;
+	return result;
 }
 
 

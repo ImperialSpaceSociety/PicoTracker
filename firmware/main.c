@@ -59,7 +59,7 @@ Try to reduce memory usage when sending the pubx strings to disable nmea
 * https://github.com/thasti/utrak
 */
 
-//volatile uint16_t seconds = 0;		/* timekeeping via timer */
+
 
 /*
 Strategy:
@@ -79,14 +79,26 @@ uint16_t tx_buf_rdy = 0;			/* the read-flag (main -> main) */
 uint16_t tx_buf_length = 0;			/* how many chars to send */
 char tx_buf[TX_BUF_MAX_LENGTH] = {SYNC_PREFIX "$$" PAYLOAD_NAME ","};	/* the telemetry buffer initialised with $$ */
 
+/* Retry counters and Operational Status*/
+uint8_t  ubx_cfg_fail = 0;
+uint8_t  ubx_retry_count;
+uint8_t  ubx_poll_fail = 0;
+
+
 /* current (latest) GPS fix and measurements */
 struct gps_fix current_fix;
 
 void get_fix_and_measurements(void) {
-    gps_get_fix(&current_fix);
-    //current_fix.temperature_int = get_die_temperature();
-    //current_fix.voltage_bat = get_battery_voltage();
-    //current_fix.voltage_sol = get_solar_voltage();
+    
+    for(ubx_retry_count=0; ubx_retry_count < UBX_POLL_RETRIES ; ubx_retry_count++){ 
+      if( gps_get_fix(&current_fix)) break;
+      ubx_poll_fail = 1;
+      if(ubx_retry_count == (UBX_POLL_RETRIES -1)) ubx_poll_fail = 2;
+    } 
+
+    current_fix.temp_radio = si_trx_get_temperature();
+    current_fix.op_status = ((ubx_cfg_fail & 0x03) << 2) | ((ubx_poll_fail & 0x03)); //send operational status
+    current_fix.voltage_radio =  si_trx_get_voltage();
 }
 
 
@@ -108,13 +120,44 @@ int main( void )
     
     
     /* Initialise GPS */   
-    delay_ms(1000); // gps startup delay
-    while(!(gps_disable_nmea_output()));
-    while(!(gps_set_gps_only())); 
-    while(!(gps_set_airborne_model()));
-    while(!(gps_set_power_save()));
-    while(!(gps_power_save(0))); // arg = 1 to enable power save
-    while(!(gps_save_settings()));
+    gps_startup_delay(); // wait 1 sec for GPS to startup
+    
+    for(ubx_retry_count=0; ubx_retry_count < UBX_CFG_RETRIES; ubx_retry_count++){ // Setup for no NMEA Messages
+      if((gps_disable_nmea_output())) break;
+      ubx_cfg_fail = 1;
+      if(ubx_retry_count == (UBX_CFG_RETRIES -1)) ubx_cfg_fail = 2;
+    }
+         
+    for(ubx_retry_count=0; ubx_retry_count < UBX_CFG_RETRIES; ubx_retry_count++){ // Setup for only GPS mode 
+      if((gps_set_gps_only())) break;
+      ubx_cfg_fail = 1;
+      if(ubx_retry_count == (UBX_CFG_RETRIES -1)) ubx_cfg_fail = 2;
+    } 
+         
+    for(ubx_retry_count=0; ubx_retry_count < UBX_CFG_RETRIES; ubx_retry_count++){ // Setup for High Altitude 
+      if((gps_set_airborne_model())) break;
+      ubx_cfg_fail = 1;
+      if(ubx_retry_count == (UBX_CFG_RETRIES -1)) ubx_cfg_fail = 2;
+    } 
+         
+    for(ubx_retry_count=0; ubx_retry_count < UBX_CFG_RETRIES; ubx_retry_count++){ // Configure Power Save Mode
+      if((gps_set_power_save())) break;
+      ubx_cfg_fail = 1;
+      if(ubx_retry_count == (UBX_CFG_RETRIES -1)) ubx_cfg_fail = 2;
+    } 
+         
+    for(ubx_retry_count=0; ubx_retry_count < UBX_CFG_RETRIES; ubx_retry_count++){ // Power Save Mode Off
+      if((gps_power_save(0))) break;
+      ubx_cfg_fail = 1;
+      if(ubx_retry_count == (UBX_CFG_RETRIES -1)) ubx_cfg_fail = 2;
+    } 
+         
+    for(ubx_retry_count=0; ubx_retry_count < UBX_CFG_RETRIES; ubx_retry_count++){ // Save setup to gps flash
+      if((gps_save_settings())) break;
+      ubx_cfg_fail = 1;
+      if(ubx_retry_count == (UBX_CFG_RETRIES -1)) ubx_cfg_fail = 2;
+    } 
+    
     
     //    
     //    
@@ -139,8 +182,9 @@ int main( void )
     while (1)
     {
 	
-	/* get the gps fix */
-	gps_get_fix(&current_fix); 
+	/* get the gps fix, voltage  and temperature*/
+
+        get_fix_and_measurements();
 	
 	/* save gps power by putting in power save mode */
 	//gps_power_save(1); // arg = 1 to enable power save. Seems to fail to send back data sometimes.

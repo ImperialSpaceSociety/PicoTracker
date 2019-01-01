@@ -35,12 +35,13 @@
 
 
 #define UART_RX_BUFFER_LENGTH   120
-#define RX_timeout              100000
-
+#define UBX_CFG_RETRIES         3
+#define UBX_CFG_TIMEOUT         60000     // timeout 
+#define UBX_POLL_RETRIES        3       
+#define UBX_POLL_TIMEOUT        10000000l     // timeout
 
 void InitialiseUART(void);
-void UART_send_buffer(uint8_t *tx_data, uint8_t length);
-void UART_send_chars(uint8_t chars, uint8_t length);
+void UART_send_buffer(char *cmd, uint8_t length);
 
 uint8_t gps_set_gps_only(void);
 uint8_t gps_disable_nmea_output(void);
@@ -48,12 +49,11 @@ uint8_t gps_set_airborne_model(void);
 uint8_t gps_set_power_save(void);
 uint8_t gps_power_save(int on);
 uint8_t gps_save_settings(void);
-void gps_get_fix(struct gps_fix *fix);
+uint8_t gps_get_fix(struct gps_fix *fix);
 void gps_startup_delay(void);
 void delay_ms(unsigned long ms);
 void uart_power_save(int on);
 
-//void gps_transmit_string(char *cmd, uint8_t length);
 
 
 

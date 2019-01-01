@@ -34,7 +34,7 @@
 /* define the package type QFN and TSSOP package use different CS pin
 */
 // If the line below is commented out, then we assume that the board has a TSSOP
-//#define SILABS_QFN
+#define SILABS_QFN
 
 /**
  * =============================================================================

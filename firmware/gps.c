@@ -85,9 +85,8 @@
    
    
    
-/* The best naive delay @16MHz
- * the 960 comes from the number of instructions to perform the do/while loop
- * to figure it out, have a look at the generated ASM file after compilation
+/* millisec delay at @16MHz
+ * the 960 comes from the number of instructions to perform the do/while loop in 1 ms
  */
 void delay_ms(unsigned long ms) {
 
@@ -159,18 +158,14 @@ void InitialiseUART(void)
 }
 
 
-void __delay_cycles(unsigned int n)
-{
-    while (n-- > 0);
-}
 
-void gps_startup_delay(void);
+
 /* 
  * gps_transmit_string
  *
  * transmits a command to the GPS
  */
-void gps_transmit_string(char *cmd, uint8_t length) {
+void UART_send_buffer(char *cmd, uint8_t length) {
 	uint8_t i;
 
 	for (i = 0; i < length; i++) {
@@ -184,7 +179,7 @@ void gps_transmit_string(char *cmd, uint8_t length) {
  *
  * waits for transmission of an ACK/NAK message from the GPS.
  *
- * returns 1 if ACK was received, 0 if NAK was received
+ * returns 1 if ACK was received, 0 if NAK was received or a timeout occured
  *
  */
 uint8_t gps_receive_ack(uint8_t class_id, uint8_t msg_id) {    
@@ -199,31 +194,36 @@ uint8_t gps_receive_ack(uint8_t class_id, uint8_t msg_id) {
 	nak[6] = class_id;
 	ack[7] = msg_id;
 	nak[7] = msg_id;
-	//UCA0IFG &= ~UCRXIFG; // Clear the flag to avoid generating an interrupt
-	// try to stop listening to gps once one  message is received. to prevent losses along the way
+        uint16_t timeout;
+	
 
-	/* runs until ACK/NAK packet is received, possibly add a timeout.
-	 * can crash if a message ACK is missed (watchdog resets */
+	/* runs until ACK/NAK packet is received, or a timeout.*/
+
+        
 	while(1) {
-		while(!UART1_SR_RXNE); // check if there is any data to be read.
+            timeout = 0;
+            while(!UART1_SR_RXNE){ // check if there is any data to be read.
+              if(timeout++ > UBX_CFG_TIMEOUT) return 0; // return no ack if timeout
+            }
+            rx_byte = UART1_DR;
 
-		rx_byte = UART1_DR;
-
-		if (rx_byte == ack[match_count] || rx_byte == nak[match_count]) {
-			if (match_count == 3) {	/* test ACK/NAK byte */
-				if (rx_byte == ack[match_count]) {
-					msg_ack = 1;
-				} else {
-					msg_ack = 0;
-				}
-			}
-			if (match_count == 7) { 
-				return msg_ack;
-			}
+            if (rx_byte == ack[match_count] || rx_byte == nak[match_count]) {
+                  if (match_count == 3) {	/* test ACK/NAK byte */
+                        if (rx_byte == ack[match_count]) {
+                            msg_ack = 1;
+                        } 
+                        else {
+                            msg_ack = 0;
+                        }
+                  }
+                  if (match_count == 7) { 
+                        return msg_ack;
+                  }
 			match_count++;
-		} else {
-			match_count = 0;
-		}
+            } 
+            else {
+                  match_count = 0;
+            }
 	}
 }
 
@@ -250,7 +250,7 @@ uint8_t gps_disable_nmea_output(void) {
 		0xaa, 0x79					/* checksum */
 	};
 
-	gps_transmit_string(nonmea, sizeof(nonmea));
+	UART_send_buffer(nonmea, sizeof(nonmea));
 	return gps_receive_ack(0x06, 0x00);
 }
 
@@ -268,13 +268,12 @@ uint16_t gps_receive_payload(uint8_t class_id, uint8_t msg_id, unsigned char *pa
 	enum {UBX_A, UBX_B, CLASSID, MSGID, LEN_A, LEN_B, PAYLOAD} state = UBX_A;
 	uint16_t payload_cnt = 0;
 	uint16_t payload_len = 0;
-
+        uint32_t timeout = 0;
 	while(1) {
 		
-		while(!UART1_SR_RXNE);// THIS VERIFICATION HAS TO BE HERE!!		
-                // put a watchdog timer here to make sure it is not waiting
-                // for a byte to appear forever from the GPS module.
-		// make sure it only received only one message and not 2 or 3 at a time. Could be a cause for traffic jams
+		while(!UART1_SR_RXNE){ // wait for rx character
+                      if(timeout++ > UBX_POLL_TIMEOUT) return 0;
+                }
                 
 		rx_byte = UART1_DR; // get byte by byte and see what they are.
 		switch (state) {
@@ -324,7 +323,7 @@ uint16_t gps_receive_payload(uint8_t class_id, uint8_t msg_id, unsigned char *pa
  * argument is call by reference to avoid large stack allocations
  *
  */
-void gps_get_fix(struct gps_fix *fix) {
+uint8_t gps_get_fix(struct gps_fix *fix) {
 	static uint8_t response[92];	/* PVT response length is 92 bytes */
         /* UBX-NAV-PVT
          * Section 33.17.14 in the Ublox M8Q reference manual
@@ -332,17 +331,17 @@ void gps_get_fix(struct gps_fix *fix) {
 	char pvt[] = {0xB5, 0x62, 0x01, 0x07, 0x00, 0x00, 0x08, 0x19};
 	int32_t alt_tmp;
 		
-	/* wake up from sleep */
-	while(!UART1_SR_TXE); // THIS VERIFICATION HAS TO BE HERE!!
-	UART1_DR = 0xFF;
-	while(!UART1_SR_RXNE); 
-	gps_startup_delay();
+//	/* wake up from sleep */
+//	while(!UART1_SR_TXE); // THIS VERIFICATION HAS TO BE HERE!!
+//	UART1_DR = 0xFF;
+//	while(!UART1_SR_RXNE); 
+//	gps_startup_delay();
         
 
 	/* request position */
-	gps_transmit_string(pvt, sizeof(pvt));
-	gps_receive_payload(0x01, 0x07, response);
-    // if timeout, must restart or use the watchdog to reset
+	UART_send_buffer(pvt, sizeof(pvt));
+	if(gps_receive_payload(0x01, 0x07, response) == 0) return 0;
+    
     // the mapping is found in the reference manual for M8 series gps modules. Section for UBX-NAV-PVT (0x01 0x07)
 	fix->num_svs = response[23];
 	fix->type = response[20];
@@ -368,6 +367,7 @@ void gps_get_fix(struct gps_fix *fix) {
 	} else {
 		fix->alt = (uint16_t) alt_tmp;
 	}
+        return 1;
 			
 }
 
@@ -396,7 +396,7 @@ uint8_t gps_set_gps_only(void) {
 	};
 
        
-	gps_transmit_string(gpsonly, sizeof(gpsonly));
+	UART_send_buffer(gpsonly, sizeof(gpsonly));
 	return gps_receive_ack(0x06, 0x3E);
 }
 
@@ -435,7 +435,7 @@ uint8_t gps_set_airborne_model(void) {
 		0x1a, 0x28					/* checksum */
 	};
 
-	gps_transmit_string(model6, sizeof(model6));
+	UART_send_buffer(model6, sizeof(model6));
 	return gps_receive_ack(0x06, 0x24);
 }
 
@@ -465,7 +465,7 @@ uint8_t gps_set_power_save(void) {
 		0xa9, 0x77
 	};
 
-	gps_transmit_string(powersave, sizeof(powersave));
+	UART_send_buffer(powersave, sizeof(powersave));
 	return gps_receive_ack(0x06, 0x3B);
 }
 
@@ -486,7 +486,7 @@ uint8_t gps_power_save(int on) {
 		recvmgmt[9] = 0x91;
 	}
 
-	gps_transmit_string(recvmgmt, sizeof(recvmgmt));
+	UART_send_buffer(recvmgmt, sizeof(recvmgmt));
 	return gps_receive_ack(0x06, 0x11);
 }
 
@@ -505,7 +505,7 @@ uint8_t gps_save_settings(void) {
 		0x58, 0x59
 	};
 
-	gps_transmit_string(cfg, sizeof(cfg));
+	UART_send_buffer(cfg, sizeof(cfg));
 	return gps_receive_ack(0x06, 0x09);
 }
 
@@ -517,14 +517,7 @@ uint8_t gps_save_settings(void) {
  */
 void gps_startup_delay(void) {
 	/* wait for the GPS to startup */
-	__delay_cycles(60000);
-        __delay_cycles(60000);
-	__delay_cycles(60000);
-	__delay_cycles(60000);
-	__delay_cycles(60000);
-	__delay_cycles(60000);
-	__delay_cycles(60000);
-
+        delay_ms(1000);
 
 }
 
