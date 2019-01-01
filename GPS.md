@@ -1,0 +1,1 @@
+# uBlox M8N GPS##M8N Capabilities## GPS Module based on M8M
