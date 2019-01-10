@@ -246,7 +246,7 @@ int16_t si_trx_get_voltage(void)
 	
      
         
-        uint16_t raw_gpio, raw_battery, raw_temperature;
+    uint16_t raw_gpio, raw_battery, raw_temperature;
 	
 	/* Get the reading from the adc */
 	si_trx_get_adc_reading(SI_GET_ADC_READING_BATTERY, 0,

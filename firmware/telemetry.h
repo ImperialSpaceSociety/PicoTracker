@@ -40,10 +40,6 @@ enum telemetry_t {
   TELEMETRY_PIPS,
 };
 
-/**
- * Output String
- */
-#define TELEMETRY_STRING_MAX	0x100
 
 
 int telemetry_active(void);

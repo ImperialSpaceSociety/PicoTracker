@@ -248,8 +248,10 @@ uint16_t calculate_txbuf_checksum(void)
 * - longitude
 * - altitude
 * - available satellites
-* - voltage of the AAA cell
-* - MSP430 temperature
+* - voltage of the AAA cell(after boosting)
+* - op status
+* - temperature of radio
+
 */
 void prepare_tx_buffer(void) {
 	static uint16_t sent_id = 0;

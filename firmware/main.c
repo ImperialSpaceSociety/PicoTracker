@@ -59,15 +59,27 @@ Try to reduce memory usage when sending the pubx strings to disable nmea
 * https://github.com/thasti/utrak
 */
 
-
-
 /*
-Strategy:
 
-todo: find out why telemetry from gps fails exactly at message 36. 
-Why does it read 2 positions at a time?
+* telemetry format:
+* - callsign
+* - sentence id
+* - time
+* - latitude
+* - longitude
+* - altitude
+* - available satellites
+* - voltage of the AAA cell(after boosting)
+* - op status
+* - temperature of radio
+
 */
 
+/*
+* TODO: how to make the blips carry on even when polling the gps? At the moment,
+* there is a point where the program sleeps while waiting for GPS to wake up
+* from low power mode, and pips also stop altogether.
+*/
 
 
 
@@ -98,6 +110,7 @@ void get_fix_and_measurements(void) {
 
     current_fix.temp_radio = si_trx_get_temperature();
     current_fix.op_status = ((ubx_cfg_fail & 0x03) << 2) | ((ubx_poll_fail & 0x03)); //send operational status
+	// DO we need 4 bytes for op status? it seems to use only one byte at most
     current_fix.voltage_radio =  si_trx_get_voltage();
 }
 
@@ -159,22 +172,27 @@ int main( void )
     } 
     
     
-    //    
-    //    
-    //    /* the tracker outputs RF blips while waiting for a GPS fix */
-    //    while (current_fix.num_svs < 5 && current_fix.type < 3) {
-    //        //WDTCTL = WDTPW + WDTCNTCL + WDTIS0; // TODO: work out how to use the watchdog timer
-    //        if (seconds > BLIP_FIX_INTERVAL) {
-    //                seconds = 0;
-    //                gps_get_fix(&current_fix);
-    //                telemetry_start(TELEMETRY_PIPS, 1);
-    //
-    //        } else {
-    //                telemetry_start(TELEMETRY_PIPS, 5);
-    //
-    //        }
-    //    }
-    //    
+        
+        
+//	/* the tracker outputs Pips while waiting for a GPS fix */
+//	while (current_fix.num_svs < 5 && current_fix.type < 3) {
+//		/* start pips */
+//		telemetry_start(TELEMETRY_PIPS, 1);
+//		
+//		/* Sleep Wait */ 
+//		while (telemetry_active());
+//		
+//		/* Now check if we have a fix*/
+//		for(ubx_retry_count=0; ubx_retry_count < UBX_POLL_RETRIES ; ubx_retry_count++){ 
+//     		if( gps_get_fix(&current_fix)) break;
+//      		ubx_poll_fail = 1;
+//      		if(ubx_retry_count == (UBX_POLL_RETRIES -1)) ubx_poll_fail = 2;
+//    	} 
+//	
+//	}
+    
+	/* activate power save mode as fix is stable */
+	gps_power_save(1);
     
     // TODO : how to use the watchdog timer here to prevent it from getting stuck
     // one of the reasons for getting stuck is when data does not arrive from the
@@ -183,11 +201,8 @@ int main( void )
     {
 	
 	/* get the gps fix, voltage  and temperature*/
-
-        get_fix_and_measurements();
+    get_fix_and_measurements();
 	
-	/* save gps power by putting in power save mode */
-	//gps_power_save(1); // arg = 1 to enable power save. Seems to fail to send back data sometimes.
 	
 	/* save power by putting in power save mode */
 	// TODO: work out how to wake up the uart again. It doesn't wake back up
@@ -196,12 +211,10 @@ int main( void )
 	
 	/* fill the zeros with x. For debug. Not sure why. comment on original function states
 	* that if there are the field handling errors, we get this.*/
-	init_tx_buffer();
+	//init_tx_buffer();
 	
 	/* create the telemetry string */
 	prepare_tx_buffer();
-	
-	
 	
 	/* start pips */
 	telemetry_start(TELEMETRY_PIPS, 5);

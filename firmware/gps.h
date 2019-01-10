@@ -38,7 +38,7 @@
 #define UBX_CFG_RETRIES         3
 #define UBX_CFG_TIMEOUT         60000     // timeout 
 #define UBX_POLL_RETRIES        3       
-#define UBX_POLL_TIMEOUT        10000000l     // timeout
+#define UBX_POLL_TIMEOUT        1000000l     // timeout
 
 void InitialiseUART(void);
 void UART_send_buffer(char *cmd, uint8_t length);
