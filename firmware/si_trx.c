@@ -222,17 +222,17 @@ static void si_trx_get_adc_reading(uint8_t enable, uint8_t configuration,
 * Returns the measured internal die temperature of the radio
 * as integer
 */
-int16_t si_trx_get_temperature(void)
+int16_t si_trx_get_temperature (void)
 {
 	
         uint16_t raw_gpio, raw_battery, raw_temperature;
 	
 	/* Get the reading from the adc */
-	si_trx_get_adc_reading(SI_GET_ADC_READING_BATTERY, 0,
+	si_trx_get_adc_reading(SI_GET_ADC_READING_TEMPERATURE, 0xC5,
 						   &raw_gpio, &raw_battery, &raw_temperature);
         
        
-        uint32_t result = ((899 * raw_battery) / 4096) - 293;
+        uint32_t result = ((899 * (uint32_t) raw_temperature) / 4096) - 293;
         
 	
 	return result;
@@ -250,9 +250,9 @@ int16_t si_trx_get_voltage(void)
     uint16_t raw_gpio, raw_battery, raw_temperature;
 	
 	/* Get the reading from the adc */
-	si_trx_get_adc_reading(SI_GET_ADC_READING_BATTERY, 0,
+	si_trx_get_adc_reading(SI_GET_ADC_READING_BATTERY, 0xC5,
 						   &raw_gpio, &raw_battery, &raw_temperature);
-	uint32_t result = ((uint32_t) raw_temperature * 75) / 32; // result * 2.34375;
+	uint32_t result = ((uint32_t) raw_battery * 75) / 32; // result * 2.34375;
 	return result;
 }
 

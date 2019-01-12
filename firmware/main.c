@@ -101,7 +101,7 @@ uint8_t  ubx_poll_fail = 0;
 struct gps_fix current_fix;
 
 void get_fix_and_measurements(void) {
-    
+    ubx_poll_fail = 0;
     for(ubx_retry_count=0; ubx_retry_count < UBX_POLL_RETRIES ; ubx_retry_count++){ 
       if( gps_get_fix(&current_fix)) break;
       ubx_poll_fail = 1;
