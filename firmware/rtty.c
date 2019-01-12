@@ -48,7 +48,6 @@
  */
 #define ASCII_BITS	8
 #define BITS_PER_CHAR	11
-
 #define PREAMBLE_LENGTH  50
 
 /**

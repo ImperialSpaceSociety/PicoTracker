@@ -32,13 +32,14 @@
 #include <stdint.h>
 #include "HC12Board.h"
 
-//
-//  Setup the system clock to run at 16MHz using the internal oscillator.
-//
+/*
+ *  Setup the system clock to run at 16MHz using the internal oscillator.
+ */
 void InitialiseSystemClock(void)
 {
     CLK_ICKR = 0;                       //  Reset the Internal Clock Register.
     CLK_ICKR_HSIEN = 1;                 //  Enable the HSI.
+    CLK_ICKR_REGAH = 1;                 //  MVR regulator can be powered off automatically when the MCU enters Active-halt mode.
     CLK_ECKR = 0;                       //  Disable the external clock.
     while (CLK_ICKR_HSIRDY == 0);       //  Wait for the HSI to be ready for use.
     CLK_CKDIVR = 0;                     //  Ensure the clocks are running at full speed.
@@ -51,4 +52,39 @@ void InitialiseSystemClock(void)
     CLK_SWCR = 0;                       //  Reset the clock switch control register.
     CLK_SWCR_SWEN = 1;                  //  Enable switching.
     while (CLK_SWCR_SWBSY != 0);        //  Pause while the clock switch is busy.
+}
+
+
+/*
+ * Initialise the Auto Wake-up feature.
+ * https://blog.mark-stevens.co.uk/2014/06/auto-wakeup-stm8s/
+ * Total delay is 30.720s
+ * Ref. Section 12.3 AWU functional description in STM8 ref manual
+ * At the moment I think the values of AWUTb and APR are outside the 
+ * recommended range in the ref manual. It is running for more than 30 seconds,
+ * which is the max in the document
+*/		
+void InitialiseAWU()
+{
+    AWU_CSR1_AWUEN = 0;     // Disable the Auto-wakeup feature.
+	AWU_APR_APR = 62; 	    // set one of the 2 registers for delay (6 bit)
+    AWU_TBR_AWUTB = 15;     // set one of the 2 registers for delay (4 bit)
+    AWU_CSR1_AWUEN = 1;     // Enable the Auto-wakeup feature.
+}
+
+void DeInitAWU()
+{
+    AWU_CSR1_AWUEN = 0;     // Disable the Auto-wakeup feature.
+    AWU_TBR_AWUTB = 0;	    // needs to be 0 to save power
+}
+
+/*  Auto Wakeup Interrupt Service Routine (ISR).
+ *  https://blog.mark-stevens.co.uk/2014/06/auto-wakeup-stm8s/
+*/ 
+#pragma vector = AWU_vector
+__interrupt void AWU_IRQHandler(void)
+{
+    volatile unsigned char reg;
+
+    reg = AWU_CSR1;     // Reading AWU_CSR1 register clears the interrupt flag.
 }

@@ -100,7 +100,7 @@ void delay_ms(unsigned long ms) {
 
 /**
  * UART Serial Port Functions
- * Setup the UART to run at 115200 baud, no parity, one stop bit, 8 data bits.
+ * Setup the UART to run at 9600 baud, no parity, one stop bit, 8 data bits.
  * Important: This relies upon the system clock being set to run at 16 MHz.
  */
 
@@ -169,7 +169,7 @@ void UART_send_buffer(char *cmd, uint8_t length) {
 	uint8_t i;
 
 	for (i = 0; i < length; i++) {
-            while (!UART1_SR_TXE);   //  Wait for transmission to complete. THIS VERIFICATION HAS TO BE HERE!!
+            while (!UART1_SR_TXE);   //  Wait for transmission to complete.
 		UART1_DR = cmd[i];
 	}
 }
@@ -194,36 +194,36 @@ uint8_t gps_receive_ack(uint8_t class_id, uint8_t msg_id) {
 	nak[6] = class_id;
 	ack[7] = msg_id;
 	nak[7] = msg_id;
-        uint16_t timeout;
+    uint16_t timeout;
 	
 
 	/* runs until ACK/NAK packet is received, or a timeout.*/
 
         
 	while(1) {
-            timeout = 0;
-            while(!UART1_SR_RXNE){ // check if there is any data to be read.
-              if(timeout++ > UBX_CFG_TIMEOUT) return 0; // return no ack if timeout
-            }
-            rx_byte = UART1_DR;
+		timeout = 0;
+		while(!UART1_SR_RXNE){ // check if there is any data to be read.
+		  if(timeout++ > UBX_CFG_TIMEOUT) return 0; // return no ack if timeout
+		}
+		rx_byte = UART1_DR;
 
-            if (rx_byte == ack[match_count] || rx_byte == nak[match_count]) {
-                  if (match_count == 3) {	/* test ACK/NAK byte */
-                        if (rx_byte == ack[match_count]) {
-                            msg_ack = 1;
-                        } 
-                        else {
-                            msg_ack = 0;
-                        }
-                  }
-                  if (match_count == 7) { 
-                        return msg_ack;
-                  }
-			match_count++;
-            } 
-            else {
-                  match_count = 0;
-            }
+		if (rx_byte == ack[match_count] || rx_byte == nak[match_count]) {
+			  if (match_count == 3) {	/* test ACK/NAK byte */
+					if (rx_byte == ack[match_count]) {
+						msg_ack = 1;
+					} 
+					else {
+						msg_ack = 0;
+					}
+			  }
+			  if (match_count == 7) { 
+					return msg_ack;
+			  }
+		match_count++;
+		} 
+		else {
+			  match_count = 0;
+		}
 	}
 }
 
@@ -239,15 +239,15 @@ uint8_t gps_receive_ack(uint8_t class_id, uint8_t msg_id) {
  */
 uint8_t gps_disable_nmea_output(void) {
 	char nonmea[] = {
-		0xB5, 0x62, 0x06, 0x00, 20, 0x00,		/* UBX-CFG-PRT */
+		0xB5, 0x62, 0x06, 0x00, 20, 0x00,	/* UBX-CFG-PRT */
 		0x01, 0x00, 0x00, 0x00, 			/* UART1, reserved, no TX ready */
 		0xe0, 0x08, 0x00, 0x00,				/* UART mode (8N1) */
 		0x80, 0x25, 0x00, 0x00,				/* UART baud rate (9600) */
-		0x01, 0x00,					/* input protocols (uBx only) */
-		0x01, 0x00,					/* output protocols (uBx only) */
-		0x00, 0x00,					/* flags */
-		0x00, 0x00,					/* reserved */
-		0xaa, 0x79					/* checksum */
+		0x01, 0x00,							/* input protocols (uBx only) */
+		0x01, 0x00,							/* output protocols (uBx only) */
+		0x00, 0x00,							/* flags */
+		0x00, 0x00,							/* reserved */
+		0xaa, 0x79							/* checksum */
 	};
 
 	UART_send_buffer(nonmea, sizeof(nonmea));
@@ -381,7 +381,6 @@ uint8_t gps_get_fix(struct gps_fix *fix) {
  */
 uint8_t gps_set_gps_only(void) {
         
-	// TODO: verify if the comments are actually correct
 	char gpsonly[] = {
 		0xB5,0x62,0x06,0x3E,0x3C,0x00,              /* UBX-CFG-GNSS */
 		0x00,0x00,0x20,0x07,                        /* use 32 channels, 7 configs following */
@@ -413,26 +412,26 @@ uint8_t gps_set_gps_only(void) {
  */
 uint8_t gps_set_airborne_model(void) {
 	char model6[] = {
-		0xB5, 0x62, 0x06, 0x24, 0x24, 0x00, 		/* UBX-CFG-NAV5 */
-		0xFF, 0xFF, 					/* parameter bitmask */
-		0x06, 						/* dynamic model */
-		0x03, 						/* fix mode */
-		0x00, 0x00, 0x00, 0x00, 			/* 2D fix altitude */
-		0x10, 0x27, 0x00, 0x00,				/* 2D fix altitude variance */
-		0x05, 						/* minimum elevation */
-		0x00, 						/* reserved */
-		0xFA, 0x00, 					/* position DOP */
-		0xFA, 0x00, 					/* time DOP */
-		0x64, 0x00, 					/* position accuracy */
-		0x2C, 0x01, 					/* time accuracy */
-		0x00,						/* static hold threshold */ 
-		0x3C, 						/* DGPS timeout */
-		0x00, 						/* min. SVs above C/No thresh */
-		0x00, 						/* C/No threshold */
-		0x00, 0x00, 					/* reserved */
-		0xc8, 0x00,					/* static hold max. distance */
-		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 		/* reserved */
-		0x1a, 0x28					/* checksum */
+		0xB5, 0x62, 0x06, 0x24, 0x24, 0x00, 	/* UBX-CFG-NAV5 */
+		0xFF, 0xFF, 							/* parameter bitmask */
+		0x06, 									/* dynamic model */
+		0x03, 									/* fix mode */
+		0x00, 0x00, 0x00, 0x00, 				/* 2D fix altitude */
+		0x10, 0x27, 0x00, 0x00,					/* 2D fix altitude variance */
+		0x05, 									/* minimum elevation */
+		0x00, 									/* reserved */
+		0xFA, 0x00, 							/* position DOP */
+		0xFA, 0x00, 							/* time DOP */
+		0x64, 0x00, 							/* position accuracy */
+		0x2C, 0x01, 							/* time accuracy */
+		0x00,									/* static hold threshold */ 
+		0x3C, 									/* DGPS timeout */
+		0x00, 									/* min. SVs above C/No thresh */
+		0x00, 									/* C/No threshold */
+		0x00, 0x00, 							/* reserved */
+		0xc8, 0x00,								/* static hold max. distance */
+		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 	/* reserved */
+		0x1a, 0x28								/* checksum */
 	};
 
 	UART_send_buffer(model6, sizeof(model6));
@@ -448,6 +447,12 @@ uint8_t gps_set_airborne_model(void) {
  *
  */
 uint8_t gps_set_power_save(void) {
+	/* All the config options are in section 33.10.21.1 Extended Power
+	 * Management configuration of the UBLOX documentation 
+	 * This section is perhaps the most important in saveing power
+	 * through software settings 
+	 * This config uses the on/off-mode, not the */
+	
 	char powersave[] = {
 		0xB5, 0x62, 0x06, 0x3B, 44, 0,	/* UBX-CFG-PM2 */
 		0x01, 0x00, 0x00, 0x00, 		/* v1, reserved 1..3 */
@@ -477,7 +482,7 @@ uint8_t gps_set_power_save(void) {
 uint8_t gps_power_save(int on) {
 	char recvmgmt[] = {
 		0xB5, 0x62, 0x06, 0x11, 2, 0,	/* UBX-CFG-RXM */
-		0x08, 0x01,			/* reserved, enable power save mode */
+		0x08, 0x01,						/* reserved, enable power save mode */
 		0x22, 0x92
 	};
 	if (!on) {
@@ -499,9 +504,9 @@ uint8_t gps_power_save(int on) {
 uint8_t gps_save_settings(void) {
 	char cfg[] = {
 		0xB5, 0x62, 0x06, 0x09, 12, 0,	/* UBX-CFG-CFG */
-		0x00, 0x00, 0x00, 0x00,		/* clear no sections */
-		0x1f, 0x1e, 0x00, 0x00,		/* save all sections */
-		0x00, 0x00, 0x00, 0x00,		/* load no sections */
+		0x00, 0x00, 0x00, 0x00,		    /* clear no sections */
+		0x1f, 0x1e, 0x00, 0x00,		    /* save all sections */
+		0x00, 0x00, 0x00, 0x00,		    /* load no sections */
 		0x58, 0x59
 	};
 
@@ -532,7 +537,6 @@ void uart_power_save(int on) {
    * 0: UART enabled
    * 1: UART prescaler and outputs disabled
    */
-    // seems like there is mistake in the mapping of iostm8s..
     UART1_CR1_UART0 = on ;
 }
 

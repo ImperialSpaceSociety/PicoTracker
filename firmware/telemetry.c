@@ -49,9 +49,7 @@
 * https://github.com/thasti/utrak
 */
 
-/* calculated sentence ID length, used for variable length buffer */
-uint16_t tlm_sent_id_length;
-uint16_t tlm_alt_length;
+
 
 extern volatile uint16_t tlm_tick;
 extern uint16_t tx_buf_rdy;
@@ -60,6 +58,9 @@ extern char tx_buf[TX_BUF_MAX_LENGTH];
 extern char telemetry_string[TX_BUF_MAX_LENGTH];
 extern struct gps_fix current_fix;
 
+/* calculated sentence ID length, used for variable length buffer */
+uint16_t tlm_sent_id_length;
+uint16_t tlm_alt_length;
 
 /**
 * TELEMETRY OUTPUT
@@ -323,7 +324,7 @@ void prepare_tx_buffer(void) {
 	i16tox(crc, &tx_buf[TX_BUF_CHECKSUM_START]);
 	
 	for (i = 0; i < TX_BUF_POSTFIX_LENGTH; i++)
-		tx_buf[TX_BUF_POSTFIX_START + i] = TX_BUF_POSTFIX[i]; // there may be some bug here
+		tx_buf[TX_BUF_POSTFIX_START + i] = TX_BUF_POSTFIX[i];
 	
 	tx_buf_length = TX_BUF_FRAME_END;
 	/* trigger transmission */

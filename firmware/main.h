@@ -5,6 +5,8 @@
  *
  */
 
+
+
 #ifndef MAIN_H_
 #define MAIN_H_
 
@@ -72,8 +74,7 @@
 				ALT_LENGTH_MAX + 1 + SAT_LENGTH + 1 + VOLT_LENGTH + 1 + OP_STAT_LENGTH + 1 + TEMP_LENGTH + \
 				sizeof("*") - 1 + CHECKSUM_LENGTH + TX_BUF_POSTFIX_LENGTH
 
-/* buffer sizes */
-//#define NMEA_BUF_SIZE	83
+
 
 /* Port 1 */
 #define LED_A	BIT0

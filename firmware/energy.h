@@ -36,6 +36,10 @@
 
 
 void InitialiseSystemClock(void); //Initialise System Internal Clock
+void InitialiseAWU(); // Initialise the autowakeup feature
+void DeInitAWU();
+void InitialisePorts(); // Configure all of Port D for output./
+
 
 
 #endif /* ENERGY_H */
