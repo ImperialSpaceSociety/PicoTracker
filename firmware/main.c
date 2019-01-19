@@ -121,7 +121,7 @@ int main( void )
     /* get the clock working and initialise the auto wakeup service*/
     __disable_interrupt();
     InitialiseSystemClock();
-    InitialiseAWU();
+    InitialiseAWU(); // auto wake up
     __enable_interrupt();
     
     /* Start the UART */
@@ -134,6 +134,19 @@ int main( void )
     
     /* Initialise GPS */   
     gps_startup_delay(); // wait 1 sec for GPS to startup
+	
+	
+	for(ubx_retry_count=0; ubx_retry_count < UBX_CFG_RETRIES; ubx_retry_count++){ // Configure Power Save Mode
+      if((gps_set_power_save())) break;
+      ubx_cfg_fail = 1;
+      if(ubx_retry_count == (UBX_CFG_RETRIES -1)) ubx_cfg_fail = 2;
+    } 
+         
+    for(ubx_retry_count=0; ubx_retry_count < UBX_CFG_RETRIES; ubx_retry_count++){ // Power Save Mode Off
+      if((gps_power_save(0))) break;
+      ubx_cfg_fail = 1;
+      if(ubx_retry_count == (UBX_CFG_RETRIES -1)) ubx_cfg_fail = 2;
+    } 
     
     for(ubx_retry_count=0; ubx_retry_count < UBX_CFG_RETRIES; ubx_retry_count++){ // Setup for no NMEA Messages
       if((gps_disable_nmea_output())) break;
@@ -153,29 +166,12 @@ int main( void )
       if(ubx_retry_count == (UBX_CFG_RETRIES -1)) ubx_cfg_fail = 2;
     } 
          
-    for(ubx_retry_count=0; ubx_retry_count < UBX_CFG_RETRIES; ubx_retry_count++){ // Configure Power Save Mode
-      if((gps_set_power_save())) break;
-      ubx_cfg_fail = 1;
-      if(ubx_retry_count == (UBX_CFG_RETRIES -1)) ubx_cfg_fail = 2;
-    } 
          
-    for(ubx_retry_count=0; ubx_retry_count < UBX_CFG_RETRIES; ubx_retry_count++){ // Power Save Mode Off
-      if((gps_power_save(0))) break;
-      ubx_cfg_fail = 1;
-      if(ubx_retry_count == (UBX_CFG_RETRIES -1)) ubx_cfg_fail = 2;
-    } 
-         
-    for(ubx_retry_count=0; ubx_retry_count < UBX_CFG_RETRIES; ubx_retry_count++){ // Save setup to gps flash
-      if((gps_save_settings())) break;
-      ubx_cfg_fail = 1;
-      if(ubx_retry_count == (UBX_CFG_RETRIES -1)) ubx_cfg_fail = 2;
-    } 
-    
-    
-        
+
+ 
         
 	/* the tracker outputs Pips while waiting for a GPS fix. Doesn't work
-	 * out of view of satallites so during testing indoors you can block
+	 * out of view of satallites so while testing indoors you can block
 	 * comment out this section. CTRL-SHIFT-k in IAR workbench
      */
 
@@ -193,21 +189,26 @@ int main( void )
       		if(ubx_retry_count == (UBX_POLL_RETRIES -1)) ubx_poll_fail = 2;
     	} 
 	
-	} // can block comment out all the way till here.
-    
+	}   /* can block comment out all the way till here.*/
+
 	
 	
 	/* activate power save mode as fix is stable. 1 to activate power save.*/
-	  for(ubx_retry_count=0; ubx_retry_count < UBX_CFG_RETRIES; ubx_retry_count++){ // Power Save Mode Off
+	for(ubx_retry_count=0; ubx_retry_count < UBX_CFG_RETRIES; ubx_retry_count++){ // Power Save Mode ON
       if((gps_power_save(1))) break;
       ubx_cfg_fail = 1;
       if(ubx_retry_count == (UBX_CFG_RETRIES -1)) ubx_cfg_fail = 2;
     } 
 	
+	
+	for(ubx_retry_count=0; ubx_retry_count < UBX_CFG_RETRIES; ubx_retry_count++){ // Save setup to gps flash
+      if((gps_save_settings())) break;
+      ubx_cfg_fail = 1;
+      if(ubx_retry_count == (UBX_CFG_RETRIES -1)) ubx_cfg_fail = 2;
+    } 
     
-    // TODO : how to use the watchdog timer here to prevent it from getting stuck
-    // one of the reasons for getting stuck is when data does not arrive from the
-    // GPS module, leaving the MCU waiting for a resposnse forever.
+	
+    
     while (1)
     {
 	/* Turn back on uart. 0 to turn Uart back on*/
@@ -216,13 +217,8 @@ int main( void )
 	/* get the gps fix, voltage  and temperature*/
     get_fix_and_measurements();
 	
-	/* save power by turning off uart on stm8, arg = 1 to turn off*/
+	/* save power by turning off uart on stm8,  1 to turn off UART*/
 	uart_power_save(1); 
-	
-	/* fill the zeros with x. For debug. Not sure why. comment on original function states
-	* that if there are the field handling errors, we get this.
-	 */
-	//init_tx_buffer();
 	
 	/* create the telemetry string */
 	prepare_tx_buffer();
@@ -248,12 +244,13 @@ int main( void )
 	 * TODO: how to make it sleep for longer at higher altitudes? call __halt repeatedly?
 	 */
 	
+	Switch_to_LSI_clock();
+
 	/* reinit AWU_TBR. see ref manual section 12.3.1. Do we have to do this while disabling 
 	 * interrupt like in the init function(InitialiseAWU())? */
-	AWU_TBR = 15; 
+	InitialiseAWU(); // Initialise the autowakeup feature 
 	__halt(); // halt until an interrupt wakes things up
-	AWU_TBR = 0; // set AWU_TBR 0 for power saving. See ref manual section 12.3.1
-
+	DeInitAWU(); // set AWU_TBR = 0 for power saving. See ref manual section 12.3.1
 	
     } /* while(1)*/
     
