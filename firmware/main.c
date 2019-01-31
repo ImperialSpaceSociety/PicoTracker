@@ -167,6 +167,7 @@ int main( void )
       ubx_cfg_fail = 1;
       if(ubx_retry_count == (UBX_CFG_RETRIES -1)) ubx_cfg_fail = 2;
     } 
+         	
 	
 	for(ubx_retry_count=0; ubx_retry_count < UBX_CFG_RETRIES; ubx_retry_count++){ // Save setup to gps flash
       if((gps_save_settings())) break;
@@ -190,7 +191,7 @@ int main( void )
     get_fix_and_measurements();
 	
 	/* Put gps into software backup mode. The closest to turning it off*/
-	gps_software_backup();
+	//gps_software_backup();
 	
 	/* save power by turning off uart on stm8,  1 to turn off UART*/
 	uart_power_save(1); 
