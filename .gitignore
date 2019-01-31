@@ -12,6 +12,7 @@ firmware/settings/HC12Tracker.dnx
 *.dbgdt
 *.wsdt
 *.dep
+
 *.out
 *.map
 *.out
