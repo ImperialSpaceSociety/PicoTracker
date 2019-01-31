@@ -381,19 +381,6 @@ uint8_t gps_get_fix(struct gps_fix *fix) {
  */
 uint8_t gps_set_gps_only(void) {
         
-//	char gpsonly[] = {
-//		0xB5,0x62,0x06,0x3E,0x3C,0x00,              /* UBX-CFG-GNSS */
-//		0x00,0x00,0x20,0x07,                        /* use 32 channels, 7 configs following */
-//		0x00,0x08,0x10,0x00,0x01,0x00,0x01,0x01,    /* GPS enable */
-//		0x01,0x01,0x03,0x00,0x00,0x00,0x01,0x01,	/* SBAS disable */
-//		0x02,0x04,0x08,0x00,0x00,0x00,0x01,0x01,	/* Galileo disable */
-//		0x03,0x08,0x10,0x00,0x00,0x00,0x01,0x01,	/* Beidou disable */
-//		0x04,0x00,0x08,0x00,0x00,0x00,0x01,0x01,	/* IMES disable */
-//		0x05,0x00,0x03,0x00,0x01,0x00,0x01,0x01,	/* QZSS enable */
-//		0x06,0x08,0x0E,0x00,0x00,0x00,0x01,0x01,	/* GLONASS disable */
-//		0x2D,0x59                                   /* checksum */
-//	};
-
 	char gpsonly[] = {
 		0xB5,0x62,0x06,0x3E,0x3C,0x00,				/* UBX-CFG-GNSS */
 		0x00,0x00,0x20,0x07,						/* use 32 channels, 7 configs following */
@@ -450,62 +437,6 @@ uint8_t gps_set_airborne_model(void) {
 	return gps_receive_ack(0x06, 0x24);
 }
 
-/*
- * gps_set_power_save
- *
- * enables cyclic tracking on the uBlox M8Q
- *
- * returns if ACKed by GPS
- *
- */
-uint8_t gps_set_power_save(void) {
-	/* All the config options are in section 33.10.21.1 Extended Power
-	 * Management configuration of the UBLOX documentation 
-	 * This section is perhaps the most important in saveing power
-	 * through software settings 
-	 * This config uses the on/off-mode, not the cyclic power save mode */
-	
-	char powersave[] = {
-		0xB5, 0x62, 0x06, 0x3B, 44, 0,	/* UBX-CFG-PM2 */
-		0x01, 0x00, 0x00, 0x00, 		/* v1, reserved 1..3 */
-		0x00, 0x10, 0x00, 0x00,     	/* on/off-mode, update ephemeris */
-		0xC0, 0xD4, 0x01, 0x00,			/* update period, ms, 120s */
-		0xC0, 0xD4, 0x01, 0x00,			/* search period, ms, 120s */
-		0x00, 0x00, 0x00, 0x00,			/* grid offset */
-		0x00, 0x00,						/* on-time after first fix */
-		0x01, 0x00,						/* minimum acquisition time */
-		0x00, 0x00, 0x00, 0x00,			/* reserved 4,5 */
-		0x00, 0x00, 0x00, 0x00,			/* reserved 6 */
-		0x00, 0x00, 0x00, 0x00,			/* reserved 7 */
-		0x00, 0x00, 0x00, 0x00,			/* reserved 8,9,10 */
-		0x00, 0x00, 0x00, 0x00,			/* reserved 11 */
-		0xa9, 0x77
-	};
-
-	UART_send_buffer(powersave, sizeof(powersave));
-	return gps_receive_ack(0x06, 0x3B);
-}
-
-/*
- * gps_power_save
- *
- * enables or disables the power save mode (which was configured before)
- */
-uint8_t gps_power_save(int on) {
-	char recvmgmt[] = {
-		0xB5, 0x62, 0x06, 0x11, 2, 0,	/* UBX-CFG-RXM */
-		0x08, 0x01,						/* reserved, enable power save mode */
-		0x22, 0x92
-	};
-	if (!on) {
-		recvmgmt[7] = 0x00;		/* continuous mode */
-		recvmgmt[8] = 0x21;		/* new checksum */
-		recvmgmt[9] = 0x91;
-	}
-
-	UART_send_buffer(recvmgmt, sizeof(recvmgmt));
-	return gps_receive_ack(0x06, 0x11);
-}
 
 /*
  * gps_save_settings
@@ -525,6 +456,31 @@ uint8_t gps_save_settings(void) {
 	UART_send_buffer(cfg, sizeof(cfg));
 	return gps_receive_ack(0x06, 0x09);
 }
+
+
+/*
+ * Go into software backup mode
+ *
+ * Puts the GPS in software backup mode and sets it to wakeup on rising
+ * edge of UART.
+ * sleeps for 100s
+ */
+uint8_t gps_software_backup(void) {
+	char cfg[] = {
+		0xB5,0x62,0x02,0x41,0x10,0x00,  /* UBX-RXM-PMREQ */
+		0x00,0x00,0x00,0x00,
+		0xA0,0x86,0x01,0x00,
+		0x02,0x00,0x00,0x00,
+		0x08,0x00,0x00,0x00,
+		0x84,0x97,
+	};
+
+	UART_send_buffer(cfg, sizeof(cfg));
+	return gps_receive_ack(0x02, 0x41);
+}
+
+
+
 
 /*
  * gps_startup_delay
