@@ -23,9 +23,9 @@ param([String]$debugfile = "");
 
 if ($debugfile -eq "")
 {
-& "D:\Program Files\IAR\common\bin\cspybat" -f "D:\High Altitude Ballooning\Github data\Pico Tracker\PicoTracker\firmware\settings\HC12Tracker.Debug.general.xcl" --backend -f "D:\High Altitude Ballooning\Github data\Pico Tracker\PicoTracker\firmware\settings\HC12Tracker.Debug.driver.xcl" 
+& "C:\Program Files (x86)\IAR Systems\Embedded Workbench 8.0\common\bin\cspybat" -f "C:\Users\Sylvester\Documents\GitHub\PicoTracker\firmware\settings\HC12Tracker.Debug.general.xcl" --backend -f "C:\Users\Sylvester\Documents\GitHub\PicoTracker\firmware\settings\HC12Tracker.Debug.driver.xcl" 
 }
 else
 {
-& "D:\Program Files\IAR\common\bin\cspybat" -f "D:\High Altitude Ballooning\Github data\Pico Tracker\PicoTracker\firmware\settings\HC12Tracker.Debug.general.xcl" --debug_file=$debugfile --backend -f "D:\High Altitude Ballooning\Github data\Pico Tracker\PicoTracker\firmware\settings\HC12Tracker.Debug.driver.xcl" 
+& "C:\Program Files (x86)\IAR Systems\Embedded Workbench 8.0\common\bin\cspybat" -f "C:\Users\Sylvester\Documents\GitHub\PicoTracker\firmware\settings\HC12Tracker.Debug.general.xcl" --debug_file=$debugfile --backend -f "C:\Users\Sylvester\Documents\GitHub\PicoTracker\firmware\settings\HC12Tracker.Debug.driver.xcl" 
 }

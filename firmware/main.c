@@ -215,7 +215,7 @@ int main( void )
 	uart_power_save(0); 
 
 	/* get the gps fix, voltage  and temperature*/
-    get_fix_and_measurements();
+        get_fix_and_measurements();
 	
 	/* save power by turning off uart on stm8,  1 to turn off UART*/
 	uart_power_save(1); 
