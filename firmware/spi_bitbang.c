@@ -30,7 +30,7 @@
 #include <iostm8s003f3.h>
 
 
-
+// https://en.wikipedia.org/wiki/Serial_Peripheral_Interface
 
 void spi_bitbang_init()
 {

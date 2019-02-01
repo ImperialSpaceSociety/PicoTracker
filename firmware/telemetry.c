@@ -140,7 +140,6 @@ uint8_t is_telemetry_finished(void) {
 }
 
 
-
 /**
 * Called at the telemetry mode's baud rate
 */

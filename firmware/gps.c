@@ -520,6 +520,8 @@ uint8_t gps_save_settings(void) {
 		0x1f, 0x1e, 0x00, 0x00,		    /* save all sections */
 		0x00, 0x00, 0x00, 0x00,		    /* load no sections */
 		0x58, 0x59
+// 33.10.3.1 Clear, Save and Load configurations
+// https://www.u-blox.com/sites/default/files/products/documents/u-blox8-M8_ReceiverDescrProtSpec_%28UBX-13003221%29_Public.pdf
 	};
 
 	UART_send_buffer(cfg, sizeof(cfg));
