@@ -124,12 +124,15 @@ void get_fix_and_measurements(void) {
 		/* Sleep Wait */ 
 		while (telemetry_active());
 	}   
-    current_fix.temp_radio = si_trx_get_temperature();
+
+}
+
+void get_measurments(void){
+	current_fix.temp_radio = si_trx_get_temperature();
     current_fix.op_status = ((ubx_cfg_fail & 0x03) << 2) | ((ubx_poll_fail & 0x03)); //send operational status
 	// DO we need 4 bytes for op status? it seems to use only one byte at most
     current_fix.voltage_radio =  si_trx_get_voltage();
 }
-
 
 
 int main( void )
@@ -182,7 +185,8 @@ int main( void )
 	/* Get a single GPS fix from a cold start. Does not carry on until it has a
 	 * solid fix
 	*/
-    get_fix_and_measurements();
+	get_fix();
+    get_measurements();
 	
     
     while (1)
@@ -190,11 +194,14 @@ int main( void )
 	/* Turn back on uart. 0 to turn Uart back on*/
 	uart_power_save(0); 
 
-	/* get the gps fix, voltage  and temperature*/
-    get_fix_and_measurements();
+	/* get the gps fix */
+    get_fix();
 	
 	/* Put gps into software backup mode. The closest to turning it off*/
-	gps_software_backup(); //TODO: put a timeout here
+	gps_software_backup();
+	
+	/* get voltage  and temperature*/
+    get_measurements();
 	
 	/* save power by turning off uart on stm8,  1 to turn off UART*/
 	uart_power_save(1); 
