@@ -107,19 +107,22 @@ void get_fix_and_measurements(void) {
 	 * The tracker outputs Pips while waiting for a good GPS fix.
      */
 	
+	current_fix.num_svs = 0; // find out if I have to use pointers here instead
+	current_fix.type = 0;
 	while (current_fix.num_svs < 5 && current_fix.type < 3) {
-		/* start pips */
-		telemetry_start(TELEMETRY_PIPS, 1);
 		
-		/* Sleep Wait */ 
-		while (telemetry_active());
-		
-		/* Now check if we have a fix*/
+		/* check if we have a fix*/
 		for(ubx_retry_count=0; ubx_retry_count < UBX_POLL_RETRIES ; ubx_retry_count++){ 
      		if( gps_get_fix(&current_fix)) break;
       		ubx_poll_fail = 1;
       		if(ubx_retry_count == (UBX_POLL_RETRIES -1)) ubx_poll_fail = 2;
     	} 
+		
+		/* Pip because we don't have a fix yet*/
+		telemetry_start(TELEMETRY_PIPS, 1);
+		
+		/* Sleep Wait */ 
+		while (telemetry_active());
 	}   
     current_fix.temp_radio = si_trx_get_temperature();
     current_fix.op_status = ((ubx_cfg_fail & 0x03) << 2) | ((ubx_poll_fail & 0x03)); //send operational status
@@ -191,7 +194,7 @@ int main( void )
     get_fix_and_measurements();
 	
 	/* Put gps into software backup mode. The closest to turning it off*/
-	//gps_software_backup();
+	gps_software_backup(); //TODO: put a timeout here
 	
 	/* save power by turning off uart on stm8,  1 to turn off UART*/
 	uart_power_save(1); 
@@ -225,7 +228,7 @@ int main( void )
 	/* reinit AWU_TBR. see ref manual section 12.3.1. Do we have to do this while disabling 
 	 * interrupt like in the init function(InitialiseAWU())? */
 	InitialiseAWU(); // Initialise the autowakeup feature 
-	//__halt(); // halt until an interrupt wakes things up
+	__halt(); // halt until an interrupt wakes things up
 	DeInitAWU(); // set AWU_TBR = 0 for power saving. See ref manual section 12.3.1
 	
     } /* while(1)*/
