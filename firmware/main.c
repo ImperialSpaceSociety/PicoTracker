@@ -107,9 +107,9 @@ void get_fix(void) {
 	 * The tracker outputs Pips while waiting for a good GPS fix.
      */
 	
-	current_fix.num_svs = 0; // find out if I have to use pointers here instead
+	current_fix.num_svs = 0; 
 	current_fix.type = 0;
-	while (current_fix.num_svs < 5 && current_fix.type < 3) {
+	while (current_fix.num_svs < 5 && current_fix.type != 3) {
 		
 		/* check if we have a fix*/
 		for(ubx_retry_count=0; ubx_retry_count < UBX_POLL_RETRIES ; ubx_retry_count++){ 
@@ -198,13 +198,16 @@ int main( void )
     get_fix();
 	
 	/* Put gps into software backup mode. The closest to turning it off*/
+	
 	gps_software_backup();
+
+	
+	/* save power by turning off uart on stm8,  1 to turn off UART*/
+	uart_power_save(1); 
 	
 	/* get voltage  and temperature*/
     get_measurements();
 	
-	/* save power by turning off uart on stm8,  1 to turn off UART*/
-	uart_power_save(1); 
 	
 	/* create the telemetry string */
 	prepare_tx_buffer();
