@@ -155,7 +155,6 @@ int main( void )
     gps_startup_delay(); // wait 1 sec for GPS to startup
 	
 	
-    
     for(ubx_retry_count=0; ubx_retry_count < UBX_CFG_RETRIES; ubx_retry_count++){ // Setup for no NMEA Messages
       if((gps_disable_nmea_output())) break;
       ubx_cfg_fail = 1;
@@ -227,12 +226,9 @@ int main( void )
 	while (telemetry_active());
 	
 
-	/* go into active halt for around 30s. This will not be very accurate.
-	 * https://blog.mark-stevens.co.uk/2014/06/auto-wakeup-stm8s/ 
-	 * The automatic interrupt wakes up the controller.
-	 * TODO: how to make it sleep for longer at higher altitudes? call __halt repeatedly?
+	/* It will wake up with the HSI clock on wakeup from halt. Configured in the 
+     *  InitialiseSystemClock() function in energy.c
 	 */
-	
 	Switch_to_LSI_clock();
 
 	/* reinit AWU_TBR. see ref manual section 12.3.1. Do we have to do this while disabling 
