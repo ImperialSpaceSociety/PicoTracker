@@ -100,7 +100,7 @@ uint8_t  ubx_poll_fail = 0;
 /* current (latest) GPS fix and measurements */
 struct gps_fix current_fix;
 
-void get_fix_and_measurements(void) {
+void get_fix(void) {
     ubx_poll_fail = 0;
 	
 	/* 
@@ -127,7 +127,7 @@ void get_fix_and_measurements(void) {
 
 }
 
-void get_measurments(void){
+void get_measurements(void){
 	current_fix.temp_radio = si_trx_get_temperature();
     current_fix.op_status = ((ubx_cfg_fail & 0x03) << 2) | ((ubx_poll_fail & 0x03)); //send operational status
 	// DO we need 4 bytes for op status? it seems to use only one byte at most
