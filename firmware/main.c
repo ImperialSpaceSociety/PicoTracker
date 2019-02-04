@@ -191,7 +191,7 @@ int main( void )
     while (1)
     {
 	/* Turn back on uart. 0 to turn Uart back on*/
-	uart_power_save(0); 
+	//uart_power_save(0); 
 
 	/* get the gps fix */
     get_fix();
@@ -202,7 +202,7 @@ int main( void )
 
 	
 	/* save power by turning off uart on stm8,  1 to turn off UART*/
-	uart_power_save(1); 
+	//uart_power_save(1); 
 	
 	/* get voltage  and temperature*/
     get_measurements();
@@ -229,7 +229,7 @@ int main( void )
 	/* It will wake up with the HSI clock on wakeup from halt. Configured in the 
      *  InitialiseSystemClock() function in energy.c
 	 */
-	Switch_to_LSI_clock();
+	//Switch_to_LSI_clock();
 
 	/* reinit AWU_TBR. see ref manual section 12.3.1. Do we have to do this while disabling 
 	 * interrupt like in the init function(InitialiseAWU())? */
