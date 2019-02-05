@@ -36,11 +36,7 @@ form the telemetry string
 transmit the telemetry string
 Try to reduce memory usage when sending the pubx strings to disable nmea
 
-
-
 */
-
-
 
 
 #include <stdint.h>
@@ -87,6 +83,7 @@ uint16_t tx_buf_length = 0;			/* how many chars to send */
 char tx_buf[TX_BUF_MAX_LENGTH] = {SYNC_PREFIX "$$" PAYLOAD_NAME ","};	/* the telemetry buffer initialised with $$ */
 extern uint16_t tlm_sent_id_length; 
 extern uint16_t tlm_alt_length;    
+uint8_t  min_sats = 6;
 
 
 /* Retry counters and Operational Status*/
@@ -95,7 +92,8 @@ uint8_t  ubx_retry_count;
 uint8_t  ubx_poll_fail = 0;
 
 
-										
+
+									
 
 /* current (latest) GPS fix and measurements */
 struct gps_fix current_fix;
@@ -109,9 +107,8 @@ void get_fix(void) {
 	
 	current_fix.num_svs = 0; 
 	current_fix.type = 0;
-	
 
-	while (current_fix.num_svs < 5 && current_fix.type != 3) { // there is a bug here. current_fix.num_svs < 5 is always false because of type mismatch.
+	while (1) {
 		
 		/* check if we have a fix*/
 		for(ubx_retry_count=0; ubx_retry_count < UBX_POLL_RETRIES ; ubx_retry_count++){ 
@@ -119,6 +116,11 @@ void get_fix(void) {
       		ubx_poll_fail = 1;
       		if(ubx_retry_count == (UBX_POLL_RETRIES -1)) ubx_poll_fail = 2;
     	} 
+		
+		/* check if there is min 5 sats AND we have a 3D fix */
+		if (current_fix.num_svs >= min_sats && current_fix.type == 3){
+			break;
+		};
 		
 		/* Pip because we don't have a fix yet*/
 		telemetry_start(TELEMETRY_PIPS, 1);
@@ -188,7 +190,6 @@ int main( void )
     } 
          
          
-
  	/* Get a single GPS fix from a cold start. Does not carry on until it has a
 	 * solid fix
 	*/
@@ -265,7 +266,8 @@ int main( void )
 	/* reinit AWU_TBR. see ref manual section 12.3.1. Do we have to do this while disabling 
 	 * interrupt like in the init function(InitialiseAWU())? */
 	InitialiseAWU(); // Initialise the autowakeup feature 
-	__halt(); // halt until an interrupt wakes things up
+	__halt(); // halt until an interrupt wakes things up in 30s
+	__halt(); // halt until an interrupt wakes things up in 30s
 	DeInitAWU(); // set AWU_TBR = 0 for power saving. See ref manual section 12.3.1
 	
     } /* while(1)*/
