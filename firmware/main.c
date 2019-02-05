@@ -36,11 +36,7 @@ form the telemetry string
 transmit the telemetry string
 Try to reduce memory usage when sending the pubx strings to disable nmea
 
-
-
 */
-
-
 
 
 #include <stdint.h>
@@ -87,6 +83,7 @@ uint16_t tx_buf_length = 0;			/* how many chars to send */
 char tx_buf[TX_BUF_MAX_LENGTH] = {SYNC_PREFIX "$$" PAYLOAD_NAME ","};	/* the telemetry buffer initialised with $$ */
 extern uint16_t tlm_sent_id_length; 
 extern uint16_t tlm_alt_length;    
+uint8_t  min_sats = 6;
 
 
 /* Retry counters and Operational Status*/
@@ -95,25 +92,51 @@ uint8_t  ubx_retry_count;
 uint8_t  ubx_poll_fail = 0;
 
 
-										
+
+									
 
 /* current (latest) GPS fix and measurements */
 struct gps_fix current_fix;
 
-void get_fix_and_measurements(void) {
+void get_fix(void) {
     ubx_poll_fail = 0;
-    for(ubx_retry_count=0; ubx_retry_count < UBX_POLL_RETRIES ; ubx_retry_count++){ 
-      if( gps_get_fix(&current_fix)) break;
-      ubx_poll_fail = 1;
-      if(ubx_retry_count == (UBX_POLL_RETRIES -1)) ubx_poll_fail = 2;
-    } 
+	
+	/* 
+	 * The tracker outputs Pips while waiting for a good GPS fix.
+     */
+	
+	current_fix.num_svs = 0; 
+	current_fix.type = 0;
 
-    current_fix.temp_radio = si_trx_get_temperature();
+	while (1) {
+		
+		/* check if we have a fix*/
+		for(ubx_retry_count=0; ubx_retry_count < UBX_POLL_RETRIES ; ubx_retry_count++){ 
+     		if( gps_get_fix(&current_fix)) break;
+      		ubx_poll_fail = 1;
+      		if(ubx_retry_count == (UBX_POLL_RETRIES -1)) ubx_poll_fail = 2;
+    	} 
+		
+		/* check if there is min 5 sats AND we have a 3D fix */
+		if (current_fix.num_svs >= min_sats && current_fix.type == 3){
+			break;
+		};
+		
+		/* Pip because we don't have a fix yet*/
+		telemetry_start(TELEMETRY_PIPS, 1);
+		
+		/* Sleep Wait */ 
+		while (telemetry_active());
+	}   
+
+}
+
+void get_measurements(void){
+	current_fix.temp_radio = si_trx_get_temperature();
     current_fix.op_status = ((ubx_cfg_fail & 0x03) << 2) | ((ubx_poll_fail & 0x03)); //send operational status
 	// DO we need 4 bytes for op status? it seems to use only one byte at most
     current_fix.voltage_radio =  si_trx_get_voltage();
 }
-
 
 
 int main( void )
@@ -167,30 +190,11 @@ int main( void )
     } 
          
          
-
- 
-        
-	/* the tracker outputs Pips while waiting for a GPS fix. Doesn't work
-	 * out of view of satallites so while testing indoors you can block
-	 * comment out this section. CTRL-SHIFT-k in IAR workbench
-     */
-
-	while (current_fix.num_svs < 5 && current_fix.type < 3) {
-		/* start pips */
-		telemetry_start(TELEMETRY_PIPS, 1);
-		
-		/* Sleep Wait */ 
-		while (telemetry_active());
-		
-		/* Now check if we have a fix*/
-		for(ubx_retry_count=0; ubx_retry_count < UBX_POLL_RETRIES ; ubx_retry_count++){ 
-     		if( gps_get_fix(&current_fix)) break;
-      		ubx_poll_fail = 1;
-      		if(ubx_retry_count == (UBX_POLL_RETRIES -1)) ubx_poll_fail = 2;
-    	} 
-	
-	}   /* can block comment out all the way till here.*/
-
+ 	/* Get a single GPS fix from a cold start. Does not carry on until it has a
+	 * solid fix
+	*/
+	get_fix();
+    get_measurements();
 	
 	
 	/* activate power save mode as fix is stable. 1 to activate power save.*/
@@ -214,11 +218,24 @@ int main( void )
 	/* Turn back on uart. 0 to turn Uart back on*/
 	uart_power_save(0); 
 
-	/* get the gps fix, voltage  and temperature*/
-    get_fix_and_measurements();
+	/* now wake up the GPS */
+	gps_wake_up();
+	
+	/* now put the gps in full power mode */
+	while(!(gps_power_save(0)));
+	
+	/* get the gps fix */
+    get_fix();
+	
+	/* put the gps back to power save mode(sleep) */
+	while(!(gps_power_save(1)));
+	
 	
 	/* save power by turning off uart on stm8,  1 to turn off UART*/
 	uart_power_save(1); 
+	
+	/* get voltage  and temperature*/
+    get_measurements(); 
 	
 	/* create the telemetry string */
 	prepare_tx_buffer();
@@ -249,7 +266,8 @@ int main( void )
 	/* reinit AWU_TBR. see ref manual section 12.3.1. Do we have to do this while disabling 
 	 * interrupt like in the init function(InitialiseAWU())? */
 	InitialiseAWU(); // Initialise the autowakeup feature 
-	__halt(); // halt until an interrupt wakes things up
+	__halt(); // halt until an interrupt wakes things up in 30s
+	__halt(); // halt until an interrupt wakes things up in 30s
 	DeInitAWU(); // set AWU_TBR = 0 for power saving. See ref manual section 12.3.1
 	
     } /* while(1)*/

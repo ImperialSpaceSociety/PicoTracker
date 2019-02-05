@@ -11,7 +11,7 @@
 #define MAIN_H_
 
 /* payload name */
-#define PAYLOAD_NAME "ICSPACE2"
+#define PAYLOAD_NAME "ICSPACE4"
 /* payload telemetry interval
  * can be set for APRS only and for RTTY + APRS
  */
