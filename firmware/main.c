@@ -90,6 +90,7 @@ uint8_t  min_sats = 6;
 uint8_t  ubx_cfg_fail = 0;
 uint8_t  ubx_retry_count;
 uint8_t  ubx_poll_fail = 0;
+uint8_t  gps_fix_attempts = 0;
 
 
 
@@ -107,9 +108,12 @@ void get_fix(void) {
 	
 	current_fix.num_svs = 0; 
 	current_fix.type = 0;
-
+	
+ 	gps_fix_attempts = 0;
 	while (1) {
 		
+		 gps_fix_attempts += 1;
+
 		/* check if we have a fix*/
 		for(ubx_retry_count=0; ubx_retry_count < UBX_POLL_RETRIES ; ubx_retry_count++){ 
      		if( gps_get_fix(&current_fix)) break;
@@ -133,8 +137,7 @@ void get_fix(void) {
 
 void get_measurements(void){
 	current_fix.temp_radio = si_trx_get_temperature();
-    current_fix.op_status = ((ubx_cfg_fail & 0x03) << 2) | ((ubx_poll_fail & 0x03)); //send operational status
-	// DO we need 4 bytes for op status? it seems to use only one byte at most
+	current_fix.op_status = ((gps_fix_attempts & 0x0F) << 4) | ((ubx_cfg_fail & 0x03) << 2) | ((ubx_poll_fail & 0x03)); //send operational status
     current_fix.voltage_radio =  si_trx_get_voltage();
 }
 
@@ -258,7 +261,6 @@ int main( void )
 	/* go into active halt for around 30s. This will not be very accurate.
 	 * https://blog.mark-stevens.co.uk/2014/06/auto-wakeup-stm8s/ 
 	 * The automatic interrupt wakes up the controller.
-	 * TODO: how to make it sleep for longer at higher altitudes? call __halt repeatedly?
 	 */
 	
 	Switch_to_LSI_clock();
