@@ -83,14 +83,14 @@ uint16_t tx_buf_length = 0;			/* how many chars to send */
 char tx_buf[TX_BUF_MAX_LENGTH] = {SYNC_PREFIX "$$" PAYLOAD_NAME ","};	/* the telemetry buffer initialised with $$ */
 extern uint16_t tlm_sent_id_length; 
 extern uint16_t tlm_alt_length;    
-uint8_t  min_sats = 6;
+uint8_t  min_sats = 5;
 
 
 /* Retry counters and Operational Status*/
 uint8_t  ubx_cfg_fail = 0;
 uint8_t  ubx_retry_count;
 uint8_t  ubx_poll_fail = 0;
-uint8_t  gps_fix_attempts = 0;
+uint8_t  gps_fix_attempts = 0; // temporary 12
 
 
 
@@ -137,7 +137,7 @@ void get_fix(void) {
 
 void get_measurements(void){
 	current_fix.temp_radio = si_trx_get_temperature();
-	current_fix.op_status = ((gps_fix_attempts & 0x0F) << 4) | ((ubx_cfg_fail & 0x03) << 2) | ((ubx_poll_fail & 0x03)); //send operational status
+	current_fix.op_status = ((gps_fix_attempts & 0x0F) << 4) | ((ubx_cfg_fail & 0x03) << 2) | ((ubx_poll_fail & 0x03));  // what is the behaviour when the values of get_fix_attempts overflows(above 15)?
     current_fix.voltage_radio =  si_trx_get_voltage();
 }
 
