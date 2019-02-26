@@ -83,7 +83,6 @@ uint16_t tx_buf_length = 0;			/* how many chars to send */
 char tx_buf[TX_BUF_MAX_LENGTH] = {SYNC_PREFIX "$$" PAYLOAD_NAME ","};	/* the telemetry buffer initialised with $$ */
 extern uint16_t tlm_sent_id_length; 
 extern uint16_t tlm_alt_length;    
-uint8_t  min_sats = 6;
 
 
 /* Retry counters and Operational Status*/
@@ -117,8 +116,8 @@ void get_fix(void) {
       		if(ubx_retry_count == (UBX_POLL_RETRIES -1)) ubx_poll_fail = 2;
     	} 
 		
-		/* check if there is min 5 sats AND we have a 3D fix */
-		if (current_fix.num_svs >= min_sats && current_fix.type == 3){
+		/* check if we have a 3D fix */
+		if (current_fix.type == 3){
 			break;
 		};
 		
