@@ -40,7 +40,7 @@
 #define VCXO_FREQUENCY	SI406X_TCXO_FREQUENCY
 #define RF_DEVIATION	500
 
-
+int8_t radio_select_pin  = 3;
 
 /**
 * Generic SPI Send / Receive
@@ -50,13 +50,23 @@ void _si_trx_transfer(int tx_count, int rx_count, uint8_t *data)
 	uint8_t response;
 	
 	/* Send command */
-	_si_trx_cs_enable();
+        
+        /* Enable select */
+        if (radio_select_pin == 3) //QFN radio
+          PD_ODR_ODR3 = 0;
+        else
+          PD_ODR_ODR2 = 0;
 	
 	for (int i = 0; i < tx_count; i++) {
 		spi_bitbang_transfer(data[i]);
 	}
 	
-	_si_trx_cs_disable();
+	/* Disable select */
+        if (radio_select_pin == 3)
+          PD_ODR_ODR3 = 1;
+        else
+          PD_ODR_ODR2 = 1;
+        
 	
 	/**
 	* Poll CTS. From the docs:
@@ -72,7 +82,12 @@ void _si_trx_transfer(int tx_count, int rx_count, uint8_t *data)
 	
 	do {
 		for (int i = 0; i < 200; i++); /* Approx. 20µS */
-		_si_trx_cs_enable();
+		
+                /* Enable select */
+                if (radio_select_pin == 3)
+                    PD_ODR_ODR3 = 0;
+                else
+                    PD_ODR_ODR2 = 0;
 		
 		/* Issue READ_CMD_BUFF */
 		spi_bitbang_transfer(SI_CMD_READ_CMD_BUFF);
@@ -82,7 +97,13 @@ void _si_trx_transfer(int tx_count, int rx_count, uint8_t *data)
 		if (response == 0xFF) break;
 		
 		/* Otherwise repeat the procedure */
-		_si_trx_cs_disable();
+                
+		/* Disable select */
+                if (radio_select_pin == 3)
+                    PD_ODR_ODR3 = 1;
+                else
+                    PD_ODR_ODR2 = 1;
+        
 		
 	} while (1); /* TODO: Timeout? */
 	
@@ -99,7 +120,11 @@ void _si_trx_transfer(int tx_count, int rx_count, uint8_t *data)
 		data[i] = spi_bitbang_transfer(0xFF);
 	}
 	
-	_si_trx_cs_disable();
+	/* Disable select */
+                if (radio_select_pin == 3)
+                    PD_ODR_ODR3 = 1;
+                else
+                    PD_ODR_ODR2 = 1;
 }
 
 
@@ -470,20 +495,44 @@ void si_trx_init(void)
  
   /* Put the transciever in shutdown */
   _si_trx_sdn_enable();
+  
+ /* Configure the SPI serial port */
+  spi_bitbang_init(); 
+  
+ /* Determine the SPI select Pin 
+ *  this is different for the TSSOP and QFN versions
+ *  Port D bit 3 for QFN
+ *  Port D bit 2 for TSSOP */
 
-  /* Configure the SPI select pin */
-#ifdef SILABS_QFN             
+  /* Configure the SPI select pin for QFN*/
+
+  
     PD_DDR_DDR3 = 1;        //  Port D, bit 3 is output for QFN.
     PD_CR1_C13 = 1;         //  Pin is set to Push-Pull mode.
     PD_CR2_C23 = 1;         //  Pin can run upto 10 MHz. 
-#else
-    PD_DDR_DDR2 = 1;        //  Port D, bit 2 is output for TSSOP.
-    PD_CR1_C12 = 1;         //  Pin is set to Push-Pull mode.
-    PD_CR2_C22 = 1;         //  Pin can run upto 10 MHz. 
-#endif
-
-  /* Put the SEL pin in reset */
-  _si_trx_cs_disable();
+    PD_ODR_ODR3 = 1;        //  Select is high
+    
+   /* Try to read part number */
+    _si_trx_sdn_enable();  /* active high shutdown = reset */
+	
+    for (int i = 0; i < 15*1000; i++); /* Approx. 15ms */
+    _si_trx_sdn_disable();   /* booting */
+    for (int i = 0; i < 15*1000; i++); /* Approx. 15ms */
+	
+	
+    uint16_t part_number = si_trx_get_part_info();
+    if (part_number != 0x4463 && part_number != 0x4438 ){ // Radio chip might be Si4463 or Si4438
+      
+        radio_select_pin =2;    //  TSSOP pin
+        PD_DDR_DDR3 = 0;        //  Port D, bit 3 is input.
+        PD_CR1_C13 = 0;         //  Pin has no pullup
+        PD_CR2_C23 = 0;         //  Pin has no interrupt
+        PD_DDR_DDR2 = 1;        //  Port D, bit 2 is output for TSSOP.
+        PD_CR1_C12 = 1;         //  Pin is set to Push-Pull mode.
+        PD_CR2_C22 = 1;         //  Pin can run upto 10 MHz. 
+    }
+    part_number = si_trx_get_part_info();
+    _si_trx_sdn_enable();  /* active high shutdown = reset */
 
   /* Configure the GPIO pins */
     PB_DDR_DDR4 = 0;        //  GPIO0 Port B, bit 4 is input.
@@ -504,8 +553,7 @@ void si_trx_init(void)
   /* Configure the IRQ pin */
   // TODO
 
-  /* Configure the serial port */
-  spi_bitbang_init();
+  
 }
 
 
