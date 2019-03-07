@@ -266,7 +266,10 @@ int main( void )
 	 * interrupt like in the init function(InitialiseAWU())? */
 	InitialiseAWU(); // Initialise the autowakeup feature 
 	__halt(); // halt until an interrupt wakes things up in 30s
-	__halt(); // halt until an interrupt wakes things up in 30s
+	
+	if (current_fix.alt> 3000){	
+		__halt(); // halt until an interrupt wakes things up in 30s
+	}
 	DeInitAWU(); // set AWU_TBR = 0 for power saving. See ref manual section 12.3.1
 	
     } /* while(1)*/
