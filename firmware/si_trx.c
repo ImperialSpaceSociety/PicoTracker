@@ -222,6 +222,11 @@ static void si_trx_get_adc_reading(uint8_t enable, uint8_t configuration,
 	buffer[1] = enable;
 	buffer[2] = configuration;
         
+        /* Power on TCXO and wait for stable*/
+        PA_ODR_ODR3 = 1;
+        for (int i = 0; i < 5*1000; i++); /* Approx. 5ms */
+         
+        
         _si_trx_sdn_enable();  /* active high shutdown = reset */
 	
 	for (int i = 0; i < 15*1000; i++); /* Approx. 15ms */
@@ -232,7 +237,7 @@ static void si_trx_get_adc_reading(uint8_t enable, uint8_t configuration,
 	
 	
 	/* Power Up */
-	 si_trx_power_up(SI_POWER_UP_XTAL, VCXO_FREQUENCY);
+	 si_trx_power_up(SI_POWER_UP_TCXO, VCXO_FREQUENCY);
 
 	_si_trx_transfer(3, 6, buffer);
 
@@ -418,7 +423,11 @@ static float si_trx_set_frequency(uint32_t frequency, uint16_t deviation)
 */
 void si_trx_reset(uint8_t modulation_type, uint16_t deviation)
 {
-	_si_trx_sdn_enable();  /* active high shutdown = reset */
+        /* Power on TCXO and wait for stable*/
+        PA_ODR_ODR3 = 1;
+        for (int i = 0; i < 5*1000; i++); /* Approx. 5ms */
+  
+        _si_trx_sdn_enable();  /* active high shutdown = reset */
 	
 	for (int i = 0; i < 15*1000; i++); /* Approx. 15ms */
 	_si_trx_sdn_disable();   /* booting */
@@ -428,7 +437,7 @@ void si_trx_reset(uint8_t modulation_type, uint16_t deviation)
 	uint16_t part_number = si_trx_get_part_info();
 	
 	/* Power Up */
-	si_trx_power_up(SI_POWER_UP_XTAL, VCXO_FREQUENCY);
+	si_trx_power_up(SI_POWER_UP_TCXO, VCXO_FREQUENCY);
 	
 	/* Clear pending interrupts */
 	si_trx_clear_pending_interrupts(0, 0);
@@ -472,6 +481,9 @@ void si_trx_off(void)
 	
 	/* Physical shutdown */
 	_si_trx_sdn_enable();
+        
+        /* Power off TCXO */
+        PA_ODR_ODR3 = 0;
 }
 
 /**
@@ -487,11 +499,25 @@ void si_trx_switch_channel(int16_t channel)
 */
 void si_trx_init(void)
 {
+  /* Configure the TCXO power pin */
+    PA_DDR_DDR3 = 1;        //  Port D, bit 4 is output.
+    PA_CR1_C13 = 1;         //  Pin is set to Push-Pull mode.
+    PA_CR2_C23 = 1;         //  Pin can run upto 10 MHz. 
+
+  
+  /* Power off TCXO */
+    PA_ODR_ODR3 = 0;
+
   /* Configure the SDN pin */
  
     PD_DDR_DDR4 = 1;        //  Port D, bit 4 is output.
     PD_CR1_C14 = 1;         //  Pin is set to Push-Pull mode.
     PD_CR2_C24 = 1;         //  Pin can run upto 10 MHz. 
+    
+  /* Configure the TCXO power pin */
+    PA_DDR_DDR3 = 1;        //  Port D, bit 4 is output.
+    PA_CR1_C13 = 1;         //  Pin is set to Push-Pull mode.
+    PA_CR2_C23 = 1;         //  Pin can run upto 10 MHz. 
  
   /* Put the transciever in shutdown */
   _si_trx_sdn_enable();
@@ -513,6 +539,10 @@ void si_trx_init(void)
     PD_ODR_ODR3 = 1;        //  Select is high
     
    /* Try to read part number */
+    /* Power on TCXO and wait for stable*/
+    PA_ODR_ODR3 = 1;
+    for (int i = 0; i < 5*1000; i++); /* Approx. 5ms */
+    
     _si_trx_sdn_enable();  /* active high shutdown = reset */
 	
     for (int i = 0; i < 15*1000; i++); /* Approx. 15ms */
@@ -533,6 +563,7 @@ void si_trx_init(void)
     }
     part_number = si_trx_get_part_info();
     _si_trx_sdn_enable();  /* active high shutdown = reset */
+    PA_ODR_ODR3 = 1; /* Power off TCXO*/
 
   /* Configure the GPIO pins */
     PB_DDR_DDR4 = 0;        //  GPIO0 Port B, bit 4 is input.

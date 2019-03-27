@@ -38,7 +38,7 @@
 * Pin7  VSS
 * Pin8  VCAP
 * Pin9  VDD
-* Pin10 PA3
+* Pin10 PA3             TCXO Enable Output
 * Pin11 PB5             SET Header Pin via level shifter
 * Pin12 PB4             Si4463 p9 - GPIO0
 * Pin13 PC3             Si4463 p10 - GPIO1
@@ -61,7 +61,9 @@
 
 
 
-#define SI406X_TCXO_FREQUENCY	30000000L  // si4463 clock frequency
+//#define SI406X_TCXO_FREQUENCY	30000000L  // si4463 clock frequency Crystal
+#define SI406X_TCXO_FREQUENCY	32000000L  // si4463 clock frequency TYCXO
+
 #define HSCLK_FREQUENCY         16000000L  // Processor internal clock frequency
 
 #define GPS_UART        UART1

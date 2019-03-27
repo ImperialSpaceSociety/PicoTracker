@@ -4,6 +4,9 @@
 * Pico Balloon Tracker using HC12 radio module and GPS
 * HC12 Module with STM8S003F3 processor and silabs Si4463 Radio
 *  
+* This Branch is for build with TCXO Oscillator only
+* includes enable of TCXO, 32MHz Clock and config changes to Si4463
+*
 * Derived Work Copyright (c) 2018 Imperial College Space Society
 * From original work Copyright (C) 2014  Richard Meadows <richardeoin>
 *
