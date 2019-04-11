@@ -61,8 +61,8 @@
 
 
 
-//#define SI406X_TCXO_FREQUENCY	30000000L  // si4463 clock frequency Crystal
-#define SI406X_TCXO_FREQUENCY	32000000L  // si4463 clock frequency TYCXO
+#define SI406X_TCXO_FREQUENCY	30000000L  // si4463 clock frequency Crystal
+//#define SI406X_TCXO_FREQUENCY	32000000L  // si4463 clock frequency TYCXO
 
 #define HSCLK_FREQUENCY         16000000L  // Processor internal clock frequency
 

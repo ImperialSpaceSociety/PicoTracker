@@ -35,7 +35,7 @@
 
 
 #define RADIO_FREQUENCY	434250000
-#define RADIO_POWER	0x08
+#define RADIO_POWER	0x10
 
 #define VCXO_FREQUENCY	SI406X_TCXO_FREQUENCY
 #define RF_DEVIATION	500
@@ -232,7 +232,7 @@ static void si_trx_get_adc_reading(uint8_t enable, uint8_t configuration,
 	
 	
 	/* Power Up */
-	 si_trx_power_up(SI_POWER_UP_TCXO, VCXO_FREQUENCY);
+	 si_trx_power_up(SI_POWER_UP_XTAL, VCXO_FREQUENCY);
 
 	_si_trx_transfer(3, 6, buffer);
 
@@ -432,7 +432,7 @@ void si_trx_reset(uint8_t modulation_type, uint16_t deviation)
 	uint16_t part_number = si_trx_get_part_info();
 	
 	/* Power Up */
-	si_trx_power_up(SI_POWER_UP_TCXO, VCXO_FREQUENCY);
+	si_trx_power_up(SI_POWER_UP_XTAL, VCXO_FREQUENCY);
 	
 	/* Clear pending interrupts */
 	si_trx_clear_pending_interrupts(0, 0);
@@ -442,10 +442,10 @@ void si_trx_reset(uint8_t modulation_type, uint16_t deviation)
 	
 	/* Configure GPIOs */
 	si_trx_set_gpio_configuration(SI_GPIO_PIN_CFG_GPIO_MODE_INPUT | SI_GPIO_PIN_CFG_PULL_ENABLE,
-								  SI_GPIO_PIN_CFG_GPIO_MODE_INPUT | SI_GPIO_PIN_CFG_PULL_ENABLE,
-								  SI_GPIO_PIN_CFG_GPIO_MODE_DRIVE1,
-								  SI_GPIO_PIN_CFG_GPIO_MODE_DRIVE0,
-								  SI_GPIO_PIN_CFG_DRV_STRENGTH_LOW);
+                                      SI_GPIO_PIN_CFG_GPIO_MODE_INPUT | SI_GPIO_PIN_CFG_PULL_ENABLE,
+                                      SI_GPIO_PIN_CFG_GPIO_MODE_DRIVE1,
+                                      SI_GPIO_PIN_CFG_GPIO_MODE_DRIVE0,
+                                      SI_GPIO_PIN_CFG_DRV_STRENGTH_LOW);
 	
 	si_trx_set_frequency(RADIO_FREQUENCY, deviation);
 	si_trx_set_tx_power(RADIO_POWER);
@@ -565,13 +565,13 @@ void si_trx_init(void)
     PB_CR1_C14 = 1;         //  Pin is set to Pullup.
     PB_CR2_C24 = 0;         //  Pin is set to NO Interrupt. 
     
-    
+   
     
     PC_DDR_DDR3 = 1;        //  GPIO1 Port C, bit 3 is output.
     PC_CR1_C13 = 1;         //  Pin is set to Push-Pull mode.
     PC_CR2_C23 = 1;         //  Pin can run upto 10 MHz. 
     
-    PC_ODR_ODR3 = 0;        // GPIO1 Modulation = 0
+    PC_ODR_ODR3 = 0;        // GPIO1 Modulation = 1
     
     
  
