@@ -11,7 +11,7 @@
 #define MAIN_H_
 
 /* payload name */
-#define PAYLOAD_NAME "ICSPACE7"
+#define PAYLOAD_NAME "CLOUD1"
 /* payload telemetry interval
  * can be set for APRS only and for RTTY + APRS
  */
@@ -28,7 +28,7 @@
 #define SOLAR_POWER
 
 /* telemetry string prefix for RX syncronisation */
-#define SYNC_PREFIX		"  $$"
+#define SYNC_PREFIX		"  $$$$"
 /* telemetry string postfix for tlm parser */
 #define TX_BUF_POSTFIX		"\n\n"
 

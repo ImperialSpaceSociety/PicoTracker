@@ -36,7 +36,7 @@
 /**
  * 50 baud RTTY
  */
-#define RTTY_BIT_MS		19         // Miliseconds - 1 of bit period
+#define RTTY_BIT_MS		4         // Miliseconds - 1 of bit period
 #define RTTY_CHANNEL_SPACING	52 // Corresponds to 405.9Hz spacing
 
 
