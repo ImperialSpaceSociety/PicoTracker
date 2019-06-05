@@ -2,7 +2,7 @@
 
 "C:\Program Files (x86)\IAR Systems\Embedded Workbench 8.0\stm8\bin\stm8stlink.dll" 
 
-"C:\Users\Richard\Documents\HAB\HC12CW\Debug\Exe\HC12Tracker.out" 
+"C:\Users\Richard\Documents\GitHub\PicoTracker\test_firmware\HC12CW\Debug\Exe\HC12Tracker.out" 
 
 --plugin "C:\Program Files (x86)\IAR Systems\Embedded Workbench 8.0\stm8\bin\stm8bat.dll" 
 

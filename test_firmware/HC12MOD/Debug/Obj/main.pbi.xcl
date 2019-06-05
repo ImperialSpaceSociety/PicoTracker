@@ -1,4 +1,4 @@
-"C:\Users\Richard\Documents\HAB\HC12MOD\main.c"
+"C:\Users\Richard\Documents\GitHub\PicoTracker\test_firmware\HC12MOD\main.c"
 -std=c99
 -ferror-limit=0
 -I

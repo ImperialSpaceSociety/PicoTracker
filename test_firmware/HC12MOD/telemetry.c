@@ -45,7 +45,7 @@
 /**
  * Interface to the physical world.
  */
-#define MOD_CHANNEL_SPACING	52 // Corresponds to 405.9Hz spacing
+#define MOD_CHANNEL_SPACING	 XO_745_DEVIATION // 745Hz Deviation
 #define MOD_CHANNEL_DEVIATION	(MOD_CHANNEL_SPACING / 2)
 #define MOD_CHANNEL(b)		(b ? MOD_CHANNEL_DEVIATION : -MOD_CHANNEL_DEVIATION)
 #define MOD_SET(b)		si_trx_switch_channel(MOD_CHANNEL(b))

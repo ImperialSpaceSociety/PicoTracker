@@ -35,10 +35,9 @@
 
 
 #define RADIO_FREQUENCY	434250000
-#define RADIO_POWER	0x08
+#define RADIO_POWER	0x10
 
-#define VCXO_FREQUENCY	SI406X_TCXO_FREQUENCY
-#define RF_DEVIATION	500
+
 
 int8_t radio_select_pin  = 3;
 
@@ -232,7 +231,7 @@ static void si_trx_get_adc_reading(uint8_t enable, uint8_t configuration,
 	
 	
 	/* Power Up */
-	 si_trx_power_up(SI_POWER_UP_XTAL, VCXO_FREQUENCY);
+	 si_trx_power_up(XO_SOURCE, XO_FREQUENCY);
 
 	_si_trx_transfer(3, 6, buffer);
 
@@ -381,7 +380,7 @@ static float si_trx_set_frequency(uint32_t frequency, uint16_t deviation)
 		outdiv = 24; band = SI_MODEM_CLKGEN_FVCO_DIV_24;
 	}
 	
-	float f_pfd = nprescaler * VCXO_FREQUENCY / outdiv;
+	float f_pfd = nprescaler * XO_FREQUENCY / outdiv;
 	
 	uint16_t n = ((uint16_t)(frequency / f_pfd)) - 1;
 	
@@ -418,7 +417,11 @@ static float si_trx_set_frequency(uint32_t frequency, uint16_t deviation)
 */
 void si_trx_reset(uint8_t modulation_type, uint16_t deviation)
 {
-	_si_trx_sdn_enable();  /* active high shutdown = reset */
+        /* Power on TCXO and wait for stable*/
+        PA_ODR_ODR3 = 1;
+        for (int i = 0; i < 5*1000; i++); /* Approx. 5ms */
+  
+        _si_trx_sdn_enable();  /* active high shutdown = reset */
 	
 	for (int i = 0; i < 15*1000; i++); /* Approx. 15ms */
 	_si_trx_sdn_disable();   /* booting */
@@ -428,7 +431,7 @@ void si_trx_reset(uint8_t modulation_type, uint16_t deviation)
 	uint16_t part_number = si_trx_get_part_info();
 	
 	/* Power Up */
-	si_trx_power_up(SI_POWER_UP_XTAL, VCXO_FREQUENCY);
+	si_trx_power_up(XO_SOURCE, XO_FREQUENCY);
 	
 	/* Clear pending interrupts */
 	si_trx_clear_pending_interrupts(0, 0);
@@ -438,10 +441,10 @@ void si_trx_reset(uint8_t modulation_type, uint16_t deviation)
 	
 	/* Configure GPIOs */
 	si_trx_set_gpio_configuration(SI_GPIO_PIN_CFG_GPIO_MODE_INPUT | SI_GPIO_PIN_CFG_PULL_ENABLE,
-								  SI_GPIO_PIN_CFG_GPIO_MODE_INPUT | SI_GPIO_PIN_CFG_PULL_ENABLE,
-								  SI_GPIO_PIN_CFG_GPIO_MODE_DRIVE1,
-								  SI_GPIO_PIN_CFG_GPIO_MODE_DRIVE0,
-								  SI_GPIO_PIN_CFG_DRV_STRENGTH_LOW);
+                                      SI_GPIO_PIN_CFG_GPIO_MODE_INPUT | SI_GPIO_PIN_CFG_PULL_ENABLE,
+                                      SI_GPIO_PIN_CFG_GPIO_MODE_DRIVE1,
+                                      SI_GPIO_PIN_CFG_GPIO_MODE_DRIVE0,
+                                      SI_GPIO_PIN_CFG_DRV_STRENGTH_LOW);
 	
 	si_trx_set_frequency(RADIO_FREQUENCY, deviation);
 	si_trx_set_tx_power(RADIO_POWER);
@@ -472,6 +475,9 @@ void si_trx_off(void)
 	
 	/* Physical shutdown */
 	_si_trx_sdn_enable();
+        
+        /* Power off TCXO */
+        PA_ODR_ODR3 = 0;
 }
 
 /**
@@ -487,11 +493,25 @@ void si_trx_switch_channel(int16_t channel)
 */
 void si_trx_init(void)
 {
+  /* Configure the TCXO power pin */
+    PA_DDR_DDR3 = 1;        //  Port D, bit 4 is output.
+    PA_CR1_C13 = 1;         //  Pin is set to Push-Pull mode.
+    PA_CR2_C23 = 1;         //  Pin can run upto 10 MHz. 
+
+  
+  /* Power off TCXO */
+    PA_ODR_ODR3 = 0;
+
   /* Configure the SDN pin */
  
     PD_DDR_DDR4 = 1;        //  Port D, bit 4 is output.
     PD_CR1_C14 = 1;         //  Pin is set to Push-Pull mode.
     PD_CR2_C24 = 1;         //  Pin can run upto 10 MHz. 
+    
+  /* Configure the TCXO power pin */
+    PA_DDR_DDR3 = 1;        //  Port D, bit 4 is output.
+    PA_CR1_C13 = 1;         //  Pin is set to Push-Pull mode.
+    PA_CR2_C23 = 1;         //  Pin can run upto 10 MHz. 
  
   /* Put the transciever in shutdown */
   _si_trx_sdn_enable();
@@ -513,6 +533,10 @@ void si_trx_init(void)
     PD_ODR_ODR3 = 1;        //  Select is high
     
    /* Try to read part number */
+    /* Power on TCXO and wait for stable*/
+    PA_ODR_ODR3 = 1;
+    for (int i = 0; i < 5*1000; i++); /* Approx. 5ms */
+    
     _si_trx_sdn_enable();  /* active high shutdown = reset */
 	
     for (int i = 0; i < 15*1000; i++); /* Approx. 15ms */
@@ -533,19 +557,20 @@ void si_trx_init(void)
     }
     part_number = si_trx_get_part_info();
     _si_trx_sdn_enable();  /* active high shutdown = reset */
+    PA_ODR_ODR3 = 1; /* Power off TCXO*/
 
   /* Configure the GPIO pins */
     PB_DDR_DDR4 = 0;        //  GPIO0 Port B, bit 4 is input.
     PB_CR1_C14 = 1;         //  Pin is set to Pullup.
     PB_CR2_C24 = 0;         //  Pin is set to NO Interrupt. 
     
-    
+   
     
     PC_DDR_DDR3 = 1;        //  GPIO1 Port C, bit 3 is output.
     PC_CR1_C13 = 1;         //  Pin is set to Push-Pull mode.
     PC_CR2_C23 = 1;         //  Pin can run upto 10 MHz. 
     
-    PC_ODR_ODR3 = 0;        // GPIO1 Modulation = 0
+    PC_ODR_ODR3 = 0;        // GPIO1 Modulation = 1
     
     
  

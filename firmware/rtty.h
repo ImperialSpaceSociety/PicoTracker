@@ -32,12 +32,21 @@
 
 #include <iostm8s003f3.h>
 #include <stdint.h>
+#include "HC12Board.h"
 
 /**
  * 50 baud RTTY
  */
 #define RTTY_BIT_MS		19         // Miliseconds - 1 of bit period
-#define RTTY_CHANNEL_SPACING	52 // Corresponds to 405.9Hz spacing
+
+/**
+ * 200 baud RTTY
+ */
+//#define RTTY_BIT_MS		4         // Miliseconds - 1 of bit period
+
+
+#define RTTY_CHANNEL_SPACING	XO_745_DEVIATION // 745Hz Deviation
+
 
 
 void rtty_start(uint8_t data);
