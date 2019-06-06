@@ -254,12 +254,7 @@ int main( void )
 	while (telemetry_active());
 	
 
-	/* go into active halt for around 30s. This will not be very accurate.
-	 * https://blog.mark-stevens.co.uk/2014/06/auto-wakeup-stm8s/ 
-	 * The automatic interrupt wakes up the controller.
-	 * TODO: how to make it sleep for longer at higher altitudes? call __halt repeatedly?
-	 */
-	
+
 //	Switch_to_LSI_clock();
 //
 //	/* reinit AWU_TBR. see ref manual section 12.3.1. Do we have to do this while disabling 
