@@ -224,7 +224,7 @@ int main( void )
 	while(!(gps_power_save(0)));
 	
 	/* get the gps fix */
-    get_fix();
+        get_fix();
 	
 	/* put the gps back to power save mode(sleep) */
 	while(!(gps_power_save(1)));
@@ -234,7 +234,7 @@ int main( void )
 	uart_power_save(1); 
 	
 	/* get voltage  and temperature*/
-    get_measurements(); 
+        get_measurements(); 
 	
 	/* create the telemetry string */
 	prepare_tx_buffer();
@@ -260,17 +260,17 @@ int main( void )
 	 * TODO: how to make it sleep for longer at higher altitudes? call __halt repeatedly?
 	 */
 	
-	Switch_to_LSI_clock();
-
-	/* reinit AWU_TBR. see ref manual section 12.3.1. Do we have to do this while disabling 
-	 * interrupt like in the init function(InitialiseAWU())? */
-	InitialiseAWU(); // Initialise the autowakeup feature 
-	__halt(); // halt until an interrupt wakes things up in 30s
-	
-	if (current_fix.alt> 3000){	
-		__halt(); // halt until an interrupt wakes things up in 30s
-	}
-	DeInitAWU(); // set AWU_TBR = 0 for power saving. See ref manual section 12.3.1
+//	Switch_to_LSI_clock();
+//
+//	/* reinit AWU_TBR. see ref manual section 12.3.1. Do we have to do this while disabling 
+//	 * interrupt like in the init function(InitialiseAWU())? */
+//	InitialiseAWU(); // Initialise the autowakeup feature 
+//	__halt(); // halt until an interrupt wakes things up in 30s
+//	
+//	if (current_fix.alt> 3000){	
+//		__halt(); // halt until an interrupt wakes things up in 30s
+//	}
+//	DeInitAWU(); // set AWU_TBR = 0 for power saving. See ref manual section 12.3.1
 	
     } /* while(1)*/
     
