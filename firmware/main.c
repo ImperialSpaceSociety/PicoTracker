@@ -97,6 +97,12 @@ uint8_t  ubx_poll_fail = 0;
 /* current (latest) GPS fix and measurements */
 struct gps_fix current_fix;
 
+
+
+
+
+
+
 void get_fix(void) {
     ubx_poll_fail = 0;
 	
@@ -111,7 +117,8 @@ void get_fix(void) {
 		
 		/* check if we have a fix*/
 		for(ubx_retry_count=0; ubx_retry_count < UBX_POLL_RETRIES ; ubx_retry_count++){ 
-     		if( gps_get_fix(&current_fix)) break;
+                //if( gps_get_fix(&current_fix)) break; // don't forget to remove the fake fix
+     		if( gps_get_fake_fix(&current_fix)) break; // don't forget to remove the fake fix
       		ubx_poll_fail = 1;
       		if(ubx_retry_count == (UBX_POLL_RETRIES -1)) ubx_poll_fail = 2;
     	} 
@@ -265,10 +272,10 @@ int main( void )
 	/* reinit AWU_TBR. see ref manual section 12.3.1. Do we have to do this while disabling 
 	 * interrupt like in the init function(InitialiseAWU())? */
 	InitialiseAWU(); // Initialise the autowakeup feature 
-	__halt(); // halt until an interrupt wakes things up in 30s
+	//__halt(); // halt until an interrupt wakes things up in 30s
 	
 	if (current_fix.alt> 3000){	
-		__halt(); // halt until an interrupt wakes things up in 30s
+		//__halt(); // halt until an interrupt wakes things up in 30s
 	}
 	DeInitAWU(); // set AWU_TBR = 0 for power saving. See ref manual section 12.3.1
 	

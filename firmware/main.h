@@ -76,31 +76,5 @@
 
 
 
-/* Port 1 */
-#define LED_A	BIT0
-#define VSOL_IN	BIT1
-#define VBAT_IN	BIT2
-#define SI_SHDN	BIT3
-#define SI_DATA	BIT4
-#define MOSI	BIT6
-#define MISO	BIT7
-
-/* Port 2 */
-#define RXD	BIT1
-#define TXD	BIT0
-#define SCLK	BIT2
-
-/* Port J */
-#define CS	BIT0
-
-/* Timer compare defitions */
-/* as some values need fine tuning to keep error in a margin and are constrained, */
-/* these should be recalculated manually when the CPU frequency is changed  */
-/* NCO is running at 26400 hz (lowest common denominator of 1200*2 and 2200*2) */
-#define N_APRS_NCO	303		/* DCO_freq / 26400 */
-
-#define N_TLM	40000 - 1		/* DCO_freq / TLM rate / 2 */
-#define TLM_HZ	100			/* tlm rate in Hz */
-
 
 #endif

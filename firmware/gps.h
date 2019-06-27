@@ -49,7 +49,10 @@ uint8_t gps_set_airborne_model(void);
 uint8_t gps_set_power_save(void);
 uint8_t gps_power_save(int on);
 uint8_t gps_save_settings(void);
+
 uint8_t gps_get_fix(struct gps_fix *fix);
+uint8_t gps_get_fake_fix(struct gps_fix *fix); // for debugging only
+
 uint8_t gps_wake_up(void);
 void gps_startup_delay(void);
 void delay_ms(unsigned long ms);
