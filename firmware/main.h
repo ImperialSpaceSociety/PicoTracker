@@ -11,7 +11,7 @@
 #define MAIN_H_
 
 /* payload name */
-#define PAYLOAD_NAME "ICSPACE7"
+#define PAYLOAD_NAME "ICSPACE10"
 /* payload telemetry interval
  * can be set for APRS only and for RTTY + APRS
  */
@@ -69,38 +69,13 @@
 #define TX_BUF_CHECKSUM_BEGIN	sizeof(SYNC_PREFIX "$$") - 1
 #define TX_BUF_CHECKSUM_END	TX_BUF_CHECKSUM_START - 1
 
-#define TX_BUF_MAX_LENGTH	sizeof(SYNC_PREFIX "$$" PAYLOAD_NAME) - 1 + 1 + \
+#define TX_BUF_MAX_LENGTH	sizeof(SYNC_PREFIX "$$" PAYLOAD_NAME) + 1 + \
 				SENT_ID_LENGTH_MAX + 1 + TIME_LENGTH + 1 + LAT_LENGTH + 1 + LON_LENGTH + 1 + \
 				ALT_LENGTH_MAX + 1 + SAT_LENGTH + 1 + VOLT_LENGTH + 1 + OP_STAT_LENGTH + 1 + TEMP_LENGTH + \
-				sizeof("*") - 1 + CHECKSUM_LENGTH + TX_BUF_POSTFIX_LENGTH
+				sizeof("*") + CHECKSUM_LENGTH + TX_BUF_POSTFIX_LENGTH
 
 
 
-/* Port 1 */
-#define LED_A	BIT0
-#define VSOL_IN	BIT1
-#define VBAT_IN	BIT2
-#define SI_SHDN	BIT3
-#define SI_DATA	BIT4
-#define MOSI	BIT6
-#define MISO	BIT7
-
-/* Port 2 */
-#define RXD	BIT1
-#define TXD	BIT0
-#define SCLK	BIT2
-
-/* Port J */
-#define CS	BIT0
-
-/* Timer compare defitions */
-/* as some values need fine tuning to keep error in a margin and are constrained, */
-/* these should be recalculated manually when the CPU frequency is changed  */
-/* NCO is running at 26400 hz (lowest common denominator of 1200*2 and 2200*2) */
-#define N_APRS_NCO	303		/* DCO_freq / 26400 */
-
-#define N_TLM	40000 - 1		/* DCO_freq / TLM rate / 2 */
-#define TLM_HZ	100			/* tlm rate in Hz */
 
 
 #endif

@@ -34,9 +34,9 @@
 #include "si_trx_defs.h"
 
 
-#define RADIO_FREQUENCY	434250000
-#define RADIO_POWER	0x10
 
+#define RADIO_FREQUENCY	434600000
+#define RADIO_POWER	0x10
 
 
 int8_t radio_select_pin  = 3;
@@ -221,6 +221,11 @@ static void si_trx_get_adc_reading(uint8_t enable, uint8_t configuration,
 	buffer[1] = enable;
 	buffer[2] = configuration;
         
+        /* Power on TCXO and wait for stable*/
+        PA_ODR_ODR3 = 1;
+        for (int i = 0; i < 5*1000; i++); /* Approx. 5ms */
+         
+        
         _si_trx_sdn_enable();  /* active high shutdown = reset */
 	
 	for (int i = 0; i < 15*1000; i++); /* Approx. 15ms */
@@ -231,7 +236,8 @@ static void si_trx_get_adc_reading(uint8_t enable, uint8_t configuration,
 	
 	
 	/* Power Up */
-	 si_trx_power_up(XO_SOURCE, XO_FREQUENCY);
+
+	 si_trx_power_up(SI_POWER_UP_TCXO, VCXO_FREQUENCY);
 
 	_si_trx_transfer(3, 6, buffer);
 
@@ -431,7 +437,8 @@ void si_trx_reset(uint8_t modulation_type, uint16_t deviation)
 	uint16_t part_number = si_trx_get_part_info();
 	
 	/* Power Up */
-	si_trx_power_up(XO_SOURCE, XO_FREQUENCY);
+
+	si_trx_power_up(SI_POWER_UP_TCXO, VCXO_FREQUENCY);
 	
 	/* Clear pending interrupts */
 	si_trx_clear_pending_interrupts(0, 0);

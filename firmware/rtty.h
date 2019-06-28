@@ -45,8 +45,7 @@
 //#define RTTY_BIT_MS		4         // Miliseconds - 1 of bit period
 
 
-#define RTTY_CHANNEL_SPACING	XO_745_DEVIATION // 745Hz Deviation
-
+#define RTTY_CHANNEL_SPACING	50         // Corresponds to 745Hz spacing
 
 
 void rtty_start(uint8_t data);
