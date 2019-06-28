@@ -165,7 +165,7 @@ int main( void )
     gps_startup_delay(); // wait 1 sec for GPS to startup
 	
 	
-    for(ubx_retry_count=0; ubx_retry_count < UBX_CFG_RETRIES; ubx_retry_count++){ // Configure Power Save Mode
+	for(ubx_retry_count=0; ubx_retry_count < UBX_CFG_RETRIES; ubx_retry_count++){ // Configure Power Save Mode
       if((gps_set_power_save())) break;
       ubx_cfg_fail = 1;
       if(ubx_retry_count == (UBX_CFG_RETRIES -1)) ubx_cfg_fail = 2;
@@ -231,7 +231,7 @@ int main( void )
 	while(!(gps_power_save(0)));
 	
 	/* get the gps fix */
-        get_fix();
+    get_fix();
 	
 	/* put the gps back to power save mode(sleep) */
 	while(!(gps_power_save(1)));
@@ -241,16 +241,16 @@ int main( void )
 	uart_power_save(1); 
 	
 	/* get voltage  and temperature*/
-        get_measurements(); 
+    get_measurements(); 
 	
 	/* create the telemetry string */
 	prepare_tx_buffer();
 	
 	/* 10 start pips */
-	//telemetry_start(TELEMETRY_PIPS, 1);
+	telemetry_start(TELEMETRY_PIPS, 10);
 	
 	/* Sleep Wait */ 
-	//while (telemetry_active());
+	while (telemetry_active());
 	
 	
 	/* send telemetry over RTTY */
@@ -267,17 +267,17 @@ int main( void )
 	 * TODO: how to make it sleep for longer at higher altitudes? call __halt repeatedly?
 	 */
 	
-	//Switch_to_LSI_clock();
+	Switch_to_LSI_clock();
 
 	/* reinit AWU_TBR. see ref manual section 12.3.1. Do we have to do this while disabling 
 	 * interrupt like in the init function(InitialiseAWU())? */
-	//InitialiseAWU(); // Initialise the autowakeup feature 
+	InitialiseAWU(); // Initialise the autowakeup feature 
 	//__halt(); // halt until an interrupt wakes things up in 30s
 	
-	//if (current_fix.alt> 3000){	
+	if (current_fix.alt> 3000){	
 		//__halt(); // halt until an interrupt wakes things up in 30s
-	//}
-	//DeInitAWU(); // set AWU_TBR = 0 for power saving. See ref manual section 12.3.1
+	}
+	DeInitAWU(); // set AWU_TBR = 0 for power saving. See ref manual section 12.3.1
 	
     } /* while(1)*/
     
