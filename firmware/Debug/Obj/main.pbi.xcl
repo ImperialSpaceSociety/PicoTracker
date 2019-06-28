@@ -1,4 +1,4 @@
-"C:\Users\Richard\Documents\GitHub\PicoTracker\firmware\main.c"
+"C:\Users\Medad\Documents\GitHub\PicoTracker\firmware\main.c"
 -std=c99
 -ferror-limit=0
 -I

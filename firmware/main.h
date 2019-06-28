@@ -11,7 +11,7 @@
 #define MAIN_H_
 
 /* payload name */
-#define PAYLOAD_NAME "ICSPACE7"
+#define PAYLOAD_NAME "CLOUD1"
 /* payload telemetry interval
  * can be set for APRS only and for RTTY + APRS
  */
@@ -69,10 +69,10 @@
 #define TX_BUF_CHECKSUM_BEGIN	sizeof(SYNC_PREFIX "$$") - 1
 #define TX_BUF_CHECKSUM_END	TX_BUF_CHECKSUM_START - 1
 
-#define TX_BUF_MAX_LENGTH	sizeof(SYNC_PREFIX "$$" PAYLOAD_NAME) - 1 + 1 + \
+#define TX_BUF_MAX_LENGTH	sizeof(SYNC_PREFIX "$$" PAYLOAD_NAME) + 1 + \
 				SENT_ID_LENGTH_MAX + 1 + TIME_LENGTH + 1 + LAT_LENGTH + 1 + LON_LENGTH + 1 + \
 				ALT_LENGTH_MAX + 1 + SAT_LENGTH + 1 + VOLT_LENGTH + 1 + OP_STAT_LENGTH + 1 + TEMP_LENGTH + \
-				sizeof("*") - 1 + CHECKSUM_LENGTH + TX_BUF_POSTFIX_LENGTH
+				sizeof("*") + CHECKSUM_LENGTH + TX_BUF_POSTFIX_LENGTH
 
 
 

@@ -322,35 +322,21 @@ uint16_t gps_receive_payload(uint8_t class_id, uint8_t msg_id, unsigned char *pa
 
 uint8_t gps_get_fake_fix(struct gps_fix *fix) {
     
-    /*
-    current_fix.type = 3;
-    current_fix.num_svs = 5;
-    current_fix.year = 2019;
-    current_fix.month = 6;
-    current_fix.day = 27;
-    current_fix.hour = 21;
-    current_fix.min = 52;
-    current_fix.sec = 2;
-    current_fix.lon = -2073930;
-    current_fix.lat = 515362489;
-    current_fix.alt = 42;
-    current_fix.voltage_radio = 3210;
-    current_fix.op_status = 8;
-    current_fix.temp_radio = 18;
-    */
   
     fix->num_svs = 5;
     fix->type = 3;
     fix->year = 2019;
     fix->month = 6;
     fix->day = 27;
-    fix->hour = 21;
-    fix->min = 52;
-    fix->sec = 2;
-    
-    fix->lat = 515362489;
-    fix->lon = -2073930;
-    fix->alt = 42;
+    fix->hour = 12;
+    fix->min = 17;
+    fix->sec = 40;
+    //fix->lat = 515362489;
+    //fix->lon = -2073930;
+                 
+    fix->lat = 520068180;
+    fix->lon = -6138450;
+    fix->alt = 25745;
 
     return 1;
 
