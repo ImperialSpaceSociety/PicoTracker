@@ -34,7 +34,7 @@
 #include "si_trx_defs.h"
 
 
-#define RADIO_FREQUENCY	434250000
+#define RADIO_FREQUENCY	434600000
 #define RADIO_POWER	0x10
 
 
