@@ -35,6 +35,8 @@
 #include "main.h"
 
 
+#define VCXO_FREQUENCY	SI406X_TCXO_FREQUENCY
+#define RF_DEVIATION	500
 
 
 
