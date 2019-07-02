@@ -33,19 +33,9 @@
 #include <iostm8s003f3.h>
 #include <stdint.h>
 #include "HC12Board.h"
-
-/**
- * 50 baud RTTY
- */
-#define RTTY_BIT_MS		19         // Miliseconds - 1 of bit period
-
-/**
- * 200 baud RTTY
- */
-//#define RTTY_BIT_MS		4         // Miliseconds - 1 of bit period
+#include "main.h"
 
 
-#define RTTY_CHANNEL_SPACING	50         // Corresponds to 745Hz spacing
 
 
 void rtty_start(uint8_t data);

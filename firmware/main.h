@@ -12,20 +12,20 @@
 
 /* payload name */
 #define PAYLOAD_NAME "ICSPACE10"
-/* payload telemetry interval
- * can be set for APRS only and for RTTY + APRS
- */
-#define TLM_APRS_INTERVAL	120
-#define TLM_RTTY_INTERVAL	120
-/* time offset for APRS backlog transmissions */
-#define TLM_BACKLOG_OFFSET	15
-/* how often a fix should be requested when transmitting blips (after power up) */
-#define BLIP_FIX_INTERVAL	1
 
-/* whether RTTY telemetry shall be transmitted at all */
-#define TLM_RTTY
-//#define TLM_RTTY_ONLY
-#define SOLAR_POWER
+/* radio definitions */
+#define RADIO_FREQUENCY	434600000
+#define RADIO_POWER	0x10
+#define RTTY_CHANNEL_SPACING	50         // Corresponds to 745Hz spacing
+
+/* setting up baud rates */
+
+/* 50 baud RTTY */
+#define RTTY_BIT_MS		19         // Miliseconds - 1 of bit period
+
+/* 200 baud RTTY */
+//#define RTTY_BIT_MS		4         // Miliseconds - 1 of bit period
+
 
 /* telemetry string prefix for RX syncronisation */
 #define SYNC_PREFIX		"  $$"

@@ -32,11 +32,10 @@
 #include "si_trx.h"
 #include "spi_bitbang.h"
 #include "si_trx_defs.h"
+#include "main.h"
 
 
 
-#define RADIO_FREQUENCY	434600000
-#define RADIO_POWER	0x10
 
 
 int8_t radio_select_pin  = 3;
