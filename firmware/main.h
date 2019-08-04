@@ -1,7 +1,7 @@
 /*
  * main tracker software
  *
- * Stefan Biereigel
+ * modified from Stefan Biereigel
  *
  */
 
