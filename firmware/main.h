@@ -10,22 +10,26 @@
 #ifndef MAIN_H_
 #define MAIN_H_
 
+
+////////////////////////////////////////////////////////////////////////////////
+/* Here is the most important configuration section                           */
+////////////////////////////////////////////////////////////////////////////////
+
 /* payload name */
-#define PAYLOAD_NAME "ICSPACE12"
+#define PAYLOAD_NAME "ICSPACE13"
 
 /* radio definitions */
-#define RADIO_FREQUENCY	434570000
+#define RADIO_FREQUENCY	434600000
 #define RADIO_POWER	0x10
 #define RTTY_CHANNEL_SPACING	50         // Corresponds to 745Hz spacing
 
 /* setting up baud rates */
 
 /* 50 baud RTTY */
-//#define RTTY_BIT_MS		19         // Miliseconds - 1 of bit period
-
+#define RTTY_BIT_MS		19         // Miliseconds - 1 of bit period
 /* 200 baud RTTY */
-#define RTTY_BIT_MS		4         // Miliseconds - 1 of bit period
-
+//#define RTTY_BIT_MS		4         // Miliseconds - 1 of bit period
+////////////////////////////////////////////////////////////////////////////////
 
 /* telemetry string prefix for RX syncronisation */
 #define SYNC_PREFIX		"  $$"
