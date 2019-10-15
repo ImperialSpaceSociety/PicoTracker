@@ -16,12 +16,12 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 /* payload name */
-#define PAYLOAD_NAME "ICSPACE13"
+#define PAYLOAD_NAME "ICSPACE14"
 
 /* radio definitions */
-#define RADIO_FREQUENCY	434600000
+#define RADIO_FREQUENCY	434570000
 #define RADIO_POWER	0x10
-#define RTTY_CHANNEL_SPACING	50         // Corresponds to 745Hz spacing
+#define RTTY_CHANNEL_SPACING	50         // Corresponds to 760Hz spacing
 
 /* setting up baud rates */
 

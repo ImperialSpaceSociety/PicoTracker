@@ -125,10 +125,10 @@ void get_fix(void) {
         };
         
         /* Pip because we don't have a fix yet*/
-        telemetry_start(TELEMETRY_PIPS, 1);
+        //telemetry_start(TELEMETRY_PIPS, 1);
         
         /* Sleep Wait */ 
-        while (telemetry_active());
+        //while (telemetry_active());
     }   
     
 }
@@ -268,10 +268,13 @@ int main( void )
 	/* reinit AWU_TBR. see ref manual section 12.3.1. Do we have to do this while disabling 
         * interrupt like in the init function(InitialiseAWU())? */
 	InitialiseAWU(); // Initialise the autowakeup feature 
-	__halt(); // halt until an interrupt wakes things up in 30s
+        
+        if (current_fix.alt> 500){	
+            __halt(); // halt until an interrupt wakes things up in 30s
+        }
 	
 	if (current_fix.alt> 3000){	
-            __halt(); // halt until an interrupt wakes things up in 30s
+           __halt(); // halt until an interrupt wakes things up in 30s
 	}
 	DeInitAWU(); // set AWU_TBR = 0 for power saving. See ref manual section 12.3.1
 	
