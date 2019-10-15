@@ -24,3 +24,8 @@ firmware/settings/HC12Tracker.dnx
 *.dnx
 *.wsdt
 *.xcl
+*venv*
+*.idea*
+Utility scripts/no_pips_data.txt
+Utility scripts/with_pips_data.txt
+Utility scripts/with_pips_data.txt
