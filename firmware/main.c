@@ -31,15 +31,6 @@
 * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-/*
-Things to do 17 December 2018
-
-make the program parse the gps coordinates
-form the telemetry string
-transmit the telemetry string
-Try to reduce memory usage when sending the pubx strings to disable nmea
-
-*/
 
 
 #include <stdint.h>
@@ -120,7 +111,7 @@ void get_fix(void) {
     	} 
         
         /* check if we have a 3D fix */
-        if (current_fix.type == 3){
+        if (current_fix.type > 1){
             break;
         };
         
@@ -156,9 +147,14 @@ int main( void )
     /* Initialise Si4060 interface */
     si_trx_init();
     
+    /* indicate that it is alive!*/
+    telemetry_start(TELEMETRY_PIPS, 3);
+
     
     /* Initialise GPS */   
     gps_startup_delay(); // wait 1 sec for GPS to startup
+    
+    
     
     
     for(ubx_retry_count=0; ubx_retry_count < UBX_CFG_RETRIES; ubx_retry_count++){ // Configure Power Save Mode
