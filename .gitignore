@@ -80,3 +80,7 @@ Backup*
 
 # Trash files
 *.bak
+
+# Ignore some IAR workbench files
+firmware/settings/*
+firmware/Debug/*
