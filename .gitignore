@@ -1,35 +1,14 @@
-
-firmware/settings/HC12Tracker.dbgdt
-firmware/settings/HC12Tracker.dnx
-firmware/Debug/Obj/gps.pbi
-firmware/Debug/Obj/HC12Tracker.pbd
-firmware/Debug/Obj/HC12Tracker.pbd.browse
-firmware/settings/HC12Tracker.dbgdt
-firmware/settings/HC12Tracker.dnx
-*.pbd
-*.browse
-*.pbi
-*.dbgdt
-*.wsdt
-*.dep
-*.out
-*.map
-*.out
-*.o
-*.pbi
-*.pbd
-*.browse
-*.pbi
-*.dbgdt
-*.dnx
-*.wsdt
-*.xcl
+# Operating-system and editor files
+.DS_Store
+Thumbs.db
+.idea/
 *venv*
-*.idea*
+__pycache__/
+*.py[cod]
+
+# Utility-script generated data
 Utility scripts/no_pips_data.txt
 Utility scripts/with_pips_data.txt
-Utility scripts/with_pips_data.txt
-
 
 # IAR C-STAT and C-RUN
 # Comment this out if you use C-Stat or C-Run to compile/analyze your project
@@ -42,6 +21,10 @@ Utility scripts/with_pips_data.txt
 *.eww
 
 # IAR Settings
+*.dbgdt
+*.dnx
+*.wsdt
+*.xcl
 **/settings/*.crun
 **/settings/*.dbgdt
 **/settings/*.cspy
@@ -51,36 +34,29 @@ Utility scripts/with_pips_data.txt
 **/settings/*.wsdt
 **/settings/*.wspos
 
-# IAR Debug Exe
+# IAR generated/debug output
+*.pbd
+*.pbd.*
+*.browse
+*.pbi
+*.pbi.*
+*.dep
+*.out
+*.o
 **/Debug/Exe/
-
-# IAR Debug List
 **/Debug/List
-
-# IAR Debug Obj
 **/Obj/*.pbd
 **/Obj/*.pbd.*
 **/Obj/*.pbi
 **/Obj/*.pbi.*
+firmware/settings/*
+firmware/Debug/*
 
-# Log files
-**.log
-
-# IAR backup files
+# Logs, backups, and compiled binaries
+*.log
 Backup*
-
-# IAR .dep files
-*.dep
-
-# Compiled Binaries
 *.bin
 *.elf
 *.hex
 *.map
-
-# Trash files
 *.bak
-
-# Ignore some IAR workbench files
-firmware/settings/*
-firmware/Debug/*
