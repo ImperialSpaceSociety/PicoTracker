@@ -53,7 +53,7 @@
 /**
  * Current output data
  */
-uint8_t rtty_data;
+static uint8_t rtty_data;
 /**
  * Where we currently are in the rtty output byte
  *
@@ -62,8 +62,8 @@ uint8_t rtty_data;
  * 10 = Stop Bit
  * 11 = Stop Bit
  */
-uint8_t rtty_phase = 0xFE;
-uint8_t rtty_preamble_count = 0;
+static uint8_t rtty_phase = 0xFE;
+static uint8_t rtty_preamble_count = 0;
 
 void rtty_start(uint8_t data) {
   /* Start transmission */
