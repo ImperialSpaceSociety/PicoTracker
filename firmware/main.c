@@ -142,6 +142,7 @@ uint8_t get_fix(void) {
         //while (telemetry_active());
     }
 
+    return 0;
 }
 
 void get_measurements(void){
