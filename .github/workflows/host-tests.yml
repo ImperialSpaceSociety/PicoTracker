@@ -1,0 +1,27 @@
+name: Host tests
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Run host regression suite
+        run: make -C tests clean test
+
+      - name: Smoke-test telemetry decoder
+        run: python3 tools/decode_data.py --summary tools/with_pips_data.txt
