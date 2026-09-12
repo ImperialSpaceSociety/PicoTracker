@@ -209,7 +209,7 @@ static void si_trx_start_tx(uint8_t channel)
 	_si_trx_transfer(5, 0, buffer);
 }
 /**
-* Gets readings from the auxillary ADC
+* Gets readings from the auxiliary ADC
 */
 static void si_trx_get_adc_reading(uint8_t enable, uint8_t configuration,
 								   uint16_t* gpio_value,
@@ -282,7 +282,7 @@ int16_t si_trx_get_voltage(void)
 
 
 /**
-* Sets the internal frac-n pll synthesiser divisiors
+* Sets the internal frac-n pll synthesiser dividers
 */
 static void si_trx_frequency_control_set_divider(uint8_t integer_divider,
 												 uint32_t fractional_divider)
@@ -402,7 +402,7 @@ static float si_trx_set_frequency(uint32_t frequency, uint16_t deviation)
 	}
 	
 	
-	/* Set the frac-n PLL divisior */
+	/* Set the frac-n PLL divider */
 	si_trx_frequency_control_set_divider(n, m);
 	
 	/* Set the external pin frequency deviation to the LSB tuning resoultion */
@@ -496,7 +496,7 @@ void si_trx_init(void)
   /* Configure the TCXO power pin */
     PA_DDR_DDR3 = 1;        //  Port D, bit 4 is output.
     PA_CR1_C13 = 1;         //  Pin is set to Push-Pull mode.
-    PA_CR2_C23 = 1;         //  Pin can run upto 10 MHz. 
+    PA_CR2_C23 = 1;         //  Pin can run up to 10 MHz.
 
   
   /* Power off TCXO */
@@ -506,12 +506,12 @@ void si_trx_init(void)
  
     PD_DDR_DDR4 = 1;        //  Port D, bit 4 is output.
     PD_CR1_C14 = 1;         //  Pin is set to Push-Pull mode.
-    PD_CR2_C24 = 1;         //  Pin can run upto 10 MHz. 
+    PD_CR2_C24 = 1;         //  Pin can run up to 10 MHz.
     
   /* Configure the TCXO power pin */
     PA_DDR_DDR3 = 1;        //  Port D, bit 4 is output.
     PA_CR1_C13 = 1;         //  Pin is set to Push-Pull mode.
-    PA_CR2_C23 = 1;         //  Pin can run upto 10 MHz. 
+    PA_CR2_C23 = 1;         //  Pin can run up to 10 MHz.
  
   /* Put the transciever in shutdown */
   _si_trx_sdn_enable();
@@ -529,7 +529,7 @@ void si_trx_init(void)
   
     PD_DDR_DDR3 = 1;        //  Port D, bit 3 is output for QFN.
     PD_CR1_C13 = 1;         //  Pin is set to Push-Pull mode.
-    PD_CR2_C23 = 1;         //  Pin can run upto 10 MHz. 
+    PD_CR2_C23 = 1;         //  Pin can run up to 10 MHz.
     PD_ODR_ODR3 = 1;        //  Select is high
     
    /* Try to read part number */
@@ -553,7 +553,7 @@ void si_trx_init(void)
         PD_CR2_C23 = 0;         //  Pin has no interrupt
         PD_DDR_DDR2 = 1;        //  Port D, bit 2 is output for TSSOP.
         PD_CR1_C12 = 1;         //  Pin is set to Push-Pull mode.
-        PD_CR2_C22 = 1;         //  Pin can run upto 10 MHz. 
+        PD_CR2_C22 = 1;         //  Pin can run up to 10 MHz.
     }
     part_number = si_trx_get_part_info();
     _si_trx_sdn_enable();  /* active high shutdown = reset */
@@ -561,14 +561,14 @@ void si_trx_init(void)
 
   /* Configure the GPIO pins */
     PB_DDR_DDR4 = 0;        //  GPIO0 Port B, bit 4 is input.
-    PB_CR1_C14 = 1;         //  Pin is set to Pullup.
+    PB_CR1_C14 = 1;         //  Pin is set to pull-up.
     PB_CR2_C24 = 0;         //  Pin is set to NO Interrupt. 
     
    
     
     PC_DDR_DDR3 = 1;        //  GPIO1 Port C, bit 3 is output.
     PC_CR1_C13 = 1;         //  Pin is set to Push-Pull mode.
-    PC_CR2_C23 = 1;         //  Pin can run upto 10 MHz. 
+    PC_CR2_C23 = 1;         //  Pin can run up to 10 MHz.
     
     PC_ODR_ODR3 = 0;        // GPIO1 Modulation = 1
     
