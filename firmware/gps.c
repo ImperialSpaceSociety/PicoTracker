@@ -179,7 +179,7 @@ void UART_send_buffer(const char *cmd, uint8_t length) {
  *
  * waits for transmission of an ACK/NAK message from the GPS.
  *
- * returns 1 if ACK was received, 0 if NAK was received or a timeout occured
+ * returns 1 if ACK was received, 0 if NAK was received or a timeout occurred
  *
  */
 uint8_t gps_receive_ack(uint8_t class_id, uint8_t msg_id) {    
@@ -342,7 +342,7 @@ uint8_t gps_get_fix(struct gps_fix *fix) {
 	UART_send_buffer(pvt, sizeof(pvt));
 	if(gps_receive_payload(0x01, 0x07, response) == 0) return 0;
     
-    // the mapping is found in the reference manual for M8 series gps modules. Section for UBX-NAV-PVT (0x01 0x07)
+    // the mapping is found in the reference manual for M8 series GPS modules. Section for UBX-NAV-PVT (0x01 0x07)
 	fix->num_svs = response[23];
 	fix->type = response[20];
 	fix->year = response[4] + (response[5] << 8);
@@ -374,7 +374,7 @@ uint8_t gps_get_fix(struct gps_fix *fix) {
 
 
 /* 
- * gps wake up by sending an 0xFF to uart pin
+ * GPS wake-up by sending 0xFF to the UART pin
  */
 uint8_t gps_wake_up(void) {
 
