@@ -263,7 +263,7 @@ uint8_t gps_disable_nmea_output(void) {
  * returns the length of the payload
  *
  */
-static uint16_t gps_receive_payload(uint8_t class_id, uint8_t msg_id, unsigned char *payload) {
+static uint16_t gps_receive_payload(uint8_t class_id, uint8_t msg_id, unsigned char *payload, uint16_t payload_capacity) {
 	uint8_t rx_byte;
 	enum {UBX_A, UBX_B, CLASSID, MSGID, LEN_A, LEN_B, PAYLOAD} state = UBX_A;
 	uint16_t payload_cnt = 0;
@@ -299,6 +299,7 @@ static uint16_t gps_receive_payload(uint8_t class_id, uint8_t msg_id, unsigned c
 				break;
 			case LEN_B:
 				payload_len |= ((uint16_t)rx_byte << 8);
+				if (payload_len > payload_capacity) return 0;
 				state = PAYLOAD;
 				break;
 			case PAYLOAD:
@@ -340,7 +341,7 @@ uint8_t gps_get_fix(struct gps_fix *fix) {
 
 	/* request position */
 	UART_send_buffer(pvt, sizeof(pvt));
-	if(gps_receive_payload(0x01, 0x07, response) == 0) return 0;
+	if(gps_receive_payload(0x01, 0x07, response, (uint16_t)sizeof(response)) == 0) return 0;
     
     // the mapping is found in the reference manual for M8 series GPS modules. Section for UBX-NAV-PVT (0x01 0x07)
 	fix->num_svs = response[23];
