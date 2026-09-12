@@ -48,6 +48,7 @@ static uint8_t radio_select_pin = 3;
 uint8_t _si_trx_transfer(int tx_count, int rx_count, uint8_t *data)
 {
 	uint8_t response;
+	uint16_t cts_poll_count = 0;
 	
 	/* Send command */
         
@@ -97,15 +98,18 @@ uint8_t _si_trx_transfer(int tx_count, int rx_count, uint8_t *data)
 		if (response == 0xFF) break;
 		
 		/* Otherwise repeat the procedure */
-                
+
 		/* Disable select */
                 if (radio_select_pin == 3)
                     PD_ODR_ODR3 = 1;
                 else
                     PD_ODR_ODR2 = 1;
-        
-		
-	} while (1); /* TODO: Timeout? */
+
+		cts_poll_count++;
+		if (cts_poll_count >= SI_TRX_CTS_POLL_LIMIT) {
+			return SI_TRX_ERROR;
+		}
+	} while (1);
 	
 	/**
 	* Read response. From the docs:
