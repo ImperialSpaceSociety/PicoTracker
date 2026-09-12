@@ -1,0 +1,2 @@
+# Optional plotting dependency for decode_data.py --plot
+matplotlib==3.11.2
