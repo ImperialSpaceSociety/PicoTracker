@@ -9,7 +9,7 @@ A simple, low-cost pico-balloon tracker originally developed by the Imperial Col
 - [`firmware/`](firmware/) - STM8 tracker firmware
 - [`test_firmware/`](test_firmware/) - historical firmware test projects
 - [`hardware/`](hardware/) - hardware design files
-- [`CAD/`](CAD/) - mechanical/CAD files
+- [`cad/`](cad/) - mechanical/CAD files
 - [`docs/`](docs/) - technical reference links
 - [`docs/development.md`](docs/development.md) - firmware development, programming, and debugging notes
 - [`docs/gps.md`](docs/gps.md) - GPS notes
