@@ -1,6 +1,6 @@
 # PicoTracker
 
-A simple, low-cost pico-balloon tracker originally developed by the Imperial College Space Society.
+Low-cost pico-balloon tracker hardware and firmware using an HC-12 radio, STM8 processor, u-blox GPS, and 433 MHz RTTY, originally developed by the Imperial College Space Society.
 
 > **Project status:** Active maintenance resumed in 2026. The original design dates from 2018–2019; current work focuses on preserving the hardware and firmware, improving documentation, and making incremental firmware fixes. Anyone building a unit today should revalidate component availability, prices, tooling, and test assumptions.
 
