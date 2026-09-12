@@ -42,6 +42,7 @@
 
 #include "energy.h"
 #include "gps.h"
+#include "ubx_protocol.h"
 #include <intrinsics.h>
 #include "main.h"
 
@@ -111,6 +112,7 @@ void get_fix(void) {
     
     current_fix.num_svs = 0; 
     current_fix.type = 0;
+    current_fix.flags = 0;
     
     while (1) {
         
@@ -122,10 +124,10 @@ void get_fix(void) {
             if(ubx_retry_count == (UBX_POLL_RETRIES -1)) ubx_poll_fail = 2;
     	} 
         
-        /* check if we have a 3D fix */
-        if (current_fix.type > 1){
+        /* accept only a valid 3D navigation solution */
+        if (ubx_nav_pvt_fix_is_usable(current_fix.type, current_fix.flags)) {
             break;
-        };
+        }
         
         /* Pip because we don't have a fix yet*/
         //telemetry_start(TELEMETRY_PIPS, 1);
