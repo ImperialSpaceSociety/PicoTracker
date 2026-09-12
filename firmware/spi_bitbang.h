@@ -31,7 +31,7 @@
 #ifndef SPI_BITBANG_H
 #define SPI_BITBANG_H
 
-void spi_bitbang_init();
+void spi_bitbang_init(void);
 uint8_t spi_bitbang_transfer(const uint8_t byte);
 
 #endif /* SPI_BITBANG_H */

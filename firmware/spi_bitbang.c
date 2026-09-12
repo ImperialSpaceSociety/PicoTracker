@@ -32,7 +32,7 @@
 
 
 
-void spi_bitbang_init()
+void spi_bitbang_init(void)
 {
 
   /* Configure the output pins */

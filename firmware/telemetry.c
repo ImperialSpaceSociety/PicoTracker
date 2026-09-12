@@ -396,7 +396,7 @@ void timer1_tick_time(uint16_t millisecs)
 
 /* Disables the timer
 */
-void timer1_tick_deinit()
+void timer1_tick_deinit(void)
 {
 	__disable_interrupt();
 	TIM1_CR1_CEN = 0;       //  Disable the timer.

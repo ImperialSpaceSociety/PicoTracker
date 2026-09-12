@@ -99,7 +99,7 @@ void Switch_to_HSI_clock(void)
  * recommended range in the ref manual. It is running for more than 30 seconds,
  * which is the max in the document
 */		
-void InitialiseAWU()
+void InitialiseAWU(void)
 {
     AWU_CSR1_AWUEN = 0;     // Disable the Auto-wakeup feature.
 	AWU_APR_APR = 62; 	    // set one of the 2 registers for delay (6 bit)
@@ -107,7 +107,7 @@ void InitialiseAWU()
     AWU_CSR1_AWUEN = 1;     // Enable the Auto-wakeup feature.
 }
 
-void DeInitAWU()
+void DeInitAWU(void)
 {
     AWU_CSR1_AWUEN = 0;     // Disable the Auto-wakeup feature.
     AWU_TBR_AWUTB = 0;	    // needs to be 0 to save power
