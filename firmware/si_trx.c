@@ -412,19 +412,19 @@ static uint8_t si_trx_set_frequency(uint32_t frequency, uint16_t deviation)
 	nprescaler = 2;
 	
 	
-	if (frequency < 705000000UL) {
+	if (frequency < 119000000UL || frequency > 1050000000UL) return SI_TRX_ERROR;
+
+	if (frequency >= 705000000UL) {
+		outdiv = 4;  band = SI_MODEM_CLKGEN_FVCO_DIV_4;
+	} else if (frequency >= 525000000UL) {
 		outdiv = 6;  band = SI_MODEM_CLKGEN_FVCO_DIV_6;
-	}
-	if (frequency < 525000000UL) {
+	} else if (frequency >= 353000000UL) {
 		outdiv = 8;  band = SI_MODEM_CLKGEN_FVCO_DIV_8;
-	}
-	if (frequency < 353000000UL) {
+	} else if (frequency >= 239000000UL) {
 		outdiv = 12; band = SI_MODEM_CLKGEN_FVCO_DIV_12;
-	}
-	if (frequency < 239000000UL) {
+	} else if (frequency >= 177000000UL) {
 		outdiv = 16; band = SI_MODEM_CLKGEN_FVCO_DIV_16;
-	}
-	if (frequency < 177000000UL) {
+	} else {
 		outdiv = 24; band = SI_MODEM_CLKGEN_FVCO_DIV_24;
 	}
 	
