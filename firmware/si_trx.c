@@ -42,6 +42,12 @@
 
 static uint8_t radio_select_pin = 3;
 
+static void si_trx_delay_cycles(uint16_t cycles)
+{
+    volatile uint16_t remaining = cycles;
+    while (remaining > 0U) remaining--;
+}
+
 static void si_trx_xo_power_init(void)
 {
 #ifdef XO_TCXO
@@ -56,7 +62,7 @@ static void si_trx_xo_power_on(void)
 {
 #ifdef XO_TCXO
     PA_ODR_ODR3 = 1;
-    for (int i = 0; i < 5*1000; i++);
+    si_trx_delay_cycles(5000U);
 #endif
 }
 
@@ -107,7 +113,7 @@ uint8_t _si_trx_transfer(int tx_count, int rx_count, uint8_t *data)
 	*/
 	
 	do {
-		for (int i = 0; i < 200; i++); /* Approx. 20µS */
+		si_trx_delay_cycles(200U); /* Approx. 20 us */
 		
                 /* Enable select */
                 if (radio_select_pin == 3)
@@ -183,9 +189,9 @@ static uint8_t si_trx_boot(void)
 	si_trx_xo_power_on();
 
 	_si_trx_sdn_enable();
-	for (int i = 0; i < 15*1000; i++);
+	si_trx_delay_cycles(15000U);
 	_si_trx_sdn_disable();
-	for (int i = 0; i < 15*1000; i++);
+	si_trx_delay_cycles(15000U);
 
 	return si_trx_power_up(XO_SOURCE, XO_FREQUENCY);
 }
