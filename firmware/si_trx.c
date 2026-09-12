@@ -170,7 +170,7 @@ static uint16_t si_trx_get_part_info(void)
 * Clears pending interrupts. Set the corresponding bit low to clear
 * the interrupt.
 */
-static void si_trx_clear_pending_interrupts(uint8_t packet_handler_clear_pending,
+static uint8_t si_trx_clear_pending_interrupts(uint8_t packet_handler_clear_pending,
 											uint8_t chip_clear_pending)
 {
 	uint8_t buffer[4];
@@ -180,14 +180,14 @@ static void si_trx_clear_pending_interrupts(uint8_t packet_handler_clear_pending
 	buffer[2] = 0;
 	buffer[3] = chip_clear_pending;
 	
-	_si_trx_transfer(4, 0, buffer);
+	return _si_trx_transfer(4, 0, buffer);
 	
 	/* This command returns the interrupts status, but we don't use it */
 }
 /**
 * Sets the GPIO configuration for each pin
 */
-static void si_trx_set_gpio_configuration(si_gpio_t gpio0, si_gpio_t gpio1,
+static uint8_t si_trx_set_gpio_configuration(si_gpio_t gpio0, si_gpio_t gpio1,
 										  si_gpio_t gpio2, si_gpio_t gpio3,
 										  uint8_t drive_strength)
 {
@@ -201,7 +201,7 @@ static void si_trx_set_gpio_configuration(si_gpio_t gpio0, si_gpio_t gpio1,
 	buffer[6] = SI_GPIO_PIN_CFG_SDO_MODE_DONOTHING;
 	buffer[7] = drive_strength;
 	
-	_si_trx_transfer(8, 0, buffer);
+	return _si_trx_transfer(8, 0, buffer);
 }
 /**
 * Starts transmitting
