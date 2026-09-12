@@ -41,18 +41,18 @@ void spi_bitbang_init(void)
 
     PC_DDR_DDR5 = 1;        //  Port C, bit 5 is output.
     PC_CR1_C15 = 1;         //  Pin is set to Push-Pull mode.
-    PC_CR2_C25 = 1;         //  Pin can run upto 10 MHz. 
+    PC_CR2_C25 = 1;         //  Pin can run up to 10 MHz.
     
   // Configure MOSI Pin  
 
     PC_DDR_DDR6 = 1;        //  Port C, bit 6 is output.
     PC_CR1_C16 = 1;         //  Pin is set to Push-Pull mode.
-    PC_CR2_C26 = 1;         //  Pin can run upto 10 MHz. 
+    PC_CR2_C26 = 1;         //  Pin can run up to 10 MHz.
     
   // Configure MISO Pin
     
-    PC_DDR_DDR7 = 0;        //  Port C, bit & is input.
-    PC_CR1_C17 = 1;         //  Pin is set to Pullup mode.
+    PC_DDR_DDR7 = 0;        //  Port C, bit 7 is input.
+    PC_CR1_C17 = 1;         //  Pin is set to pull-up mode.
     PC_CR2_C27 = 0;         //  Pin is interrupt disabled. 
     
   
