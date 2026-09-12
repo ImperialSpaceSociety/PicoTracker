@@ -259,37 +259,23 @@ static uint8_t si_trx_start_tx(uint8_t channel)
 * Gets readings from the auxiliary ADC
 */
 static void si_trx_get_adc_reading(uint8_t enable, uint8_t configuration,
-								   uint16_t* gpio_value,
-								   uint16_t* battery_value,
-								   uint16_t* temperature_value)
+                                   uint16_t* gpio_value,
+                                   uint16_t* battery_value,
+                                   uint16_t* temperature_value)
 {
-	uint8_t buffer[6];
+	uint8_t buffer[6] = {0};
 	buffer[0] = SI_CMD_GET_ADC_READING;
 	buffer[1] = enable;
 	buffer[2] = configuration;
-        
-        /* Power the configured oscillator and wait for it to settle. */
-        si_trx_xo_power_on();
-         
-        _si_trx_sdn_enable();  /* active high shutdown = reset */
-	
-	for (int i = 0; i < 15*1000; i++); /* Approx. 15ms */
-	_si_trx_sdn_disable();   /* booting */
-	for (int i = 0; i < 15*1000; i++); /* Approx. 15ms */
-	
-	
-	
-	
-	/* Power Up */
 
-	 si_trx_power_up(XO_SOURCE, XO_FREQUENCY);
+	if (si_trx_boot() == SI_TRX_OK) {
+		(void)_si_trx_transfer(3, 6, buffer);
+	}
 
-	_si_trx_transfer(3, 6, buffer);
-
-        /* Physical shutdown */
+	/* Physical shutdown and oscillator power-down after the measurement. */
 	_si_trx_sdn_enable();
-        si_trx_xo_power_off();
-        
+	si_trx_xo_power_off();
+
 	*gpio_value = ((buffer[0] & 0x7) << 8) | buffer[1];
 	*battery_value = ((buffer[2] & 0x7) << 8) | buffer[3];
 	*temperature_value = ((buffer[4] & 0x7) << 8) | buffer[5];
