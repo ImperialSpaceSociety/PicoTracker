@@ -7,7 +7,8 @@
 #define COORD_UBX(x) ((int32_t) (x * 10000000.0f))
 
 struct gps_fix {
-	uint8_t type;		/* type of fix (validity) */
+	uint8_t type;		/* NAV-PVT fix type */
+	uint8_t flags;		/* NAV-PVT fix status flags */
 	uint8_t num_svs;	/* number of satellites used for solution, range 0 .. 19 */
 	uint16_t year;		/* year, range 0 to 65535 */
 	uint8_t month;		/* month, range 1 to 12 */
