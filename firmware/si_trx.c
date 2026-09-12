@@ -137,7 +137,7 @@ uint8_t _si_trx_transfer(int tx_count, int rx_count, uint8_t *data)
 /**
 * Issues the POWER_UP command
 */
-static void si_trx_power_up(uint8_t clock_source, uint32_t xo_freq)
+static uint8_t si_trx_power_up(uint8_t clock_source, uint32_t xo_freq)
 {
 	uint8_t buffer[7];
 	
@@ -149,7 +149,7 @@ static void si_trx_power_up(uint8_t clock_source, uint32_t xo_freq)
 	buffer[5] = (xo_freq >> 8);
 	buffer[6] = (xo_freq);
 	
-	_si_trx_transfer(7, 0, buffer);
+	return _si_trx_transfer(7, 0, buffer);
 }
 /**
 * Gets the 16 bit part number
