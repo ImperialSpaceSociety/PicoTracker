@@ -41,6 +41,31 @@
 
 static uint8_t radio_select_pin = 3;
 
+static void si_trx_xo_power_init(void)
+{
+#ifdef XO_TCXO
+    PA_DDR_DDR3 = 1;
+    PA_CR1_C13 = 1;
+    PA_CR2_C23 = 1;
+    PA_ODR_ODR3 = 0;
+#endif
+}
+
+static void si_trx_xo_power_on(void)
+{
+#ifdef XO_TCXO
+    PA_ODR_ODR3 = 1;
+    for (int i = 0; i < 5*1000; i++);
+#endif
+}
+
+static void si_trx_xo_power_off(void)
+{
+#ifdef XO_TCXO
+    PA_ODR_ODR3 = 0;
+#endif
+}
+
 /**
 * Generic SPI Send / Receive
 */
@@ -153,9 +178,8 @@ static uint8_t si_trx_power_up(uint8_t clock_source, uint32_t xo_freq)
 
 static uint8_t si_trx_boot(void)
 {
-	/* Power the TCXO, reset the radio, then issue the mandatory POWER_UP. */
-	PA_ODR_ODR3 = 1;
-	for (int i = 0; i < 5*1000; i++);
+	/* Power the configured oscillator, reset the radio, then issue POWER_UP. */
+	si_trx_xo_power_on();
 
 	_si_trx_sdn_enable();
 	for (int i = 0; i < 15*1000; i++);
@@ -244,11 +268,9 @@ static void si_trx_get_adc_reading(uint8_t enable, uint8_t configuration,
 	buffer[1] = enable;
 	buffer[2] = configuration;
         
-        /* Power on TCXO and wait for stable*/
-        PA_ODR_ODR3 = 1;
-        for (int i = 0; i < 5*1000; i++); /* Approx. 5ms */
+        /* Power the configured oscillator and wait for it to settle. */
+        si_trx_xo_power_on();
          
-        
         _si_trx_sdn_enable();  /* active high shutdown = reset */
 	
 	for (int i = 0; i < 15*1000; i++); /* Approx. 15ms */
@@ -266,6 +288,7 @@ static void si_trx_get_adc_reading(uint8_t enable, uint8_t configuration,
 
         /* Physical shutdown */
 	_si_trx_sdn_enable();
+        si_trx_xo_power_off();
         
 	*gpio_value = ((buffer[0] & 0x7) << 8) | buffer[1];
 	*battery_value = ((buffer[2] & 0x7) << 8) | buffer[3];
@@ -483,7 +506,7 @@ uint8_t si_trx_on(uint8_t modulation_type, uint16_t deviation)
 	if (si_trx_reset(modulation_type, deviation) != SI_TRX_OK ||
 	    si_trx_start_tx(0) != SI_TRX_OK) {
 		_si_trx_sdn_enable();
-		PA_ODR_ODR3 = 0;
+		si_trx_xo_power_off();
 		return SI_TRX_ERROR;
 	}
 
@@ -499,8 +522,8 @@ void si_trx_off(void)
 	/* Physical shutdown */
 	_si_trx_sdn_enable();
         
-        /* Power off TCXO */
-        PA_ODR_ODR3 = 0;
+        /* Power off the external oscillator when present. */
+        si_trx_xo_power_off();
 }
 
 /**
@@ -516,14 +539,8 @@ void si_trx_switch_channel(int16_t channel)
 */
 void si_trx_init(void)
 {
-  /* Configure the TCXO power pin */
-    PA_DDR_DDR3 = 1;        //  Port D, bit 4 is output.
-    PA_CR1_C13 = 1;         //  Pin is set to Push-Pull mode.
-    PA_CR2_C23 = 1;         //  Pin can run up to 10 MHz.
-
-  
-  /* Power off TCXO */
-    PA_ODR_ODR3 = 0;
+  /* Configure oscillator power control when a TCXO is installed. */
+    si_trx_xo_power_init();
 
   /* Configure the SDN pin */
  
@@ -531,11 +548,6 @@ void si_trx_init(void)
     PD_CR1_C14 = 1;         //  Pin is set to Push-Pull mode.
     PD_CR2_C24 = 1;         //  Pin can run up to 10 MHz.
     
-  /* Configure the TCXO power pin */
-    PA_DDR_DDR3 = 1;        //  Port D, bit 4 is output.
-    PA_CR1_C13 = 1;         //  Pin is set to Push-Pull mode.
-    PA_CR2_C23 = 1;         //  Pin can run up to 10 MHz.
- 
   /* Put the transciever in shutdown */
   _si_trx_sdn_enable();
   
@@ -576,7 +588,7 @@ void si_trx_init(void)
         }
     }
     _si_trx_sdn_enable();  /* active high shutdown = reset */
-    PA_ODR_ODR3 = 1; /* Power off TCXO*/
+    si_trx_xo_power_off();
 
   /* Configure the GPIO pins */
     PB_DDR_DDR4 = 0;        //  GPIO0 Port B, bit 4 is input.
