@@ -30,6 +30,8 @@
 #ifndef SI_TRX_H
 #define SI_TRX_H
 
+#include <stdint.h>
+
 
 
 int16_t si_trx_get_temperature(void);

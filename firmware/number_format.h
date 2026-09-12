@@ -1,4 +1,6 @@
 #ifndef STRING_H_
+
+#include <stdint.h>
 #define STRING_H_
 
 void atoi32(volatile char *string, uint8_t len, uint32_t *integer);
