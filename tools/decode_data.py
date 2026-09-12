@@ -1,154 +1,150 @@
-# Created by Medad Newman 6/8/19
-# This program takes the byte data from no_pips_data.txt which is the raw data output from DL-fldigi and prints out all
-# the strings that pass the checksum.
+#!/usr/bin/env python3
+"""Decode PicoTracker telemetry captures and verify CRC-16 checksums."""
 
-import pandas as pd
-import numpy as np
-import seaborn as sns
-import matplotlib.pyplot as plt
+from __future__ import annotations
+
+import argparse
+from pathlib import Path
+from typing import Iterable
 
 POLYNOMIAL = 0x1021
 PRESET = 0xFFFF
-def _initial(c):
+FIELD_COUNT = 10
+
+
+def _initial(value: int) -> int:
     crc = 0
-    c = c << 8
-    for j in range(8):
-        if (crc ^ c) & 0x8000:
-            crc = (crc << 1) ^ POLYNOMIAL
-        else:
-            crc = crc << 1
-        c = c << 1
-    return crc
-
-_tab = [ _initial(i) for i in range(256) ]
-
-def _update_crc(crc, c):
-    cc = 0xff & c
-
-    tmp = (crc >> 8) ^ cc
-    crc = (crc << 8) ^ _tab[tmp & 0xff]
-    crc = crc & 0xffff
-    #print (crc)
-
-    return crc
-
-def crc(str):
-    crc = PRESET
-    for c in str:
-        crc = _update_crc(crc, ord(c))
-    return crc
-
-def crcb(*i):
-    crc = PRESET
-    for c in i:
-        crc = _update_crc(crc, c)
-    return crc
-
-#f = open("no_pips_data.txt", "r")
-def bytes_from_file(filename, chunksize=1):
-    with open(filename, "rb") as f:
-        while True:
-            chunk = f.read(chunksize)
-            if chunk:
-                for b in chunk:
-                    yield b
-            else:
-                break
+    value <<= 8
+    for _ in range(8):
+        crc = ((crc << 1) ^ POLYNOMIAL) if (crc ^ value) & 0x8000 else crc << 1
+        value <<= 1
+    return crc & 0xFFFF
 
 
-def analyse_data(file_path):
-    data_list = []
+_CRC_TABLE = [_initial(i) for i in range(256)]
 
-    a1 = None # $
-    a2 = None # $
-    a3 = None # non $
 
+def _update_crc(crc: int, value: int) -> int:
+    index = ((crc >> 8) ^ value) & 0xFF
+    return ((crc << 8) ^ _CRC_TABLE[index]) & 0xFFFF
+
+
+def crc(text: str) -> int:
+    value = PRESET
+    for char in text:
+        value = _update_crc(value, ord(char))
+    return value
+
+
+def bytes_from_file(filename: Path, chunk_size: int = 4096) -> Iterable[int]:
+    with filename.open("rb") as capture:
+        while chunk := capture.read(chunk_size):
+            yield from chunk
+
+
+def analyse_data(file_path: Path, print_frames: bool = False) -> list[list[str]]:
+    frames: list[list[str]] = []
+    recent = [None, None, None]
     data = ""
     checksum = ""
-
     adding_data = False
     adding_checksum = False
-    checksum_counter = 0
 
-    for b in bytes_from_file(file_path):
-
-        if checksum_counter == 4:
-            checksum_counter = 0
-            adding_checksum = False
-
-            # now verify checksum
-            calculated_checksum = hex(crc(data))[2:].upper()
-            if calculated_checksum == checksum:
-                print(data)
-                data_list.append(data.split(','))
-            # now reset both checksum and data
+    for byte in bytes_from_file(file_path):
+        if adding_checksum and len(checksum) == 4:
+            expected = f"{crc(data):04X}"
+            if expected == checksum.upper():
+                fields = data.split(",")
+                if len(fields) == FIELD_COUNT:
+                    frames.append(fields)
+                    if print_frames:
+                        print(data)
             data = ""
             checksum = ""
+            adding_checksum = False
 
+        char = chr(byte)
         if adding_checksum:
-            checksum+= chr(b)
-            checksum_counter +=1
+            checksum += char
 
-        if adding_data and chr(b) == "*":
+        if adding_data and char == "*":
             adding_data = False
             adding_checksum = True
+        elif adding_data:
+            data += char
 
-        if adding_data:
-            data+=chr(b)
-
-
-        # the moving up
-        a1 = a2
-        a2 = a3
-        a3 = b
-
-        # Now check if a1 a2 a3 are correct
-        if a1 == 36 and a2 == 36 and a3 != 36:
+        recent[0], recent[1], recent[2] = recent[1], recent[2], byte
+        if recent[0] == 36 and recent[1] == 36 and recent[2] != 36:
             adding_data = True
-            data+=chr(a3)
+            data = chr(recent[2])
 
-    return data_list
+    if adding_checksum and len(checksum) == 4:
+        expected = f"{crc(data):04X}"
+        if expected == checksum.upper():
+            fields = data.split(",")
+            if len(fields) == FIELD_COUNT:
+                frames.append(fields)
+                if print_frames:
+                    print(data)
 
-def get_deltas(data_list):
-    df = pd.DataFrame(np.array(data_list),
-                      columns =(['Callsign', 'str', 'time','lat','long','alt','sats','batt','opbyte','temp']))
-    df['time'] = pd.to_datetime(df['time'], format='%H%M%S')
-    df['delta'] = (df['time'] - df['time'].shift()).fillna(0)
-    print(df)
-    print(df.describe())
-    print(df.count())
+    return frames
 
-    min_delta = df['delta'].loc[1:].astype('timedelta64[s]').min()
-    max_delta = df['delta'].astype('timedelta64[s]').max()
-    return df,min_delta,max_delta
+
+def _time_to_seconds(value: str) -> int:
+    return int(value[0:2]) * 3600 + int(value[2:4]) * 60 + int(value[4:6])
+
+
+def cycle_deltas(frames: list[list[str]]) -> list[int]:
+    deltas: list[int] = []
+    previous = None
+    for frame in frames:
+        current = _time_to_seconds(frame[2])
+        if previous is not None:
+            delta = current - previous
+            if delta < 0:
+                delta += 24 * 3600
+            deltas.append(delta)
+        previous = current
+    return deltas
+
+
+def plot_deltas(datasets: list[tuple[str, list[int]]]) -> None:
+    try:
+        import matplotlib.pyplot as plt
+    except ImportError as exc:
+        raise SystemExit("Plotting requires: python -m pip install -r tools/requirements.txt") from exc
+
+    for label, deltas in datasets:
+        if deltas:
+            plt.hist(deltas, bins="auto", alpha=0.5, label=label)
+    plt.xlabel("cycle duration (s)")
+    plt.ylabel("frequency")
+    plt.legend()
+    plt.show()
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("files", nargs="*", type=Path, help="raw DL-fldigi capture files")
+    parser.add_argument("--plot", action="store_true", help="plot cycle-duration histograms")
+    parser.add_argument("--print-frames", action="store_true", help="print each valid telemetry frame")
+    args = parser.parse_args()
+
+    files = args.files or [Path(__file__).with_name("with_pips_data.txt")]
+    datasets: list[tuple[str, list[int]]] = []
+
+    for file_path in files:
+        frames = analyse_data(file_path, print_frames=args.print_frames)
+        deltas = cycle_deltas(frames)
+        datasets.append((file_path.name, deltas))
+        print(f"{file_path}: {len(frames)} valid frames")
+        if deltas:
+            print(f"  cycle duration: min={min(deltas)}s max={max(deltas)}s")
+
+    if args.plot:
+        plot_deltas(datasets)
+    return 0
 
 
 if __name__ == "__main__":
-
-    fig, ax = plt.subplots()
-    fig.suptitle("Distribution of duration for the whole acquire gps fix and transmit cycle.\n"
-                 "This graph compares both using pips and \n not using pips. n = 154")
-
-    file_paths = ['with_pips_data.txt',"no_pips_data.txt"]
-    data_dfs = []
-    for file_path in file_paths:
-        data_list =analyse_data(file_path)
-        df,min_delta,max_delta = get_deltas(data_list)
-        data_dfs.append(df['delta'].astype('timedelta64[s]'))
-        counts, bins, patches = ax.hist(df['delta'].astype('timedelta64[s]'),
-                                       bins = range(int(min_delta),int(max_delta)+1),
-                                        label=file_path,
-                                        alpha=0.5)
-
-    #plt.hist(data_dfs, label=['With pips', 'Without Pips'])
-    ax.legend()
-    ax.set_xlabel("cycle duration(s)")
-    ax.set_ylabel("Frequency")
-    #ax.locator_params(nbins=10, axis='x')
-    #max_xticks = 25
-    #xloc = plt.MaxNLocator(max_xticks)
-    #ax.xaxis.set_major_locator(xloc)
-    # Set the ticks to be at the edges of the bins.
-    #ax.set_xticks(bins)
-
-    plt.show()
+    raise SystemExit(main())
