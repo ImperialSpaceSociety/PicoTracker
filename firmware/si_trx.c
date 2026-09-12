@@ -384,7 +384,7 @@ static uint8_t si_trx_set_tx_power(uint8_t tx_power)
 * frequency: Floating-point value for the frequency
 * deviation: FSK-mode deviation, in channels. Usually 1
 *
-* Returns the LSB tuning resolution of the frac-n pll synthesiser.
+* Returns SI_TRX_OK on success or SI_TRX_ERROR if configuration fails.
 */
 static uint8_t si_trx_set_frequency(uint32_t frequency, uint16_t deviation)
 {
@@ -476,7 +476,8 @@ static uint8_t si_trx_reset(uint8_t modulation_type, uint16_t deviation)
 }
 
 /**
-* Enables the radio and starts transmitting
+* Enables the radio and starts transmitting.
+* Returns SI_TRX_OK on success or SI_TRX_ERROR on startup failure.
 */
 uint8_t si_trx_on(uint8_t modulation_type, uint16_t deviation)
 {
