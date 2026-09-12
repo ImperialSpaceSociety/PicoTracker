@@ -18,7 +18,7 @@ This directory collects external references used during PicoTracker development.
 - [Programming Manual](https://www.st.com/resource/en/programming_manual/cd00161709.pdf)
 - [Examples](https://github.com/EMBEDONIX/stm8)
 
-## Si4468
+## Si4463 and Si446x
 
 - [Datasheet](https://www.silabs.com/documents/public/data-sheets/Si4464-63-61-60.pdf)
 - [Programming Guide](https://www.silabs.com/documents/public/application-notes/AN633.pdf)
