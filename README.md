@@ -1,10 +1,14 @@
 # PicoTracker
 
-Low-cost pico-balloon tracker hardware and firmware using an HC-12 radio, STM8 processor, u-blox GPS, and 433 MHz RTTY, originally developed by the Imperial College Space Society.
+PicoTracker is a lightweight, low-cost high-altitude balloon tracking platform built around an STM8 processor, HC-12/Si4463 radio, u-blox GPS receiver, and 433 MHz RTTY telemetry. The project was originally developed by the Imperial College Space Society.
 
-> **Project status:** Active maintenance resumed in 2026. The original design dates from 2018–2019; current work focuses on firmware correctness, host-side regression testing, documentation, and preparation for a future validated release. Anyone building a unit today should revalidate component availability, prices, tooling, and test assumptions.
+### Project status
 
-**Maintainer:** [Sylvester Kaczmarek](https://SylvesterKaczmarek.com)
+Active maintenance resumed in 2026. Current work focuses on firmware correctness, host-side regression testing, documentation, and preparation for a future validated release. The original hardware and firmware date from 2018–2019, so anyone building a unit today should revalidate component availability, prices, tooling, and test assumptions.
+
+### Maintainer
+
+This repository is maintained and administered by [Sylvester Kaczmarek](https://SylvesterKaczmarek.com). Questions about maintenance, proposed technical changes, release coordination, or collaboration can be raised through GitHub issues where appropriate or directed to the maintainer through the website.
 
 ## Repository layout
 
