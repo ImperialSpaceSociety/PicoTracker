@@ -89,10 +89,14 @@ extern uint16_t tlm_alt_length;
 #define OP_STATUS_ERROR_MASK       0x03
 #define OP_STATUS_CFG_SHIFT        2
 #define OP_STATUS_FIX_SHIFT        4
+#define OP_STATUS_OK               0
+#define OP_STATUS_TRANSIENT_ERROR  1
+#define OP_STATUS_RETRY_EXHAUSTED  2
+#define OP_STATUS_DEGRADED         3
 
 static uint8_t ubx_cfg_fail = 0;
 static uint8_t ubx_retry_count;
-static uint8_t ubx_poll_fail = 0;
+static uint8_t ubx_poll_fail = OP_STATUS_OK;
 static uint8_t gps_fix_attempts = 0;
 
 
@@ -103,7 +107,7 @@ static uint8_t gps_fix_attempts = 0;
 struct gps_fix current_fix;
 
 uint8_t get_fix(void) {
-    ubx_poll_fail = 0;
+    ubx_poll_fail = OP_STATUS_OK;
     gps_fix_attempts = 0;
     
     /* 
@@ -120,8 +124,8 @@ uint8_t get_fix(void) {
         for(ubx_retry_count=0; ubx_retry_count < UBX_POLL_RETRIES ; ubx_retry_count++){ 
             if (gps_fix_attempts < GPS_FIX_ATTEMPTS_MAX) gps_fix_attempts++;
             if (gps_get_fix(&current_fix)) break;
-            ubx_poll_fail = 1;
-            if(ubx_retry_count == (UBX_POLL_RETRIES -1)) ubx_poll_fail = 2;
+            ubx_poll_fail = OP_STATUS_TRANSIENT_ERROR;
+            if(ubx_retry_count == (UBX_POLL_RETRIES -1)) ubx_poll_fail = OP_STATUS_RETRY_EXHAUSTED;
     	} 
         
         /* accept only a valid 3D navigation solution */
@@ -174,32 +178,32 @@ int main( void )
     
     for(ubx_retry_count=0; ubx_retry_count < UBX_CFG_RETRIES; ubx_retry_count++){ // Configure Power Save Mode
         if((gps_set_power_save())) break;
-        ubx_cfg_fail = 1;
-        if(ubx_retry_count == (UBX_CFG_RETRIES -1)) ubx_cfg_fail = 2;
+        ubx_cfg_fail = OP_STATUS_TRANSIENT_ERROR;
+        if(ubx_retry_count == (UBX_CFG_RETRIES -1)) ubx_cfg_fail = OP_STATUS_RETRY_EXHAUSTED;
     } 
     
     for(ubx_retry_count=0; ubx_retry_count < UBX_CFG_RETRIES; ubx_retry_count++){ // Power Save Mode Off
         if((gps_power_save(0))) break;
-        ubx_cfg_fail = 1;
-        if(ubx_retry_count == (UBX_CFG_RETRIES -1)) ubx_cfg_fail = 2;
+        ubx_cfg_fail = OP_STATUS_TRANSIENT_ERROR;
+        if(ubx_retry_count == (UBX_CFG_RETRIES -1)) ubx_cfg_fail = OP_STATUS_RETRY_EXHAUSTED;
     } 
     
     for(ubx_retry_count=0; ubx_retry_count < UBX_CFG_RETRIES; ubx_retry_count++){ // Setup for no NMEA Messages
         if((gps_disable_nmea_output())) break;
-        ubx_cfg_fail = 1;
-        if(ubx_retry_count == (UBX_CFG_RETRIES -1)) ubx_cfg_fail = 2;
+        ubx_cfg_fail = OP_STATUS_TRANSIENT_ERROR;
+        if(ubx_retry_count == (UBX_CFG_RETRIES -1)) ubx_cfg_fail = OP_STATUS_RETRY_EXHAUSTED;
     }
     
     for(ubx_retry_count=0; ubx_retry_count < UBX_CFG_RETRIES; ubx_retry_count++){ // Setup for only GPS mode 
         if((gps_set_gps_only())) break;
-        ubx_cfg_fail = 1;
-        if(ubx_retry_count == (UBX_CFG_RETRIES -1)) ubx_cfg_fail = 2;
+        ubx_cfg_fail = OP_STATUS_TRANSIENT_ERROR;
+        if(ubx_retry_count == (UBX_CFG_RETRIES -1)) ubx_cfg_fail = OP_STATUS_RETRY_EXHAUSTED;
     } 
     
     for(ubx_retry_count=0; ubx_retry_count < UBX_CFG_RETRIES; ubx_retry_count++){ // Setup for High Altitude 
         if((gps_set_airborne_model())) break;
-        ubx_cfg_fail = 1;
-        if(ubx_retry_count == (UBX_CFG_RETRIES -1)) ubx_cfg_fail = 2;
+        ubx_cfg_fail = OP_STATUS_TRANSIENT_ERROR;
+        if(ubx_retry_count == (UBX_CFG_RETRIES -1)) ubx_cfg_fail = OP_STATUS_RETRY_EXHAUSTED;
     } 
     
     
@@ -213,15 +217,15 @@ int main( void )
     /* activate power save mode as fix is stable. 1 to activate power save.*/
     for(ubx_retry_count=0; ubx_retry_count < UBX_CFG_RETRIES; ubx_retry_count++){ // Power Save Mode ON
         if((gps_power_save(1))) break;
-        ubx_cfg_fail = 1;
-        if(ubx_retry_count == (UBX_CFG_RETRIES -1)) ubx_cfg_fail = 2;
+        ubx_cfg_fail = OP_STATUS_TRANSIENT_ERROR;
+        if(ubx_retry_count == (UBX_CFG_RETRIES -1)) ubx_cfg_fail = OP_STATUS_RETRY_EXHAUSTED;
     } 
     
     
     for(ubx_retry_count=0; ubx_retry_count < UBX_CFG_RETRIES; ubx_retry_count++){ // Save setup to GPS flash
         if((gps_save_settings())) break;
-        ubx_cfg_fail = 1;
-        if(ubx_retry_count == (UBX_CFG_RETRIES -1)) ubx_cfg_fail = 2;
+        ubx_cfg_fail = OP_STATUS_TRANSIENT_ERROR;
+        if(ubx_retry_count == (UBX_CFG_RETRIES -1)) ubx_cfg_fail = OP_STATUS_RETRY_EXHAUSTED;
     } 
     
     
