@@ -20,17 +20,22 @@ class RepositoryMetadataTests(unittest.TestCase):
         self.assertIn("CERN Open Hardware Licence v1.2", cern)
 
     def test_iar_project_source_references_exist(self):
-        project = ROOT / "firmware" / "HC12Tracker.ewp"
-        tree = ET.parse(project)
+        projects = [
+            ROOT / "firmware" / "HC12Tracker.ewp",
+            ROOT / "test_firmware" / "HC12CW" / "HC12Tracker.ewp",
+            ROOT / "test_firmware" / "HC12MOD" / "HC12Tracker.ewp",
+        ]
         missing = []
-        for node in tree.iter("name"):
-            text = node.text or ""
-            if not text.startswith("$PROJ_DIR$"):
-                continue
-            relative = text[len("$PROJ_DIR$\\"):].replace("\\", "/")
-            path = project.parent / relative
-            if not path.exists():
-                missing.append(relative)
+        for project in projects:
+            tree = ET.parse(project)
+            for node in tree.iter("name"):
+                text = node.text or ""
+                if not text.startswith("$PROJ_DIR$"):
+                    continue
+                relative = text[len("$PROJ_DIR$\\"):].replace("\\", "/")
+                path = project.parent / relative
+                if not path.exists():
+                    missing.append(f"{project.relative_to(ROOT)}: {relative}")
         self.assertEqual(missing, [])
 
 
