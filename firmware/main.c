@@ -89,9 +89,9 @@ extern uint16_t tlm_alt_length;
 #define OP_STATUS_CFG_SHIFT        2
 #define OP_STATUS_FIX_SHIFT        4
 
-uint8_t  ubx_cfg_fail = 0;
-uint8_t  ubx_retry_count;
-uint8_t  ubx_poll_fail = 0;
+static uint8_t ubx_cfg_fail = 0;
+static uint8_t ubx_retry_count;
+static uint8_t ubx_poll_fail = 0;
 static uint8_t gps_fix_attempts = 0;
 
 
