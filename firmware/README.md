@@ -18,4 +18,4 @@ Additional headers and helpers provide fix structures, string handling, and tele
 
 ## Development
 
-See [`../Development.md`](../Development.md) for build, programming, and debugging notes. Generated IAR workspace, debugger, log, and build-output files are intentionally excluded by the repository `.gitignore`.
+See [`../docs/development.md`](../docs/development.md) for build, programming, and debugging notes. Generated IAR workspace, debugger, log, and build-output files are intentionally excluded by the repository `.gitignore`.

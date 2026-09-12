@@ -11,7 +11,7 @@ A simple, low-cost pico-balloon tracker originally developed by the Imperial Col
 - [`hardware/`](hardware/) - hardware design files
 - [`CAD/`](CAD/) - mechanical/CAD files
 - [`docs/`](docs/) - technical reference links
-- [`Development.md`](Development.md) - firmware development, programming, and debugging notes
+- [`docs/development.md`](docs/development.md) - firmware development, programming, and debugging notes
 - [`GPS.md`](GPS.md) - GPS notes
 - [`HC12.md`](HC12.md) - HC12 radio notes
 - [`New Tracker.md`](New%20Tracker.md) - later tracker design notes
@@ -52,7 +52,7 @@ The tracker body can be 3D printed or made from polystyrene foam. The original a
 
 ### Firmware
 
-The firmware was derived from earlier Bristol SEDS pico-tracker work and adapted for the more constrained STM8 processor. See [`Development.md`](Development.md) for programming and debugging notes.
+The firmware was derived from earlier Bristol SEDS pico-tracker work and adapted for the more constrained STM8 processor. See [`docs/development.md`](docs/development.md) for programming and debugging notes.
 
 ### Tracking
 
