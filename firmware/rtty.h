@@ -30,6 +30,10 @@
 #ifndef RTTY_H
 #define RTTY_H
 
+#define RTTY_COMPLETE 0U
+#define RTTY_ACTIVE   1U
+#define RTTY_ERROR    2U
+
 #include <iostm8s003f3.h>
 #include <stdint.h>
 #include "HC12Board.h"

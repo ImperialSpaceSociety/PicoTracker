@@ -519,9 +519,9 @@ void si_trx_off(void)
 /**
 * Switches the transmission to the specified channel. Signed 16-bit int
 */
-void si_trx_switch_channel(int16_t channel)
+uint8_t si_trx_switch_channel(int16_t channel)
 {
-	si_trx_modem_set_offset(channel);
+	return si_trx_modem_set_offset(channel);
 }
 
 /**

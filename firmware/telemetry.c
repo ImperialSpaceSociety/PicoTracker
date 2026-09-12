@@ -162,15 +162,27 @@ void telemetry_tick(void) {
 				rtty_preamble();
 			}
 			
-			if (!rtty_tick()) {
-				/* Transmission Finished */
-				if (is_telemetry_finished()) return;
-				
-				/* Let's start again */
-				uint8_t data = tx_buf[telemetry_index]; 
-				
-				telemetry_index++;
-				rtty_start(data);
+			{
+				uint8_t rtty_status = rtty_tick();
+
+				if (rtty_status == RTTY_ERROR) {
+					telemetry_string_length = 0;
+					si_trx_off();
+					radio_on = 0;
+					timer1_tick_deinit();
+					return;
+				}
+
+				if (rtty_status == RTTY_COMPLETE) {
+					/* Transmission Finished */
+					if (is_telemetry_finished()) return;
+
+					/* Let's start again */
+					uint8_t data = (uint8_t)tx_buf[telemetry_index];
+
+					telemetry_index++;
+					rtty_start(data);
+				}
 			}
 			
 			break;

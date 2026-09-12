@@ -39,7 +39,7 @@ uint8_t si_trx_get_voltage(uint16_t *voltage);
 
 uint8_t si_trx_on(uint8_t modulation_type, uint16_t deviation);
 void si_trx_off(void);
-void si_trx_switch_channel(int16_t channel);
+uint8_t si_trx_switch_channel(int16_t channel);
 
 void si_trx_init(void);
 

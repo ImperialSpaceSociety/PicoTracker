@@ -81,32 +81,32 @@ uint8_t rtty_tick(void) {
 
   if (rtty_preamble_count) { /* Do preamble */
     rtty_preamble_count--;
-    RTTY_SET(1);
-    return 1;
+    if (RTTY_SET(1) != SI_TRX_OK) return RTTY_ERROR;
+    return RTTY_ACTIVE;
   }
 
   if (rtty_phase == 0) {			/* *** Start *** */
-    RTTY_SET(0);
+    if (RTTY_SET(0) != SI_TRX_OK) return RTTY_ERROR;
 
   } else if (rtty_phase < ASCII_BITS + 1) {	/* *** Data *** */
     if ((rtty_data >> (rtty_phase - 1)) & 1) {
-      RTTY_SET(1);
+      if (RTTY_SET(1) != SI_TRX_OK) return RTTY_ERROR;
     } else {
-      RTTY_SET(0);
+      if (RTTY_SET(0) != SI_TRX_OK) return RTTY_ERROR;
     }
 
   } else if (rtty_phase < BITS_PER_CHAR) {	/* *** Stop *** */
-    RTTY_SET(1);
+    if (RTTY_SET(1) != SI_TRX_OK) return RTTY_ERROR;
 
   } else {					/* *** Not running *** */
-    return 0;
+    return RTTY_COMPLETE;
   }
 
   rtty_phase++;
 
   if (rtty_phase < BITS_PER_CHAR) {
-    return 1;
+    return RTTY_ACTIVE;
   }
 
-  return 0;
+  return RTTY_COMPLETE;
 }
