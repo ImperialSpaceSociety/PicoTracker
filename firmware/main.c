@@ -256,8 +256,8 @@ int main( void )
 	/* get the GPS fix */
         get_fix();
 
-	/* put the GPS back into power-save mode (sleep) */
-	while(!(gps_power_save(1)));
+	/* Return the GPS to power-save mode without blocking telemetry forever. */
+	(void)gps_power_mode_with_retries(1);
 
 
 	/* save power by turning off UART on STM8,  1 to turn off UART*/
