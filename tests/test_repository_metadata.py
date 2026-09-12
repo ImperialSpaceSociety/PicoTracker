@@ -7,9 +7,9 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class RepositoryMetadataTests(unittest.TestCase):
-    def test_version_is_development_semver(self):
+    def test_version_is_semver(self):
         version = (ROOT / "VERSION").read_text().strip()
-        self.assertRegex(version, r"^\d+\.\d+\.\d+-dev$")
+        self.assertRegex(version, r"^\d+\.\d+\.\d+(?:-dev)?$")
         self.assertIn(version, (ROOT / "CHANGELOG.md").read_text())
 
     def test_standalone_licenses_exist(self):

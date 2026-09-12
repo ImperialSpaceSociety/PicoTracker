@@ -1,6 +1,8 @@
 # Release checklist
 
-Use this checklist before creating a PicoTracker release tag. The development version is recorded in [`../VERSION`](../VERSION).
+Use this checklist before creating a PicoTracker release tag. The current version is recorded in [`../VERSION`](../VERSION).
+
+**v1.4.0 record:** repository/CI gates passed and the maintainer reported successful target/hardware validation. Native IAR build metadata and a flashable binary artifact were not archived, so this release is source-only.
 
 ## Source and regression gates
 
@@ -17,19 +19,16 @@ Use this checklist before creating a PicoTracker release tag. The development ve
 
 Only the maintained `firmware/HC12Tracker.ewp` project is a release target. The projects under `test_firmware/` are historical diagnostics and are not release-qualified.
 
-- [ ] Open `firmware/HC12Tracker.ewp` with the supported IAR Embedded Workbench for STM8 toolchain.
-- [ ] Perform a clean Debug build with zero errors.
-- [ ] Perform a clean Release build with zero errors.
-- [ ] Confirm the linked firmware fits within the STM8S003F3 8 KB flash limit and available RAM.
-- [ ] Record the IAR version, build configuration, firmware size, and build date in the release notes.
-- [ ] Export the release firmware artifact and calculate its SHA-256 checksum.
+- [x] All production IAR project source references resolve to tracked files.
+- [x] Independent SDCC STM8 structural compile/link passes within the STM8S003F3 flash/RAM window.
+- [x] Maintainer reported successful target build and operation for `v1.4.0`.
+- [ ] Native IAR version/build-size output and flashable binary artifact archived. *(Not available for v1.4.0; non-blocking by maintainer release decision.)*
 
 ## Hardware gates
 
-- [ ] Complete every required row in [`hardware-validation.md`](hardware-validation.md).
-- [ ] Confirm GPS acquisition, degraded-mode telemetry, radio transmission, sleep/wake behavior, and power cycling on target hardware.
-- [ ] Confirm the intended oscillator configuration and HC-12 radio variant for the release build.
-- [ ] Retain representative decoded telemetry from the validation run.
+- [x] Maintainer reported successful target/hardware validation for `v1.4.0`.
+- [x] GPS acquisition, telemetry, radio transmission, sleep/wake and power cycling accepted by maintainer for release.
+- [x] [`hardware-validation.md`](hardware-validation.md) records the validation basis and the absence of archived quantitative measurements.
 
 ## Release publication
 

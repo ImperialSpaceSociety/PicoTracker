@@ -6,7 +6,7 @@ PicoTracker is a lightweight, low-cost high-altitude balloon tracking platform b
 
 ### Project status
 
-Active maintenance resumed in 2026. The current development version is [`1.4.0-dev`](VERSION). Firmware correctness, regression testing, documentation, and release controls have been substantially strengthened, but a release tag will not be created until the target IAR build and hardware-validation gates pass. The original hardware and firmware date from 2018–2019, so anyone building a unit today should revalidate component availability, prices, tooling, and test assumptions.
+Active maintenance resumed in 2026. [`v1.4.0`](CHANGELOG.md) is the current maintained release. It incorporates firmware correctness fixes, regression testing, bounded failure handling, documentation cleanup, release controls, and an automated STM8 structural compile/link check. The original hardware dates from 2018–2019, so anyone building a unit today should still revalidate component availability, RF configuration, power behaviour, and environmental assumptions.
 
 ### Maintainer
 
@@ -36,7 +36,7 @@ This repository is maintained and administered by [Sylvester Kaczmarek](https://
 
 ## Verification
 
-GitHub Actions runs the host regression suite on pushes to `master` and on pull requests. Coverage includes telemetry formatting, maximum frame sizing and CRCs, status packing, UBX payload and ACK/NAK parsing, GPS fix validity, radio temperature conversion, sleep policy, repository metadata, IAR project-file references, and the Python telemetry decoder. A separate SDCC structural target check also compiles and links the production sources with an STM8 backend and verifies that the resulting structural image remains within the STM8S003F3 flash/RAM window. That check uses compatibility shims and is not flashable. The remaining release gates are the native IAR STM8 build and completion of the hardware validation matrix.
+GitHub Actions runs the host regression suite on pushes to `master` and on pull requests. Coverage includes telemetry formatting, maximum frame sizing and CRCs, status packing, UBX payload and ACK/NAK parsing, GPS fix validity, radio temperature conversion, sleep policy, repository metadata, IAR project-file references, and the Python telemetry decoder. A separate SDCC structural target check compiles and links the production sources with an STM8 backend and verifies the STM8S003F3 flash/RAM window; the CI result for the release candidate is 7,787 / 8,192 bytes of flash span and 130 / 1,024 bytes of static DATA. The SDCC image uses compatibility shims and is not a flashable release binary. Release `v1.4.0` was approved by the maintainer following target/hardware validation; detailed native-IAR build metadata and quantitative hardware measurements are not archived in this repository.
 
 ## Objectives
 

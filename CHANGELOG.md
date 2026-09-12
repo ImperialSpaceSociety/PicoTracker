@@ -2,7 +2,7 @@
 
 All notable changes to PicoTracker are documented here.
 
-## Unreleased - 1.4.0-dev
+## 1.4.0 - 2026-09-13
 
 ### Added
 
