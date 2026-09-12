@@ -206,7 +206,7 @@ static void si_trx_set_gpio_configuration(si_gpio_t gpio0, si_gpio_t gpio1,
 /**
 * Starts transmitting
 */
-static void si_trx_start_tx(uint8_t channel)
+static uint8_t si_trx_start_tx(uint8_t channel)
 {
 	uint8_t buffer[5];
 	buffer[0] = SI_CMD_START_TX;
@@ -215,7 +215,7 @@ static void si_trx_start_tx(uint8_t channel)
 	buffer[3] = 0;
 	buffer[4] = 0;
 	
-	_si_trx_transfer(5, 0, buffer);
+	return _si_trx_transfer(5, 0, buffer);
 }
 /**
 * Gets readings from the auxiliary ADC
