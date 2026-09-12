@@ -429,7 +429,7 @@ static uint8_t si_trx_set_frequency(uint32_t frequency, uint16_t deviation)
 /**
 * Resets the transceiver
 */
-void si_trx_reset(uint8_t modulation_type, uint16_t deviation)
+static uint8_t si_trx_reset(uint8_t modulation_type, uint16_t deviation)
 {
         /* Power on TCXO and wait for stable*/
         PA_ODR_ODR3 = 1;
@@ -443,31 +443,33 @@ void si_trx_reset(uint8_t modulation_type, uint16_t deviation)
 	
 	
 	/* Power Up before issuing any normal radio commands. */
-	si_trx_power_up(SI_POWER_UP_TCXO, VCXO_FREQUENCY);
+	if (si_trx_power_up(SI_POWER_UP_TCXO, VCXO_FREQUENCY) != SI_TRX_OK) return SI_TRX_ERROR;
 	
 	/* Clear pending interrupts */
-	si_trx_clear_pending_interrupts(0, 0);
+	if (si_trx_clear_pending_interrupts(0, 0) != SI_TRX_OK) return SI_TRX_ERROR;
 	
 	/* Disable all interrupts */
-	_si_trx_set_property_8(SI_PROPERTY_GROUP_INT_CTL, SI_INT_CTL_ENABLE, 0);
+	if (_si_trx_set_property_8(SI_PROPERTY_GROUP_INT_CTL, SI_INT_CTL_ENABLE, 0) != SI_TRX_OK) return SI_TRX_ERROR;
 	
 	/* Configure GPIOs */
-	si_trx_set_gpio_configuration(SI_GPIO_PIN_CFG_GPIO_MODE_INPUT | SI_GPIO_PIN_CFG_PULL_ENABLE,
+	if (si_trx_set_gpio_configuration(SI_GPIO_PIN_CFG_GPIO_MODE_INPUT | SI_GPIO_PIN_CFG_PULL_ENABLE,
                                       SI_GPIO_PIN_CFG_GPIO_MODE_INPUT | SI_GPIO_PIN_CFG_PULL_ENABLE,
                                       SI_GPIO_PIN_CFG_GPIO_MODE_DRIVE1,
                                       SI_GPIO_PIN_CFG_GPIO_MODE_DRIVE0,
-                                      SI_GPIO_PIN_CFG_DRV_STRENGTH_LOW);
+                                      SI_GPIO_PIN_CFG_DRV_STRENGTH_LOW) != SI_TRX_OK) return SI_TRX_ERROR;
 	
-	si_trx_set_frequency(RADIO_FREQUENCY, deviation);
-	si_trx_set_tx_power(RADIO_POWER);
+	if (si_trx_set_frequency(RADIO_FREQUENCY, deviation) != SI_TRX_OK) return SI_TRX_ERROR;
+	if (si_trx_set_tx_power(RADIO_POWER) != SI_TRX_OK) return SI_TRX_ERROR;
 	
 	/* RTTY from GPIO1 */
-	si_trx_modem_set_modulation(SI_MODEM_MOD_DIRECT_MODE_ASYNC,
+	if (si_trx_modem_set_modulation(SI_MODEM_MOD_DIRECT_MODE_ASYNC,
 								SI_MODEM_MOD_GPIO_1,
 								SI_MODEM_MOD_SOURCE_DIRECT,
-								modulation_type);
+								modulation_type) != SI_TRX_OK) return SI_TRX_ERROR;
 	
-	si_trx_state_tx_tune();
+	if (si_trx_state_tx_tune() != SI_TRX_OK) return SI_TRX_ERROR;
+
+	return SI_TRX_OK;
 }
 
 /**
