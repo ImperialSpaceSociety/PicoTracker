@@ -6,7 +6,7 @@ Thumbs.db
 __pycache__/
 *.py[cod]
 
-# Utility-script generated data
+# Tool-generated data
 tools/no_pips_data.txt
 
 # IAR C-STAT and C-RUN
