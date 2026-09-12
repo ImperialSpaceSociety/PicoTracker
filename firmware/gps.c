@@ -263,7 +263,7 @@ uint8_t gps_disable_nmea_output(void) {
  * returns the length of the payload
  *
  */
-uint16_t gps_receive_payload(uint8_t class_id, uint8_t msg_id, unsigned char *payload) {
+static uint16_t gps_receive_payload(uint8_t class_id, uint8_t msg_id, unsigned char *payload) {
 	uint8_t rx_byte;
 	enum {UBX_A, UBX_B, CLASSID, MSGID, LEN_A, LEN_B, PAYLOAD} state = UBX_A;
 	uint16_t payload_cnt = 0;
