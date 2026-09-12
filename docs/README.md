@@ -8,6 +8,8 @@ This directory collects external references used during PicoTracker development.
 - [GPS notes](gps.md)
 - [HC12 radio notes](hc12.md)
 - [Later tracker design notes](new-tracker.md)
+- [Telemetry format](telemetry-format.md)
+- [Operational status field](status-word.md)
 
 ## STM8
 
