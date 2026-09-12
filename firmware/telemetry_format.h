@@ -36,6 +36,7 @@ static void telemetry_format_temperature(int16_t temperature, char *out)
                          (uint16_t)(-(temperature + 1)) + 1U :
                          (uint16_t)temperature;
 
+    if (magnitude > 99U) magnitude = 99U;
     out[0] = (temperature < 0) ? '-' : '+';
     i16toa(magnitude, 2, &out[1]);
 }

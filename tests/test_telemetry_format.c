@@ -38,6 +38,10 @@ int main(void)
     expect_field("temperature negative", temperature, "-18", 3);
     telemetry_format_temperature(7, temperature);
     expect_field("temperature positive", temperature, "+07", 3);
+    telemetry_format_temperature(100, temperature);
+    expect_field("temperature positive saturation", temperature, "+99", 3);
+    telemetry_format_temperature(-100, temperature);
+    expect_field("temperature negative saturation", temperature, "-99", 3);
 
     if (failures != 0) return 1;
     puts("telemetry format tests passed");
