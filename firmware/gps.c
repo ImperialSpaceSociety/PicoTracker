@@ -165,7 +165,7 @@ void InitialiseUART(void)
  *
  * transmits a command to the GPS
  */
-void UART_send_buffer(char *cmd, uint8_t length) {
+void UART_send_buffer(const char *cmd, uint8_t length) {
 	uint8_t i;
 
 	for (i = 0; i < length; i++) {

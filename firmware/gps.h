@@ -41,7 +41,7 @@
 #define UBX_POLL_TIMEOUT        1000000l     // timeout
 
 void InitialiseUART(void);
-void UART_send_buffer(char *cmd, uint8_t length);
+void UART_send_buffer(const char *cmd, uint8_t length);
 
 uint8_t gps_set_gps_only(void);
 uint8_t gps_disable_nmea_output(void);
