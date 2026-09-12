@@ -1,4 +1,4 @@
-# Useful reference documents
+# Documentation
 
 This directory collects external references used during PicoTracker development. Some links are historical and may have moved since the original work.
 
