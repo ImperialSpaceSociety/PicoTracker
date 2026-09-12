@@ -64,3 +64,6 @@ Backup*
 
 # Host test build output
 tests/build/
+
+# IAR per-user register-group settings
+**/settings/*.reggroups
