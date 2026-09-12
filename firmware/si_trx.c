@@ -40,7 +40,7 @@
 
 
 
-int8_t radio_select_pin  = 3;
+static uint8_t radio_select_pin = 3;
 
 /**
 * Generic SPI Send / Receive
