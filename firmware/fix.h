@@ -19,8 +19,8 @@ struct gps_fix {
 	int32_t lon;		/* longitude in deg * 10^7, range -180 .. +180 * 10^7 */
 	uint16_t alt;		/* altitude in m, range 0m, up to ~40000m, clamped */
 	uint16_t voltage_radio;	/* voltage in mV, range 0 .. 3300mV */
-	uint16_t op_status;	/* Operation Status Word */
-	int16_t temp_radio;     /* tracker interval temperature in °C, range -100 .. 100 */
+	uint16_t op_status;	/* packed GPS diagnostic status */
+	int16_t temp_radio;     /* tracker interval temperature in degrees C, range -100 .. 100 */
 };
 
 #endif
