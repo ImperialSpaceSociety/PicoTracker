@@ -16,6 +16,8 @@ Focused changes are preferred, including:
 
 Please keep behavioural changes narrowly scoped and describe how they were tested. For hardware changes, include the affected component or revision and the evidence supporting the change.
 
+Before submitting a firmware or host-tool change, run `make -C tests clean test`. Changes intended for a release must also satisfy the gates in [`docs/release-checklist.md`](docs/release-checklist.md).
+
 ## Repository hygiene
 
 Do not commit generated IAR build output, editor metadata, local virtual environments, logs, or operating-system metadata. The repository `.gitignore` covers the common generated files used by this project.

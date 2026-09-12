@@ -10,6 +10,8 @@ This directory collects external references used during PicoTracker development.
 - [Later tracker design notes](new-tracker.md)
 - [Telemetry format](telemetry-format.md)
 - [Operational status field](status-word.md)
+- [Release checklist](release-checklist.md)
+- [Hardware validation matrix](hardware-validation.md)
 
 ## Repository indexes
 

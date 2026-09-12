@@ -1,10 +1,12 @@
 # PicoTracker
 
+[![Host tests](https://github.com/ImperialSpaceSociety/PicoTracker/actions/workflows/host-tests.yml/badge.svg)](https://github.com/ImperialSpaceSociety/PicoTracker/actions/workflows/host-tests.yml)
+
 PicoTracker is a lightweight, low-cost high-altitude balloon tracking platform built around an STM8 processor, HC-12/Si4463 radio, u-blox GPS receiver, and 433 MHz RTTY telemetry. The project was originally developed by the Imperial College Space Society.
 
 ### Project status
 
-Active maintenance resumed in 2026. Current work focuses on firmware correctness, host-side regression testing, documentation, and preparation for a future validated release. The original hardware and firmware date from 2018–2019, so anyone building a unit today should revalidate component availability, prices, tooling, and test assumptions.
+Active maintenance resumed in 2026. The current development version is [`1.4.0-dev`](VERSION). Firmware correctness, regression testing, documentation, and release controls have been substantially strengthened, but a release tag will not be created until the target IAR build and hardware-validation gates pass. The original hardware and firmware date from 2018–2019, so anyone building a unit today should revalidate component availability, prices, tooling, and test assumptions.
 
 ### Maintainer
 
@@ -28,10 +30,13 @@ This repository is maintained and administered by [Sylvester Kaczmarek](https://
 - [`docs/telemetry-format.md`](docs/telemetry-format.md) - transmitted telemetry field order
 - [`docs/status-word.md`](docs/status-word.md) - operational-status field layout
 - [`tests/README.md`](tests/README.md) - host-test scope and usage
+- [`docs/release-checklist.md`](docs/release-checklist.md) - release gates and publication checklist
+- [`docs/hardware-validation.md`](docs/hardware-validation.md) - target hardware validation matrix
+- [`CHANGELOG.md`](CHANGELOG.md) - development and release history
 
 ## Verification
 
-Host-side regression tests currently cover telemetry number formatting and u-blox UBX checksum/fix-validation logic. Target STM8/IAR builds and hardware-in-the-loop validation are still required before a new release is considered validated.
+GitHub Actions runs the host regression suite on pushes to `master` and on pull requests. Coverage includes telemetry formatting and CRCs, status packing, UBX checksum and byte-stream parsing, GPS fix validity, radio temperature conversion, sleep policy, repository metadata, IAR project-file references, and the Python telemetry decoder. The remaining release gates are a clean STM8/IAR target build and completion of the hardware validation matrix; these are intentionally still marked pending.
 
 ## Objectives
 
@@ -85,18 +90,9 @@ Small maintenance fixes, documentation improvements, test notes, and well-scoped
 
 ## License
 
-Hardware is licensed under CERN OHL v1.2 or later. No warranty is provided for this documentation, implied or otherwise.
+PicoTracker uses separate licenses for software and hardware design material:
 
-Software is licensed under the MIT License.
+- Software and firmware: [MIT License](LICENSES/MIT.txt).
+- Hardware design documentation: [CERN Open Hardware Licence v1.2](LICENSES/CERN-OHL-1.2.txt), or a later version where the existing project notice permits it.
 
-MIT License
-
-Copyright (c) 2018 Imperial College Space Society
-
-Derived Software Copyright (c) 2014 Richard Meadows <richardeoin>
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+See [`LICENSE.md`](LICENSE.md) for the repository license split and applicable notices.
