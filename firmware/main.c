@@ -286,7 +286,8 @@ int main( void )
 
 
 	/* Sleep for one AWU interval normally and two intervals above 3000 m. */
-	if (Switch_to_LSI_clock()) {
+	if (!Switch_to_LSI_clock()) return 1;
+	{
 		uint8_t sleep_intervals;
 
 		InitialiseAWU();
