@@ -39,6 +39,7 @@ void InitialiseSystemClock(void); //Initialise System Internal Clock
 void InitialiseAWU(void); // Initialise the autowakeup feature
 void DeInitAWU(void);
 void Switch_to_LSI_clock(void);
+void Switch_to_HSI_clock(void);
 
 
 

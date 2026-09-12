@@ -78,12 +78,15 @@ void Switch_to_LSI_clock(void)
 * Switch to the High Speed Internal Oscillator after wake-up from active halt
 */
 void Switch_to_HSI_clock(void)
-{	
-	CLK_ICKR_LSIEN = 0;					//  Low speed internal RC oscillator Disable
+{
+	CLK_ICKR_HSIEN = 1;                 //  Ensure the high speed oscillator is enabled.
+	while (CLK_ICKR_HSIRDY == 0);       //  Wait until HSI is ready.
 
 	CLK_SWCR_SWEN = 1;                  //  Enable switching.
 	CLK_SWR = 0xE1;                     //  Use HSI as the clock source.
-    while (CLK_SWCR_SWBSY != 0);        //  Pause while the clock switch is busy.
+	while (CLK_SWCR_SWBSY != 0);        //  Pause while the clock switch is busy.
+
+	CLK_ICKR_LSIEN = 0;                 //  Disable LSI after the switch completes.
 }
 
 
