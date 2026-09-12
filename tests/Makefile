@@ -5,7 +5,7 @@ BUILD_DIR := build
 
 .PHONY: test clean
 
-test: $(BUILD_DIR)/test_number_format $(BUILD_DIR)/test_ubx_protocol $(BUILD_DIR)/test_radio_measurements $(BUILD_DIR)/test_sleep_policy $(BUILD_DIR)/test_status_word $(BUILD_DIR)/test_telemetry_crc $(BUILD_DIR)/test_telemetry_format $(BUILD_DIR)/test_ubx_parser
+test: $(BUILD_DIR)/test_number_format $(BUILD_DIR)/test_ubx_protocol $(BUILD_DIR)/test_radio_measurements $(BUILD_DIR)/test_sleep_policy $(BUILD_DIR)/test_status_word $(BUILD_DIR)/test_telemetry_crc $(BUILD_DIR)/test_telemetry_format $(BUILD_DIR)/test_ubx_parser $(BUILD_DIR)/test_telemetry_layout
 	$(BUILD_DIR)/test_number_format
 	$(BUILD_DIR)/test_ubx_protocol
 	$(BUILD_DIR)/test_radio_measurements
@@ -14,6 +14,7 @@ test: $(BUILD_DIR)/test_number_format $(BUILD_DIR)/test_ubx_protocol $(BUILD_DIR
 	$(BUILD_DIR)/test_telemetry_crc
 	$(BUILD_DIR)/test_telemetry_format
 	$(BUILD_DIR)/test_ubx_parser
+	$(BUILD_DIR)/test_telemetry_layout
 	$(PYTHON) test_decode_data.py
 	$(PYTHON) test_repository_metadata.py
 
@@ -48,6 +49,10 @@ $(BUILD_DIR)/test_telemetry_format: test_telemetry_format.c ../firmware/telemetr
 $(BUILD_DIR)/test_ubx_parser: test_ubx_parser.c ../firmware/ubx_parser.h ../firmware/ubx_protocol.h
 	mkdir -p $(BUILD_DIR)
 	$(CC) $(CFLAGS) test_ubx_parser.c -o $@
+
+$(BUILD_DIR)/test_telemetry_layout: test_telemetry_layout.c ../firmware/main.h
+	mkdir -p $(BUILD_DIR)
+	$(CC) $(CFLAGS) test_telemetry_layout.c -o $@
 
 clean:
 	rm -rf $(BUILD_DIR)
