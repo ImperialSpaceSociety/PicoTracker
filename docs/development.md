@@ -1,8 +1,8 @@
-# Code Development, Programming and Debugging the HC12 Radio Module
+# Development and debugging
 
 How to develop code, program, and debug the embedded STM8S003F3 processor on the HC12 radio module.
 
-## Code Development
+## Code development
 
 ![IAR Embedded WorkBench](../images/IAR.png)
 
@@ -17,7 +17,7 @@ Download the evaluation version and obtain a license for the free 8K code-limite
 
 If these limitations are an issue, other compilers are available, such as [SDCC](http://sdcc.sourceforge.net/).
 
-## Programming and Debugging
+## Programming and debugging
 
 To program the STM8S003F3 flash, we use the [ST-LINK/V2](https://www.st.com/en/development-tools/st-link-v2.html) or one of the low-cost clones available. The clones we have tested work well.
 
