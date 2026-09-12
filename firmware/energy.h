@@ -34,12 +34,14 @@
 #include <stdint.h>
 #include "HC12Board.h"
 
+#define CLOCK_READY_TIMEOUT 60000UL
 
-void InitialiseSystemClock(void); //Initialise System Internal Clock
+
+uint8_t InitialiseSystemClock(void); //Initialise System Internal Clock
 void InitialiseAWU(void); // Initialise the autowakeup feature
 void DeInitAWU(void);
-void Switch_to_LSI_clock(void);
-void Switch_to_HSI_clock(void);
+uint8_t Switch_to_LSI_clock(void);
+uint8_t Switch_to_HSI_clock(void);
 
 
 

@@ -165,7 +165,7 @@ int main( void )
 {
     /* get the clock working and initialise the auto wakeup service*/
     __disable_interrupt();
-    InitialiseSystemClock();
+    if (!InitialiseSystemClock()) return 1;
     InitialiseAWU(); // auto wake up
     __enable_interrupt();
 
@@ -276,17 +276,19 @@ int main( void )
 
 
 	/* Sleep for one AWU interval normally and two intervals above 3000 m. */
-	Switch_to_LSI_clock();
-	InitialiseAWU();
+	if (Switch_to_LSI_clock()) {
+		uint8_t sleep_intervals;
 
-	uint8_t sleep_intervals = tracker_sleep_intervals_for_altitude(current_fix.alt);
-	while (sleep_intervals > 0) {
-		__halt();
-		sleep_intervals--;
+		InitialiseAWU();
+		sleep_intervals = tracker_sleep_intervals_for_altitude(current_fix.alt);
+		while (sleep_intervals > 0) {
+			__halt();
+			sleep_intervals--;
+		}
+
+		DeInitAWU();
+		if (!Switch_to_HSI_clock()) return 1;
 	}
-
-	DeInitAWU();
-	Switch_to_HSI_clock();
 
     } /* while(1)*/
 

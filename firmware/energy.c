@@ -31,17 +31,21 @@
 #include <iostm8s003f3.h>
 #include <stdint.h>
 #include "HC12Board.h"
+#include "energy.h"
 
 /*
  *  Setup the system clock to run at 16MHz using the internal oscillator.
  */	
-void InitialiseSystemClock(void)
+uint8_t InitialiseSystemClock(void)
 {
+    uint32_t timeout = 0;
     CLK_ICKR = 0;                       //  Reset the Internal Clock Register.
     CLK_ICKR_HSIEN = 1;                 //  Enable the HSI.
     CLK_ICKR_REGAH = 1;                 //  MVR regulator can be powered off automatically when the MCU enters Active-halt mode.
     CLK_ECKR = 0;                       //  Disable the external clock.
-    while (CLK_ICKR_HSIRDY == 0);       //  Wait for the HSI to be ready for use.
+    while (CLK_ICKR_HSIRDY == 0) {
+        if (timeout++ > CLOCK_READY_TIMEOUT) return 0;
+    }
     CLK_CKDIVR = 0;                     //  Ensure the clocks are running at full speed.
 	
     CLK_PCKENR1 = 0x8C;                 //  Enable clock to only UART 1/2/3/4, Enable TIM 1, disable other timers, SPI, I2C
@@ -55,7 +59,11 @@ void InitialiseSystemClock(void)
     CLK_SWCR = 0;                       //  Reset the clock switch control register.
     CLK_SWCR_SWEN = 1;                  //  Enable switching.
 	CLK_ICKR_FHW = 1;					//  Fast wakeup from Halt/Active-halt modes enabled
-    while (CLK_SWCR_SWBSY != 0);        //  Pause while the clock switch is busy.
+    timeout = 0;
+    while (CLK_SWCR_SWBSY != 0) {
+        if (timeout++ > CLOCK_READY_TIMEOUT) return 0;
+    }
+    return 1;
 }
 
 
@@ -63,12 +71,16 @@ void InitialiseSystemClock(void)
 * Switch to the Low Speed Internal Oscillator during the Halt period to save power
 * as well as to increase the halt time.
 */
-void Switch_to_LSI_clock(void)
-{	
+uint8_t Switch_to_LSI_clock(void)
+{
+    uint32_t timeout = 0;
 	CLK_ICKR_LSIEN = 1;					//  Low speed internal RC oscillator enable
 	CLK_SWCR_SWEN = 1;                  //  Enable switching.
 	CLK_SWR = 0xD2;                     //  Use LSI as the clock source.
-    while (CLK_SWCR_SWBSY != 0);        //  Pause while the clock switch is busy.
+    while (CLK_SWCR_SWBSY != 0) {
+        if (timeout++ > CLOCK_READY_TIMEOUT) return 0;
+    }
+    return 1;
 }
 
 
@@ -77,16 +89,23 @@ void Switch_to_LSI_clock(void)
 /*
 * Switch to the High Speed Internal Oscillator after wake-up from active halt
 */
-void Switch_to_HSI_clock(void)
+uint8_t Switch_to_HSI_clock(void)
 {
+    uint32_t timeout = 0;
 	CLK_ICKR_HSIEN = 1;                 //  Ensure the high speed oscillator is enabled.
-	while (CLK_ICKR_HSIRDY == 0);       //  Wait until HSI is ready.
+	while (CLK_ICKR_HSIRDY == 0) {
+        if (timeout++ > CLOCK_READY_TIMEOUT) return 0;
+    }
 
 	CLK_SWCR_SWEN = 1;                  //  Enable switching.
 	CLK_SWR = 0xE1;                     //  Use HSI as the clock source.
-	while (CLK_SWCR_SWBSY != 0);        //  Pause while the clock switch is busy.
+	timeout = 0;
+	while (CLK_SWCR_SWBSY != 0) {
+        if (timeout++ > CLOCK_READY_TIMEOUT) return 0;
+    }
 
 	CLK_ICKR_LSIEN = 0;                 //  Disable LSI after the switch completes.
+    return 1;
 }
 
 
