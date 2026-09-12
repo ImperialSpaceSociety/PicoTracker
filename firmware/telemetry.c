@@ -177,7 +177,11 @@ void telemetry_tick(void) {
 			
 			if (!radio_on) { /* Turn on */
 				/* Pips: Cw */
-				si_trx_on(SI_MODEM_MOD_TYPE_CW, 1);
+				if (si_trx_on(SI_MODEM_MOD_TYPE_CW, 1) != SI_TRX_OK) {
+					telemetry_string_length = 0;
+					timer1_tick_deinit();
+					return;
+				}
 				radio_on = 1;
 				timer1_tick_time(PIPS_LENGTH_MS);
 				
