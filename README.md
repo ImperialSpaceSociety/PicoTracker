@@ -13,6 +13,14 @@ Low-cost pico-balloon tracker hardware and firmware using an HC-12 radio, STM8 p
 - [`docs/`](docs/) - technical reference links
 - [`tools/`](tools/) - supporting scripts
 
+### Key documentation
+
+- [`docs/development.md`](docs/development.md) - development, programming, and debugging
+- [`docs/gps.md`](docs/gps.md) - GPS hardware and integration notes
+- [`docs/hc12.md`](docs/hc12.md) - HC-12 radio and processor notes
+- [`docs/telemetry-format.md`](docs/telemetry-format.md) - transmitted telemetry field order
+- [`docs/status-word.md`](docs/status-word.md) - operational-status field layout
+
 ## Objectives
 
 The Pico balloon tracker was designed as an easy-to-build, low-cost entry point for small helium-filled balloons carrying a tracking payload.
