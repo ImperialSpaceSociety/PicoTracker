@@ -1684,10 +1684,10 @@
         <name>$PROJ_DIR$\spi_bitbang.h</name>
     </file>
     <file>
-        <name>$PROJ_DIR$\string.c</name>
+        <name>$PROJ_DIR$\number_format.c</name>
     </file>
     <file>
-        <name>$PROJ_DIR$\string.h</name>
+        <name>$PROJ_DIR$\number_format.h</name>
     </file>
     <file>
         <name>$PROJ_DIR$\telemetry.c</name>
