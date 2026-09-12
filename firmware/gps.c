@@ -360,6 +360,7 @@ uint8_t gps_get_fix(struct gps_fix *fix) {
          */
 	char pvt[] = {0xB5, 0x62, 0x01, 0x07, 0x00, 0x00, 0x08, 0x19};
 	int32_t alt_tmp;
+	uint16_t response_length;
 		
 	/* wake up from sleep */
 	while(!UART1_SR_TXE); 
@@ -370,11 +371,13 @@ uint8_t gps_get_fix(struct gps_fix *fix) {
 
 	/* request position */
 	UART_send_buffer(pvt, sizeof(pvt));
-	if(gps_receive_payload(0x01, 0x07, response, (uint16_t)sizeof(response)) == 0) return 0;
+	response_length = gps_receive_payload(0x01, 0x07, response, (uint16_t)sizeof(response));
+	if (response_length != (uint16_t)sizeof(response)) return 0;
     
     // the mapping is found in the reference manual for M8 series GPS modules. Section for UBX-NAV-PVT (0x01 0x07)
 	fix->num_svs = response[23];
-	fix->type = response[20];
+	fix->type = response[UBX_NAV_PVT_FIX_TYPE_OFFSET];
+	fix->flags = response[UBX_NAV_PVT_FLAGS_OFFSET];
 	fix->year = response[4] + (response[5] << 8);
 	fix->month = response[6];
 	fix->day = response[7];
@@ -470,9 +473,9 @@ uint8_t gps_set_airborne_model(void) {
 		0x05, 									/* minimum elevation */
 		0x00, 									/* reserved */
 		0xFA, 0x00, 							/* position DOP */
-		0xFA, 0x00, 							/* time DOP */
-		0x64, 0x00, 							/* position accuracy */
-		0x2C, 0x01, 							/* time accuracy */
+		0xFA, 0x00,							/* time DOP */
+		0x64, 0x00,							/* position accuracy */
+		0x2C, 0x01,							/* time accuracy */
 		0x00,									/* static hold threshold */ 
 		0x3C, 									/* DGPS timeout */
 		0x00, 									/* min. SVs above C/No thresh */
@@ -606,6 +609,5 @@ void uart_power_save(int on) {
    */
     UART1_CR1_UART0 = on ;
 }
-
 
 
