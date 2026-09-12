@@ -151,7 +151,11 @@ void telemetry_tick(void) {
 		case TELEMETRY_RTTY: /* ---- ---- A character mode */
 			if (!radio_on) {
 				/* RTTY: We use the modem offset to modulate */
-				si_trx_on(SI_MODEM_MOD_TYPE_CW, 1);
+				if (si_trx_on(SI_MODEM_MOD_TYPE_CW, 1) != SI_TRX_OK) {
+					telemetry_string_length = 0;
+					timer1_tick_deinit();
+					return;
+				}
 				radio_on = 1;
 				rtty_preamble();
 			}
