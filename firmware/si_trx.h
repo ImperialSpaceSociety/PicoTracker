@@ -32,6 +32,9 @@
 
 #include <stdint.h>
 
+#define SI_TRX_OK 1U
+#define SI_TRX_ERROR 0U
+
 
 
 uint8_t si_trx_get_temperature(int16_t *temperature);
