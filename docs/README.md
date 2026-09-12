@@ -11,6 +11,14 @@ This directory collects external references used during PicoTracker development.
 - [Telemetry format](telemetry-format.md)
 - [Operational status field](status-word.md)
 
+## Repository indexes
+
+- [Firmware](../firmware/)
+- [Test firmware](../test_firmware/)
+- [Hardware](../hardware/)
+- [CAD](../cad/)
+- [Tools](../tools/)
+
 ## STM8
 
 - [Datasheet](https://www.st.com/resource/en/datasheet/DM00024550.pdf)
