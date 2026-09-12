@@ -4,12 +4,17 @@ BUILD_DIR := build
 
 .PHONY: test clean
 
-test: $(BUILD_DIR)/test_number_format
+test: $(BUILD_DIR)/test_number_format $(BUILD_DIR)/test_ubx_protocol
 	$(BUILD_DIR)/test_number_format
+	$(BUILD_DIR)/test_ubx_protocol
 
 $(BUILD_DIR)/test_number_format: test_number_format.c ../firmware/string.c
 	mkdir -p $(BUILD_DIR)
 	$(CC) $(CFLAGS) test_number_format.c ../firmware/string.c -o $@
+
+$(BUILD_DIR)/test_ubx_protocol: test_ubx_protocol.c ../firmware/ubx_protocol.h
+	mkdir -p $(BUILD_DIR)
+	$(CC) $(CFLAGS) test_ubx_protocol.c -o $@
 
 clean:
 	rm -rf $(BUILD_DIR)
