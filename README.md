@@ -61,6 +61,10 @@ The tracker was designed to work with existing high-altitude balloon tracking ne
 
 Small maintenance fixes, documentation improvements, test notes, and well-scoped technical contributions are welcome. See [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
+## Maintainer
+
+This repository is maintained by [Sylwester Kaczmarek](https://github.com/sylvesterkaczmarek).
+
 ## License
 
 Hardware is licensed under CERN OHL v1.2 or later. No warranty is provided for this documentation, implied or otherwise.
