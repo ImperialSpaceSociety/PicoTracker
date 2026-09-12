@@ -2,7 +2,7 @@
 
 This directory contains hardware reference material for the PicoTracker project.
 
-- `BatBoostAAA.pdf` — battery boost reference document.
+- `battery-boost-aaa.pdf` — battery boost reference document.
 - `BatBoostAAA.xlsx` — associated battery boost design data.
 - `HC12/` — HC12-related hardware material.
 
