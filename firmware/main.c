@@ -142,6 +142,7 @@ uint8_t get_fix(void) {
         //while (telemetry_active());
     }
 
+    ubx_poll_fail = OP_STATUS_DEGRADED;
     return 0;
 }
 
