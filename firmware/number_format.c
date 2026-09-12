@@ -5,7 +5,7 @@
  *
  */
 
-#include <inttypes.h>
+#include <stdint.h>
 #include "number_format.h"
 
 /* i32toa

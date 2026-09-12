@@ -30,7 +30,7 @@
 
 #include <iostm8s003f3.h>
 #include "gps.h"
-#include <inttypes.h>
+#include <stdint.h>
 #include "fix.h"
 #include "ubx_protocol.h"
 #include "ubx_ack_parser.h"

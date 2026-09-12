@@ -32,7 +32,6 @@
 
 #include <iostm8s003f3.h>
 #include <stdint.h>
-#include <inttypes.h>
 
 
 enum telemetry_t {
