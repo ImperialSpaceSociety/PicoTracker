@@ -43,6 +43,7 @@
 #include "energy.h"
 #include "gps.h"
 #include "ubx_protocol.h"
+#include "sleep_policy.h"
 #include <intrinsics.h>
 #include "main.h"
 
@@ -284,26 +285,17 @@ int main( void )
 	while (telemetry_active());
 
 
-	/* go into active halt for around 30s. This will not be very accurate.
-        * https://blog.mark-stevens.co.uk/2014/06/auto-wakeup-stm8s/
-        * The automatic interrupt wakes up the controller.
-        * TODO: how to make it sleep for longer at higher altitudes? call __halt repeatedly?
-        */
-
+	/* Sleep for one AWU interval normally and two intervals above 3000 m. */
 	Switch_to_LSI_clock();
+	InitialiseAWU();
 
-	/* reinit AWU_TBR. see ref manual section 12.3.1. Do we have to do this while disabling
-        * interrupt like in the init function(InitialiseAWU())? */
-	InitialiseAWU(); // Initialise the autowakeup feature
-
-        if (current_fix.alt> 500){
-            __halt(); // halt until an interrupt wakes things up in 30s
-        }
-
-	if (current_fix.alt> 3000){
-           __halt(); // halt until an interrupt wakes things up in 30s
+	uint8_t sleep_intervals = tracker_sleep_intervals_for_altitude(current_fix.alt);
+	while (sleep_intervals > 0) {
+		__halt();
+		sleep_intervals--;
 	}
-	DeInitAWU(); // set AWU_TBR = 0 for power saving. See ref manual section 12.3.1
+
+	DeInitAWU();
 
     } /* while(1)*/
 
