@@ -77,35 +77,26 @@ void rtty_preamble(void) {
  * Called at the baud rate, outputs bits of rtty
  */
 uint8_t rtty_tick(void) {
+  uint8_t bit;
 
-  if (rtty_preamble_count) { /* Do preamble */
+  if (rtty_preamble_count > 0U) {
     rtty_preamble_count--;
-    if (RTTY_SET(1) != SI_TRX_OK) return RTTY_ERROR;
-    return RTTY_ACTIVE;
-  }
+    bit = 1U;
+  } else {
+    if (rtty_phase >= BITS_PER_CHAR) return RTTY_COMPLETE;
 
-  if (rtty_phase == 0) {			/* *** Start *** */
-    if (RTTY_SET(0) != SI_TRX_OK) return RTTY_ERROR;
-
-  } else if (rtty_phase < ASCII_BITS + 1) {	/* *** Data *** */
-    if ((rtty_data >> (rtty_phase - 1)) & 1) {
-      if (RTTY_SET(1) != SI_TRX_OK) return RTTY_ERROR;
+    if (rtty_phase == 0U) {
+      bit = 0U;
+    } else if (rtty_phase <= ASCII_BITS) {
+      bit = (uint8_t)((rtty_data >> (rtty_phase - 1U)) & 1U);
     } else {
-      if (RTTY_SET(0) != SI_TRX_OK) return RTTY_ERROR;
+      bit = 1U;
     }
 
-  } else if (rtty_phase < BITS_PER_CHAR) {	/* *** Stop *** */
-    if (RTTY_SET(1) != SI_TRX_OK) return RTTY_ERROR;
-
-  } else {					/* *** Not running *** */
-    return RTTY_COMPLETE;
+    rtty_phase++;
   }
 
-  rtty_phase++;
-
-  if (rtty_phase < BITS_PER_CHAR) {
-    return RTTY_ACTIVE;
-  }
-
-  return RTTY_COMPLETE;
+  if (RTTY_SET(bit) != SI_TRX_OK) return RTTY_ERROR;
+  return (rtty_preamble_count > 0U || rtty_phase < BITS_PER_CHAR) ?
+         RTTY_ACTIVE : RTTY_COMPLETE;
 }
