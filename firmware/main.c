@@ -44,6 +44,7 @@
 #include "gps.h"
 #include "ubx_protocol.h"
 #include "sleep_policy.h"
+#include "status_word.h"
 #include <intrinsics.h>
 #include "main.h"
 
@@ -86,15 +87,6 @@ extern uint16_t tlm_alt_length;
  * Bits 3..2: GPS configuration status.
  * Bits 1..0: GPS poll status.
  */
-#define GPS_FIX_ATTEMPTS_MAX       0x0F
-#define OP_STATUS_ERROR_MASK       0x03
-#define OP_STATUS_CFG_SHIFT        2
-#define OP_STATUS_FIX_SHIFT        4
-#define OP_STATUS_OK               0
-#define OP_STATUS_TRANSIENT_ERROR  1
-#define OP_STATUS_RETRY_EXHAUSTED  2
-#define OP_STATUS_DEGRADED         3
-
 static uint8_t ubx_cfg_fail = 0;
 static uint8_t ubx_retry_count;
 static uint8_t ubx_poll_fail = OP_STATUS_OK;
@@ -164,9 +156,7 @@ static uint8_t gps_power_mode_with_retries(uint8_t on)
 
 void get_measurements(void){
     current_fix.temp_radio = si_trx_get_temperature();
-    current_fix.op_status = ((uint16_t)gps_fix_attempts << OP_STATUS_FIX_SHIFT) |
-                            ((uint16_t)(ubx_cfg_fail & OP_STATUS_ERROR_MASK) << OP_STATUS_CFG_SHIFT) |
-                            (ubx_poll_fail & OP_STATUS_ERROR_MASK);
+    current_fix.op_status = gps_status_pack(gps_fix_attempts, ubx_cfg_fail, ubx_poll_fail);
     current_fix.voltage_radio =  si_trx_get_voltage();
 }
 
