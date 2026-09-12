@@ -35,6 +35,7 @@
 #include "ubx_protocol.h"
 #include "ubx_ack_parser.h"
 #include "ubx_parser.h"
+#include "gps_math.h"
 #include <intrinsics.h>
 
 
@@ -91,11 +92,13 @@
 /* millisec delay at @16MHz
  * the 960 comes from the number of instructions to perform the do/while loop in 1 ms
  */
-void delay_ms(unsigned long ms) {
-    volatile unsigned long cycles = 960UL * ms;
+void delay_ms(uint16_t ms) {
+    volatile uint16_t cycles;
 
-    while (cycles > 0UL) {
-        cycles--;
+    while (ms > 0U) {
+        cycles = 960U;
+        while (cycles > 0U) cycles--;
+        ms--;
     }
 }
 
@@ -290,7 +293,6 @@ uint8_t gps_get_fix(struct gps_fix *fix) {
          * Section 33.17.14 in the Ublox M8Q reference manual
          */
 	char pvt[] = {0xB5, 0x62, 0x01, 0x07, 0x00, 0x00, 0x08, 0x19};
-	int32_t alt_tmp;
 	uint16_t response_length;
 		
 	/* Wake up from sleep with bounded UART waits. */
@@ -304,7 +306,9 @@ uint8_t gps_get_fix(struct gps_fix *fix) {
 	if (!UART_send_buffer(pvt, sizeof(pvt))) return 0;
 	response_length = gps_receive_payload(0x01, 0x07, response, (uint16_t)sizeof(response));
 	if (response_length != (uint16_t)sizeof(response)) return 0;
-    
+	if (!ubx_nav_pvt_fix_is_usable(response[UBX_NAV_PVT_FIX_TYPE_OFFSET],
+	                               response[UBX_NAV_PVT_FLAGS_OFFSET])) return 0;
+
     // the mapping is found in the reference manual for M8 series GPS modules. Section for UBX-NAV-PVT (0x01 0x07)
 	fix->num_svs = response[23];
 	fix->type = response[UBX_NAV_PVT_FIX_TYPE_OFFSET];
@@ -321,16 +325,9 @@ uint8_t gps_get_fix(struct gps_fix *fix) {
 	fix->lon = (int32_t) (
 			(uint32_t)(response[24]) + ((uint32_t)(response[25]) << 8) + ((uint32_t)(response[26]) << 16) + ((uint32_t)(response[27]) << 24)
 			);
-	alt_tmp = (((int32_t) 
-			((uint32_t)(response[36]) + ((uint32_t)(response[37]) << 8) + ((uint32_t)(response[38]) << 16) + ((uint32_t)(response[39]) << 24))
-			) / 1000);
-	if (alt_tmp <= 0) {
-		fix->alt = 1;
-	} else if (alt_tmp > 50000) {
-		fix->alt = 50000;
-	} else {
-		fix->alt = (uint16_t) alt_tmp;
-	}
+	fix->alt = gps_altitude_from_mm((int32_t)(
+			(uint32_t)response[36] | ((uint32_t)response[37] << 8) |
+			((uint32_t)response[38] << 16) | ((uint32_t)response[39] << 24)));
         return 1;
 			
 }

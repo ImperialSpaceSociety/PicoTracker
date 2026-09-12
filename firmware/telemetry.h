@@ -47,7 +47,6 @@ int telemetry_start(enum telemetry_t type, uint16_t length);
 void timer1_tick_init(uint16_t millisecs);
 void timer1_tick_time(uint16_t millisecs);
 void timer1_tick_deinit(void);
-void init_tx_buffer(void);
 void prepare_tx_buffer(void);
 
 

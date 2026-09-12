@@ -34,6 +34,7 @@
 #include "si_trx_defs.h"
 #include "main.h"
 #include "radio_measurements.h"
+#include "radio_synth.h"
 
 
 #define RF_DEVIATION	500
@@ -406,56 +407,33 @@ static uint8_t si_trx_set_tx_power(uint8_t tx_power)
 */
 static uint8_t si_trx_set_frequency(uint32_t frequency, uint16_t deviation)
 {
-	uint8_t outdiv, band, nprescaler;
-	
-	/* Higher frequency resolution, but also higher power (~+200µA) */
-	nprescaler = 2;
-	
-	
-	if (frequency < 119000000UL || frequency > 1050000000UL) return SI_TRX_ERROR;
+	struct si_trx_synth_params params;
+	uint8_t band;
 
-	if (frequency >= 705000000UL) {
-		outdiv = 4;  band = SI_MODEM_CLKGEN_FVCO_DIV_4;
-	} else if (frequency >= 525000000UL) {
-		outdiv = 6;  band = SI_MODEM_CLKGEN_FVCO_DIV_6;
-	} else if (frequency >= 353000000UL) {
-		outdiv = 8;  band = SI_MODEM_CLKGEN_FVCO_DIV_8;
-	} else if (frequency >= 239000000UL) {
-		outdiv = 12; band = SI_MODEM_CLKGEN_FVCO_DIV_12;
-	} else if (frequency >= 177000000UL) {
-		outdiv = 16; band = SI_MODEM_CLKGEN_FVCO_DIV_16;
-	} else {
-		outdiv = 24; band = SI_MODEM_CLKGEN_FVCO_DIV_24;
+	if (!si_trx_calculate_synth(frequency, XO_FREQUENCY, &params)) {
+		return SI_TRX_ERROR;
 	}
-	
-	float f_pfd = ((float)nprescaler * (float)XO_FREQUENCY) / (float)outdiv;
-	
-	uint16_t n = ((uint16_t)((float)frequency / f_pfd)) - 1U;
-	
-	float ratio = (float)frequency / f_pfd;
-	float rest  = ratio - (float)n;
-	
-	uint32_t m = (uint32_t)(rest * (float)( (uint32_t) 1 << 19));
-	
-	
-	/* Reject divider values outside the Si4463 property ranges. */
-	if (n > 0x7f || m > 0xfffff) return SI_TRX_ERROR;
-	
-	
-	/* Set the frac-n PLL output divider */
-	if (nprescaler == 4) { /* Prescaler */
-		if (si_trx_frequency_control_set_band(band, SI_MODEM_CLKGEN_SY_SEL_0) != SI_TRX_OK) return SI_TRX_ERROR;
-	} else { /* Default Mode */
-		if (si_trx_frequency_control_set_band(band, SI_MODEM_CLKGEN_SY_SEL_1) != SI_TRX_OK) return SI_TRX_ERROR;
+
+	switch (params.outdiv) {
+	case 4U:  band = SI_MODEM_CLKGEN_FVCO_DIV_4; break;
+	case 6U:  band = SI_MODEM_CLKGEN_FVCO_DIV_6; break;
+	case 8U:  band = SI_MODEM_CLKGEN_FVCO_DIV_8; break;
+	case 12U: band = SI_MODEM_CLKGEN_FVCO_DIV_12; break;
+	case 16U: band = SI_MODEM_CLKGEN_FVCO_DIV_16; break;
+	case 24U: band = SI_MODEM_CLKGEN_FVCO_DIV_24; break;
+	default: return SI_TRX_ERROR;
 	}
-	
-	
-	/* Set the frac-n PLL divider */
-	if (si_trx_frequency_control_set_divider((uint8_t)n, m) != SI_TRX_OK) return SI_TRX_ERROR;
-	
-	/* Set the external pin frequency deviation to the LSB tuning resolution */
-	if (si_trx_modem_set_deviation(deviation) != SI_TRX_OK) return SI_TRX_ERROR;
-	
+
+	if (si_trx_frequency_control_set_band(band, SI_MODEM_CLKGEN_SY_SEL_1) != SI_TRX_OK) {
+		return SI_TRX_ERROR;
+	}
+	if (si_trx_frequency_control_set_divider(params.n, params.m) != SI_TRX_OK) {
+		return SI_TRX_ERROR;
+	}
+	if (si_trx_modem_set_deviation(deviation) != SI_TRX_OK) {
+		return SI_TRX_ERROR;
+	}
+
 	return SI_TRX_OK;
 }
 
@@ -604,25 +582,4 @@ void si_trx_init(void)
 
   /* nIRQ is not used in the direct-transmit path; command completion is polled through CTS over SPI. */
 
-}
-
-
-
-
-/**
-* Quick and dirty loopback test. Should print 0x34
-*/
-uint8_t spi_loopback_test(void)
-{
-	
-	
-	/* Init loopback */
-	spi_bitbang_init();
-	
-	/* Enable */
-	
-	/* Test transfer */
-	uint8_t data = spi_bitbang_transfer(0x34);
-	
-	return data;
 }

@@ -34,6 +34,7 @@
 
 #define SI_TRX_OK 1U
 #define SI_TRX_ERROR 0U
+#define SI_TRX_MODULATION_CW 0U
 
 
 
@@ -46,6 +47,5 @@ uint8_t si_trx_switch_channel(int16_t channel);
 
 void si_trx_init(void);
 
-uint8_t spi_loopback_test(void);
 
 #endif /* SI_TRX_H */

@@ -37,7 +37,6 @@
 #include <iostm8s003f3.h>
 #include "HC12Board.h"
 #include "si_trx.h"
-#include "si_trx_defs.h"
 #include "telemetry.h"
 
 #include "energy.h"
@@ -99,32 +98,16 @@ static uint8_t gps_fix_attempts = 0;
 struct gps_fix current_fix;
 
 static uint8_t get_fix(void) {
-    struct gps_fix candidate;
-
     ubx_poll_fail = OP_STATUS_OK;
     gps_fix_attempts = 0;
 
     while (gps_fix_attempts < GPS_FIX_ATTEMPTS_MAX) {
-        for (ubx_retry_count = 0;
-             ubx_retry_count < UBX_POLL_RETRIES && gps_fix_attempts < GPS_FIX_ATTEMPTS_MAX;
-             ubx_retry_count++) {
-            candidate = current_fix;
-            candidate.type = 0;
-            candidate.flags = 0;
-            gps_fix_attempts++;
+        gps_fix_attempts++;
+        if (gps_get_fix(&current_fix)) return 1;
 
-            if (!gps_get_fix(&candidate)) {
-                ubx_poll_fail = OP_STATUS_TRANSIENT_ERROR;
-                if (ubx_retry_count == (UBX_POLL_RETRIES - 1U)) {
-                    ubx_poll_fail = OP_STATUS_RETRY_EXHAUSTED;
-                }
-                continue;
-            }
-
-            if (ubx_nav_pvt_fix_is_usable(candidate.type, candidate.flags)) {
-                current_fix = candidate;
-                return 1;
-            }
+        ubx_poll_fail = OP_STATUS_TRANSIENT_ERROR;
+        if ((gps_fix_attempts % UBX_POLL_RETRIES) == 0U) {
+            ubx_poll_fail = OP_STATUS_RETRY_EXHAUSTED;
         }
     }
 

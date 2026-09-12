@@ -37,7 +37,6 @@
 #include "rtty.h"
 #include "pips.h"
 #include "si_trx.h"
-#include "si_trx_defs.h"
 #include "main.h"
 #include "number_format.h"
 #include "fix.h"
@@ -149,7 +148,7 @@ static void telemetry_tick(void) {
 		case TELEMETRY_RTTY: /* ---- ---- A character mode */
 			if (!radio_on) {
 				/* RTTY: We use the modem offset to modulate */
-				if (si_trx_on(SI_MODEM_MOD_TYPE_CW, 1) != SI_TRX_OK) {
+				if (si_trx_on(SI_TRX_MODULATION_CW, 1) != SI_TRX_OK) {
 					telemetry_string_length = 0;
 					timer1_tick_deinit();
 					return;
@@ -187,7 +186,7 @@ static void telemetry_tick(void) {
 			
 			if (!radio_on) { /* Turn on */
 				/* Pips: Cw */
-				if (si_trx_on(SI_MODEM_MOD_TYPE_CW, 1) != SI_TRX_OK) {
+				if (si_trx_on(SI_TRX_MODULATION_CW, 1) != SI_TRX_OK) {
 					telemetry_string_length = 0;
 					timer1_tick_deinit();
 					return;
@@ -283,21 +282,6 @@ void prepare_tx_buffer(void) {
 	
 	tx_buf_length = TX_BUF_FRAME_END;
 }
-
-/*
-* init_tx_buffer
-*
-* helper routine to fill the TX buffer with "x"es - if any of those get transmitted,
-* the field handling is not correct
-*/
-void init_tx_buffer(void) {
-	uint16_t i;
-	
-	for (i = TX_BUF_START_OFFSET; i < TX_BUF_MAX_LENGTH; i++) {
-		tx_buf[i] = 'x';
-	}
-}
-
 
 /**
 * CLOCKING
