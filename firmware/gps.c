@@ -33,6 +33,7 @@
 #include <inttypes.h>
 #include "fix.h"
 #include "ubx_protocol.h"
+#include "ubx_ack_parser.h"
 #include "ubx_parser.h"
 #include <intrinsics.h>
 
@@ -185,59 +186,22 @@ void UART_send_buffer(const char *cmd, uint8_t length) {
  *
  */
 static uint8_t gps_receive_ack(uint8_t class_id, uint8_t msg_id) {
-        
+    struct ubx_ack_parser parser;
+    uint16_t timeout = 0;
 
-	uint8_t match_count = 0;
-	uint8_t msg_ack = 0;
-	uint8_t rx_byte;
-	uint8_t i;
-	uint16_t ack_checksum = UBX_CHECKSUM_INITIAL;
-	uint16_t nak_checksum = UBX_CHECKSUM_INITIAL;
-	uint8_t ack[] = {0xB5, 0x62, 0x05, 0x01, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00};
-	uint8_t nak[] = {0xB5, 0x62, 0x05, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00};
-	ack[6] = class_id;
-	nak[6] = class_id;
-	ack[7] = msg_id;
-	nak[7] = msg_id;
-	for (i = 2; i <= 7; i++) {
-		ack_checksum = ubx_checksum_update(ack_checksum, ack[i]);
-		nak_checksum = ubx_checksum_update(nak_checksum, nak[i]);
-	}
-	ack[8] = UBX_CHECKSUM_A(ack_checksum);
-	ack[9] = UBX_CHECKSUM_B(ack_checksum);
-	nak[8] = UBX_CHECKSUM_A(nak_checksum);
-	nak[9] = UBX_CHECKSUM_B(nak_checksum);
-    uint16_t timeout;
-	
+    ubx_ack_parser_init(&parser, class_id, msg_id);
 
-	/* runs until ACK/NAK packet is received, or a timeout.*/
+    while (1) {
+        uint8_t result;
 
-        
-	while(1) {
-		timeout = 0;
-		while(!UART1_SR_RXNE){ // check if there is any data to be read.
-		  if(timeout++ > UBX_CFG_TIMEOUT) return 0; // return no ack if timeout
-		}
-		rx_byte = UART1_DR;
+        while (!UART1_SR_RXNE) {
+            if (timeout++ > UBX_CFG_TIMEOUT) return 0;
+        }
 
-		if (rx_byte == ack[match_count] || rx_byte == nak[match_count]) {
-			  if (match_count == 3) {	/* test ACK/NAK byte */
-					if (rx_byte == ack[match_count]) {
-						msg_ack = 1;
-					} 
-					else {
-						msg_ack = 0;
-					}
-			  }
-			  if (match_count == 9) {
-					return msg_ack;
-			  }
-		match_count++;
-		} 
-		else {
-			  match_count = 0;
-		}
-	}
+        result = ubx_ack_parser_push(&parser, UART1_DR);
+        if (result == UBX_ACK_ACCEPTED) return 1;
+        if (result == UBX_NAK_ACCEPTED || result == UBX_ACK_ERROR) return 0;
+    }
 }
 
 /* 
