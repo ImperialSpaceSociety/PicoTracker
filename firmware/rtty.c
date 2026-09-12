@@ -27,7 +27,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include <string.h>
 #include "rtty.h"
 #include "si_trx.h"
 #include <iostm8s003f3.h>

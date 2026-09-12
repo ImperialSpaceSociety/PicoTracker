@@ -6,6 +6,7 @@
  */
 
 #include <inttypes.h>
+#include "number_format.h"
 
 /* atoid32
  * converts a fixed-length input string to 32bit integers, 

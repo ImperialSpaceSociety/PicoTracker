@@ -28,7 +28,6 @@
 * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#include <string.h>
 #include <iostm8s003f3.h>
 #include <stdint.h>
 #include <stdbool.h>
@@ -53,11 +52,8 @@
 
 
 
-extern volatile uint16_t tlm_tick;
-extern uint16_t tx_buf_rdy;
 extern uint16_t tx_buf_length;
 extern char tx_buf[TX_BUF_MAX_LENGTH];
-extern char telemetry_string[TX_BUF_MAX_LENGTH];
 extern struct gps_fix current_fix;
 
 /* calculated sentence ID length, used for variable length buffer */
@@ -72,19 +68,19 @@ uint16_t tlm_alt_length;
 /**
 * The type of telemetry we're currently outputting
 */
-enum telemetry_t telemetry_type;
+static enum telemetry_t telemetry_type;
 /**
 * Current output
 */
-uint16_t telemetry_string_length = 0;
+static uint16_t telemetry_string_length = 0;
 /**
 * Where we are in the current output
 */
-uint16_t telemetry_index;
+static uint16_t telemetry_index;
 /**
 * Is the radio currently on?
 */
-uint8_t radio_on = 0;
+static uint8_t radio_on = 0;
 
 /**
 * Returns 1 if we're currently outputting.
@@ -123,7 +119,7 @@ int telemetry_start(enum telemetry_t type, uint16_t length) {
 }
 
 
-uint8_t is_telemetry_finished(void) {
+static uint8_t is_telemetry_finished(void) {
 	if (telemetry_index >= telemetry_string_length) {
 		/* All done, deactivate */
 		telemetry_string_length = 0;
@@ -146,7 +142,7 @@ uint8_t is_telemetry_finished(void) {
 /**
 * Called at the telemetry mode's baud rate
 */
-void telemetry_tick(void) {
+static void telemetry_tick(void) {
 	if (telemetry_active()) {
 		switch (telemetry_type) {
 			
@@ -217,7 +213,7 @@ void telemetry_tick(void) {
 /**
 * Calculates the CRC checksum for the current telemetry payload.
 */
-uint16_t calculate_txbuf_checksum(void)
+static uint16_t calculate_txbuf_checksum(void)
 {
     return telemetry_crc((const uint8_t *)&tx_buf[TX_BUF_CHECKSUM_BEGIN],
                          (uint16_t)(TX_BUF_CHECKSUM_END - TX_BUF_CHECKSUM_BEGIN));
@@ -286,12 +282,6 @@ void prepare_tx_buffer(void) {
 		tx_buf[TX_BUF_POSTFIX_START + i] = TX_BUF_POSTFIX[i];
 	
 	tx_buf_length = TX_BUF_FRAME_END;
-	/* trigger transmission */
-	tx_buf_rdy = 1;
-}
-
-void tlm_init(void) {
-	tx_buf_rdy = 1;
 }
 
 /*

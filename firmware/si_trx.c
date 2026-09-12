@@ -596,10 +596,8 @@ void si_trx_init(void)
     
  
 
-  /* Configure the IRQ pin */
-  // TODO
+  /* nIRQ is not used in the direct-transmit path; command completion is polled through CTS over SPI. */
 
-  
 }
 
 

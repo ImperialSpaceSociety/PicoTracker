@@ -75,7 +75,6 @@
 * the TX data buffer
 * contains ASCII data, which is either transmitted as CW over RTTY
 */
-uint16_t tx_buf_rdy = 0;			/* the read-flag (main -> main) */
 uint16_t tx_buf_length = 0;			/* how many chars to send */
 char tx_buf[TX_BUF_MAX_LENGTH] = {SYNC_PREFIX "$$" PAYLOAD_NAME ","};	/* the telemetry buffer initialised with $$ */
 extern uint16_t tlm_sent_id_length;
@@ -99,7 +98,7 @@ static uint8_t gps_fix_attempts = 0;
 /* current (latest) GPS fix and measurements */
 struct gps_fix current_fix;
 
-uint8_t get_fix(void) {
+static uint8_t get_fix(void) {
     ubx_poll_fail = OP_STATUS_OK;
     gps_fix_attempts = 0;
 

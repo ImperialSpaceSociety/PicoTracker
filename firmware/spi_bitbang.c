@@ -27,6 +27,7 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include <stdint.h>
+#include "spi_bitbang.h"
 #include <iostm8s003f3.h>
 
 
