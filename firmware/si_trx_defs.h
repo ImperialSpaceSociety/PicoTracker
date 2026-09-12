@@ -301,7 +301,7 @@ enum {
 /**
  * Generic SPI Send / Receive
  */
-void _si_trx_transfer(int tx_count, int rx_count, uint8_t *data);
+uint8_t _si_trx_transfer(int tx_count, int rx_count, uint8_t *data);
 
 
 

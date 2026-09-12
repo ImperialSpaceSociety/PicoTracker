@@ -45,7 +45,7 @@ static uint8_t radio_select_pin = 3;
 /**
 * Generic SPI Send / Receive
 */
-void _si_trx_transfer(int tx_count, int rx_count, uint8_t *data)
+uint8_t _si_trx_transfer(int tx_count, int rx_count, uint8_t *data)
 {
 	uint8_t response;
 	
@@ -125,6 +125,8 @@ void _si_trx_transfer(int tx_count, int rx_count, uint8_t *data)
                     PD_ODR_ODR3 = 1;
                 else
                     PD_ODR_ODR2 = 1;
+
+	return SI_TRX_OK;
 }
 
 
