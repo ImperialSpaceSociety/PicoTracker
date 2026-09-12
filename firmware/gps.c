@@ -183,7 +183,7 @@ void UART_send_buffer(const char *cmd, uint8_t length) {
  * returns 1 if ACK was received, 0 if NAK was received or a timeout occurred
  *
  */
-uint8_t gps_receive_ack(uint8_t class_id, uint8_t msg_id) {    
+static uint8_t gps_receive_ack(uint8_t class_id, uint8_t msg_id) {
         
 
 	int match_count = 0;
