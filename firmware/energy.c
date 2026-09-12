@@ -45,7 +45,7 @@ void InitialiseSystemClock(void)
     CLK_CKDIVR = 0;                     //  Ensure the clocks are running at full speed.
 	
     CLK_PCKENR1 = 0x8C;                 //  Enable clock to only UART 1/2/3/4, Enable TIM 1, disable other timers, SPI, I2C
-    CLK_PCKENR2 = 0x04;                 //  Enable clock to only to AWU register clock, (does not disable counter clock), not to ADC
+    CLK_PCKENR2 = 0x04;                 //  Enable clock only to AWU register clock, (does not disable counter clock), not to ADC
 	
     CLK_CCOR = 0;                       //  Turn off CCO.
     CLK_HSITRIMR = 0;                   //  Turn off any HSIU trimming.
@@ -60,7 +60,7 @@ void InitialiseSystemClock(void)
 
 
 /*
-* Switch to the Low Speed Internal Ocillator during the Halt period to save power
+* Switch to the Low Speed Internal Oscillator during the Halt period to save power
 * as well as to increase the halt time.
 */
 void Switch_to_LSI_clock(void)
@@ -75,7 +75,7 @@ void Switch_to_LSI_clock(void)
 
 
 /*
-* Switch to the High Speed Internal Ocillator as soon as wakeup from active halt
+* Switch to the High Speed Internal Oscillator after wake-up from active halt
 */
 void Switch_to_HSI_clock(void)
 {	
