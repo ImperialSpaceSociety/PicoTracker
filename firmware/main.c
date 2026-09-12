@@ -154,10 +154,21 @@ static uint8_t gps_power_mode_with_retries(uint8_t on)
     return 0;
 }
 
-void get_measurements(void){
-    current_fix.temp_radio = si_trx_get_temperature();
-    current_fix.op_status = gps_status_pack(gps_fix_attempts, ubx_cfg_fail, ubx_poll_fail);
-    current_fix.voltage_radio =  si_trx_get_voltage();
+static void get_measurements(void)
+{
+    uint16_t measurement_status = 0;
+
+    if (si_trx_get_temperature(&current_fix.temp_radio) != SI_TRX_OK) {
+        current_fix.temp_radio = 0;
+        measurement_status |= OP_STATUS_MEASUREMENT_ERROR;
+    }
+    if (si_trx_get_voltage(&current_fix.voltage_radio) != SI_TRX_OK) {
+        current_fix.voltage_radio = 0;
+        measurement_status |= OP_STATUS_MEASUREMENT_ERROR;
+    }
+
+    current_fix.op_status = gps_status_pack(gps_fix_attempts, ubx_cfg_fail, ubx_poll_fail) |
+                            measurement_status;
 }
 
 

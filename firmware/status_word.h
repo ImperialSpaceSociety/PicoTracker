@@ -11,6 +11,7 @@
 #define OP_STATUS_TRANSIENT_ERROR  1U
 #define OP_STATUS_RETRY_EXHAUSTED  2U
 #define OP_STATUS_DEGRADED         3U
+#define OP_STATUS_MEASUREMENT_ERROR 0x0100U
 
 static uint16_t gps_status_pack(uint8_t fix_attempts, uint8_t config_status,
                                 uint8_t poll_status)

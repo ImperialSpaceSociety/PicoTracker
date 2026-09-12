@@ -259,61 +259,67 @@ static uint8_t si_trx_start_tx(uint8_t channel)
 /**
 * Gets readings from the auxiliary ADC
 */
-static void si_trx_get_adc_reading(uint8_t enable, uint8_t configuration,
-                                   uint16_t* gpio_value,
-                                   uint16_t* battery_value,
-                                   uint16_t* temperature_value)
+static uint8_t si_trx_get_adc_reading(uint8_t enable, uint8_t configuration,
+                                      uint16_t *gpio_value,
+                                      uint16_t *battery_value,
+                                      uint16_t *temperature_value)
 {
-	uint8_t buffer[6] = {0};
-	buffer[0] = SI_CMD_GET_ADC_READING;
-	buffer[1] = enable;
-	buffer[2] = configuration;
+    uint8_t buffer[6] = {0};
+    uint8_t status = SI_TRX_ERROR;
 
-	if (si_trx_boot() == SI_TRX_OK) {
-		(void)_si_trx_transfer(3, 6, buffer);
-	}
+    *gpio_value = 0;
+    *battery_value = 0;
+    *temperature_value = 0;
 
-	/* Physical shutdown and oscillator power-down after the measurement. */
-	_si_trx_sdn_enable();
-	si_trx_xo_power_off();
+    buffer[0] = SI_CMD_GET_ADC_READING;
+    buffer[1] = enable;
+    buffer[2] = configuration;
 
-	*gpio_value = ((buffer[0] & 0x7) << 8) | buffer[1];
-	*battery_value = ((buffer[2] & 0x7) << 8) | buffer[3];
-	*temperature_value = ((buffer[4] & 0x7) << 8) | buffer[5];
+    if (si_trx_boot() == SI_TRX_OK &&
+        _si_trx_transfer(3, 6, buffer) == SI_TRX_OK) {
+        *gpio_value = (uint16_t)(((uint16_t)(buffer[0] & 0x07U) << 8) | buffer[1]);
+        *battery_value = (uint16_t)(((uint16_t)(buffer[2] & 0x07U) << 8) | buffer[3]);
+        *temperature_value = (uint16_t)(((uint16_t)(buffer[4] & 0x07U) << 8) | buffer[5]);
+        status = SI_TRX_OK;
+    }
+
+    _si_trx_sdn_enable();
+    si_trx_xo_power_off();
+    return status;
 }
+
 /**
-* Returns the measured internal die temperature of the radio
-* as integer
+* Reads the measured internal die temperature of the radio.
 */
-int16_t si_trx_get_temperature (void)
+uint8_t si_trx_get_temperature(int16_t *temperature)
 {
-	
-        uint16_t raw_gpio, raw_battery, raw_temperature;
-	
-	/* Get the reading from the adc */
-	si_trx_get_adc_reading(SI_GET_ADC_READING_TEMPERATURE, 0xC5,
-						   &raw_gpio, &raw_battery, &raw_temperature);
-        
-       
-        return si_trx_temperature_from_raw(raw_temperature);
+    uint16_t raw_gpio, raw_battery, raw_temperature;
+
+    if (si_trx_get_adc_reading(SI_GET_ADC_READING_TEMPERATURE, 0xC5,
+                               &raw_gpio, &raw_battery, &raw_temperature) != SI_TRX_OK) {
+        return SI_TRX_ERROR;
+    }
+
+    *temperature = si_trx_temperature_from_raw(raw_temperature);
+    return SI_TRX_OK;
 }
 
-
-/* Returns the measured supply voltage of the radio
-* in mV
+/**
+* Reads the measured supply voltage of the radio in mV.
 */
-int16_t si_trx_get_voltage(void)
+uint8_t si_trx_get_voltage(uint16_t *voltage)
 {
-	
-     
-        
     uint16_t raw_gpio, raw_battery, raw_temperature;
-	
-	/* Get the reading from the adc */
-	si_trx_get_adc_reading(SI_GET_ADC_READING_BATTERY, 0xC5,
-						   &raw_gpio, &raw_battery, &raw_temperature);
-	uint32_t result = ((uint32_t) raw_battery * 75) / 32; // result * 2.34375;
-	return result;
+    uint32_t result;
+
+    if (si_trx_get_adc_reading(SI_GET_ADC_READING_BATTERY, 0xC5,
+                               &raw_gpio, &raw_battery, &raw_temperature) != SI_TRX_OK) {
+        return SI_TRX_ERROR;
+    }
+
+    result = ((uint32_t)raw_battery * 75U) / 32U;
+    *voltage = (uint16_t)result;
+    return SI_TRX_OK;
 }
 
 
