@@ -2,6 +2,13 @@
 
 This directory collects external references used during PicoTracker development. Some links are historical and may have moved since the original work.
 
+## Project guides
+
+- [Development and debugging](development.md)
+- [GPS notes](gps.md)
+- [HC12 radio notes](hc12.md)
+- [Later tracker design notes](new-tracker.md)
+
 ## STM8
 
 - [Datasheet](https://www.st.com/resource/en/datasheet/DM00024550.pdf)
