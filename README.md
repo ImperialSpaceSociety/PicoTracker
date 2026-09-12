@@ -26,6 +26,12 @@ The Pico balloon tracker was designed as an easy-to-build, low-cost entry point 
 - Compatible with existing HAB tracking systems using 433 MHz RTTY
 - Quick build using off-the-shelf modules where possible
 
+## Launch footage
+
+[![PicoTracker high-altitude balloon launch](https://img.youtube.com/vi/OtdXHd_AjtY/hqdefault.jpg)](https://www.youtube.com/watch?v=OtdXHd_AjtY)
+
+Launch footage from one of the PicoTracker high-altitude balloon flights. Click the preview to watch the video.
+
 ## Design
 
 ### GPS
