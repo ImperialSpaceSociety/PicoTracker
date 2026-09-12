@@ -92,13 +92,11 @@
  * the 960 comes from the number of instructions to perform the do/while loop in 1 ms
  */
 void delay_ms(unsigned long ms) {
+    volatile unsigned long cycles = 960UL * ms;
 
-	unsigned long cycles = 960 * ms;
-	do
-	{
-		cycles--;
-	}
-	while(cycles > 0);
+    while (cycles > 0UL) {
+        cycles--;
+    }
 }
 
 /**
