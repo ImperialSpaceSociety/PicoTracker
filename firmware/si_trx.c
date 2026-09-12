@@ -555,19 +555,11 @@ void si_trx_init(void)
     PD_CR2_C23 = 1;         //  Pin can run up to 10 MHz.
     PD_ODR_ODR3 = 1;        //  Select is high
     
-   /* Try to read part number */
-    /* Power on TCXO and wait for stable*/
-    PA_ODR_ODR3 = 1;
-    for (int i = 0; i < 5*1000; i++); /* Approx. 5ms */
-    
-    _si_trx_sdn_enable();  /* active high shutdown = reset */
-	
-    for (int i = 0; i < 15*1000; i++); /* Approx. 15ms */
-    _si_trx_sdn_disable();   /* booting */
-    for (int i = 0; i < 15*1000; i++); /* Approx. 15ms */
-	
-	
-    uint16_t part_number = si_trx_get_part_info();
+   /* Probe the QFN select pin using a complete boot sequence. */
+    uint16_t part_number = 0;
+    if (si_trx_boot() == SI_TRX_OK) {
+        part_number = si_trx_get_part_info();
+    }
     if (part_number != 0x4463 && part_number != 0x4438 ){ // Radio chip might be Si4463 or Si4438
       
         radio_select_pin =2;    //  TSSOP pin
