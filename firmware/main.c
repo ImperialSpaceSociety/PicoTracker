@@ -102,7 +102,7 @@ static uint8_t gps_fix_attempts = 0;
 /* current (latest) GPS fix and measurements */
 struct gps_fix current_fix;
 
-void get_fix(void) {
+uint8_t get_fix(void) {
     ubx_poll_fail = 0;
     gps_fix_attempts = 0;
     
@@ -126,7 +126,7 @@ void get_fix(void) {
         
         /* accept only a valid 3D navigation solution */
         if (ubx_nav_pvt_fix_is_usable(current_fix.type, current_fix.flags)) {
-            break;
+            return 1;
         }
         
         /* Pip because we don't have a fix yet*/
