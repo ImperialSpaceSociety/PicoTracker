@@ -46,7 +46,7 @@
 #include "main.h"
 
 
-/* A lot of work for the telemetry and gps communication is taken from 
+/* A lot of work for the telemetry and GPS communication is taken from
 * https://github.com/thasti/utrak
 */
 
@@ -154,7 +154,7 @@ int main( void )
     __enable_interrupt();
     
     /* Start the UART */
-    InitialiseUART(); // set up the uart
+    InitialiseUART(); // set up the UART
     
     
     /* Initialise Si4060 interface */
@@ -165,7 +165,7 @@ int main( void )
 
     
     /* Initialise GPS */   
-    gps_startup_delay(); // wait 1 sec for GPS to startup
+    gps_startup_delay(); // wait 1 sec for GPS to start up
     
     
     
@@ -216,7 +216,7 @@ int main( void )
     } 
     
     
-    for(ubx_retry_count=0; ubx_retry_count < UBX_CFG_RETRIES; ubx_retry_count++){ // Save setup to gps flash
+    for(ubx_retry_count=0; ubx_retry_count < UBX_CFG_RETRIES; ubx_retry_count++){ // Save setup to GPS flash
         if((gps_save_settings())) break;
         ubx_cfg_fail = 1;
         if(ubx_retry_count == (UBX_CFG_RETRIES -1)) ubx_cfg_fail = 2;
@@ -226,23 +226,23 @@ int main( void )
     
     while (1)
     {
-	/* Turn back on uart. 0 to turn Uart back on*/
+	/* Turn the UART back on. 0 enables the UART*/
 	uart_power_save(0); 
         
 	/* now wake up the GPS */
 	gps_wake_up();
 	
-	/* now put the gps in full power mode */
+	/* put the GPS in full power mode */
 	while(!(gps_power_save(0)));
 	
-	/* get the gps fix */
+	/* get the GPS fix */
         get_fix();
 	
-	/* put the gps back to power save mode(sleep) */
+	/* put the GPS back into power-save mode (sleep) */
 	while(!(gps_power_save(1)));
 	
 	
-	/* save power by turning off uart on stm8,  1 to turn off UART*/
+	/* save power by turning off UART on STM8,  1 to turn off UART*/
 	uart_power_save(1); 
 	
 	/* get voltage  and temperature*/
