@@ -1,6 +1,6 @@
 # Host tests
 
-These tests exercise hardware-independent firmware logic on a desktop C compiler.
+These tests exercise hardware-independent firmware logic on a desktop C compiler. Current coverage includes numeric telemetry formatting, u-blox UBX checksums and fix validity, radio temperature conversion, and altitude-dependent sleep policy.
 
 Run all host tests from this directory with:
 

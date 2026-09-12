@@ -31,3 +31,8 @@ The HC12 as purchased comes with custom code that is Read Out Protected (ROP). T
 
 ![ROP1](../images/ROP1.JPG)
 ![ROP2](../images/ROP2.JPG)
+## Runtime configuration notes
+
+Radio oscillator selection is controlled in `firmware/HC12Board.h`. `XO_SOURCE` and `XO_FREQUENCY` are the authoritative Si4463 power-up settings; defining `XO_TCXO` selects the 32 MHz TCXO path, while removing it selects the original 30 MHz crystal path.
+
+The tracker uses one auto-wakeup sleep interval at altitudes up to 3000 m and two intervals above 3000 m. After the final wake-up, the STM8 switches back to the HSI clock before the next GPS and telemetry cycle.
