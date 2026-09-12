@@ -569,8 +569,12 @@ void si_trx_init(void)
         PD_DDR_DDR2 = 1;        //  Port D, bit 2 is output for TSSOP.
         PD_CR1_C12 = 1;         //  Pin is set to Push-Pull mode.
         PD_CR2_C22 = 1;         //  Pin can run up to 10 MHz.
+
+        part_number = 0;
+        if (si_trx_boot() == SI_TRX_OK) {
+            part_number = si_trx_get_part_info();
+        }
     }
-    part_number = si_trx_get_part_info();
     _si_trx_sdn_enable();  /* active high shutdown = reset */
     PA_ODR_ODR3 = 1; /* Power off TCXO*/
 
