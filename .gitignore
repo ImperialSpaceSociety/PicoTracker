@@ -8,7 +8,6 @@ __pycache__/
 
 # Utility-script generated data
 Utility scripts/no_pips_data.txt
-Utility scripts/with_pips_data.txt
 
 # IAR C-STAT and C-RUN
 # Comment this out if you use C-Stat or C-Run to compile/analyze your project
