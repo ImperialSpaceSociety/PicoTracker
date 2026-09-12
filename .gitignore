@@ -2,6 +2,8 @@
 .DS_Store
 Thumbs.db
 .idea/
+.vscode/
+*.swp
 *venv*
 __pycache__/
 *.py[cod]
