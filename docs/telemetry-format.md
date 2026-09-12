@@ -18,4 +18,4 @@ The transmitted data fields are:
 
 Latitude and longitude are derived from the u-blox integer coordinates scaled by `10^7`. The firmware inserts the decimal point when constructing the telemetry sentence.
 
-The operational-status field is formatted as a four-digit decimal value. Its packed bit layout is documented separately in [`status-word.md`](status-word.md).
+The operational-status field is formatted as a four-digit decimal value. See [`status-word.md`](status-word.md) for the packed diagnostic bit layout and status meanings.
