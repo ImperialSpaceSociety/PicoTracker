@@ -76,11 +76,11 @@ enum telemetry_t telemetry_type;
 /**
 * Current output
 */
-int8_t telemetry_string_length = 0;
+uint16_t telemetry_string_length = 0;
 /**
 * Where we are in the current output
 */
-int8_t telemetry_index;
+uint16_t telemetry_index;
 /**
 * Is the radio currently on?
 */
@@ -99,7 +99,7 @@ int telemetry_active(void) {
 *
 * Returns 0 on success, 1 if already active
 */
-int telemetry_start(enum telemetry_t type, int8_t length) {
+int telemetry_start(enum telemetry_t type, uint16_t length) {
 	if (!telemetry_active()) {
 		
 		/* Initialise */

@@ -43,7 +43,7 @@ enum telemetry_t {
 
 
 int telemetry_active(void);
-int telemetry_start(enum telemetry_t type, int8_t length);
+int telemetry_start(enum telemetry_t type, uint16_t length);
 void timer1_tick_init(uint16_t millisecs);
 void timer1_tick_time(uint16_t millisecs);
 void timer1_tick_deinit(void);
