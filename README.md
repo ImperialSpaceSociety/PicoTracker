@@ -2,7 +2,7 @@
 
 A simple, low-cost pico-balloon tracker originally developed by the Imperial College Space Society.
 
-> **Maintenance note:** Repository maintenance resumed in August 2026. The hardware, firmware, cost figures, and technical status below are historical unless explicitly updated. Anyone building a new unit should revalidate component availability, prices, tooling, and test assumptions.
+> **Project status:** Active maintenance resumed in 2026. The original design dates from 2018–2019; current work focuses on preserving the hardware and firmware, improving documentation, and making incremental firmware fixes. Anyone building a unit today should revalidate component availability, prices, tooling, and test assumptions.
 
 ## Repository layout
 
@@ -56,16 +56,6 @@ The tracker was designed to work with existing high-altitude balloon tracking ne
 
 - **Power consumption:** the original modules were not specifically designed for low-power operation, so firmware-based power management is important.
 - **Low temperature:** operation at high altitude can expose the electronics to temperatures around -50 °C, requiring validation of oscillators, power systems, and packaging.
-
-## Historical status
-
-The last recorded project status from December 2018 was:
-
-- Done: prototype build, processor initialization, radio code, RTTY, and pips
-- In progress: GPS and message-string creation
-- Remaining: power management, temperature testing, final packaging, and system testing
-
-This status is preserved as historical project context rather than a statement of current hardware readiness.
 
 ## Contributing
 
