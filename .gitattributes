@@ -4,3 +4,11 @@
 # CAD source and mesh files
 *.stl binary
 *.f3d binary
+
+# Binary reference and media files
+*.pdf binary
+*.xlsx binary
+*.png binary
+*.jpg binary
+*.JPG binary
+*.jpeg binary
