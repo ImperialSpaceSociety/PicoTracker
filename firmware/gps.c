@@ -468,7 +468,7 @@ uint8_t gps_set_airborne_model(void) {
 uint8_t gps_set_power_save(void) {
 	/* All the config options are in section 33.10.21.1 Extended Power
 	 * Management configuration of the UBLOX documentation 
-	 * This section is perhaps the most important in saveing power
+	 * This section is perhaps the most important in saving power
 	 * through software settings 
 	 * This config uses the on/off-mode, not the cyclic power save mode */
 	
