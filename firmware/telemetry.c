@@ -42,6 +42,7 @@
 #include "main.h"
 #include "number_format.h"
 #include "fix.h"
+#include "telemetry_crc.h"
 
 #define TIMER1_PRESCALE  (HSCLK_FREQUENCY/1000)
 
@@ -201,45 +202,12 @@ void telemetry_tick(void) {
 
 
 /**
-* CYCLIC REDUNDANCY CHECK (CRC)
-* =============================================================================
-*/
-
-/**
-* CRC Function for the XMODEM protocol.
-* http://www.nongnu.org/avr-libc/user-manual/group__util__crc.html#gaca726c22a1900f9bad52594c8846115f
-*/
-uint16_t crc_xmodem_update(uint16_t crc, uint8_t data)
-{
-	int i;
-	
-	crc = crc ^ ((uint16_t)data << 8);
-	for (i = 0; i < 8; i++) {
-		if (crc & 0x8000) {
-			crc = (crc << 1) ^ 0x1021;
-		} else {
-			crc <<= 1;
-		}
-	}
-	
-	return crc;
-}
-
-/**
-* Calcuates the CRC checksum for a communications string
-* See http://ukhas.org.uk/communication:protocol
+* Calculates the CRC checksum for the current telemetry payload.
 */
 uint16_t calculate_txbuf_checksum(void)
 {
-	size_t i;
-	uint16_t crc;
-	crc = 0xFFFF;
-	
-	for (i = TX_BUF_CHECKSUM_BEGIN; i < TX_BUF_CHECKSUM_END; i++) {
-		crc = crc_xmodem_update(crc, tx_buf[i]);
-	}
-	
-	return crc;
+    return telemetry_crc((const uint8_t *)&tx_buf[TX_BUF_CHECKSUM_BEGIN],
+                         (uint16_t)(TX_BUF_CHECKSUM_END - TX_BUF_CHECKSUM_BEGIN));
 }
 
 
