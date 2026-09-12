@@ -1,4 +1,5 @@
 CC ?= cc
+PYTHON ?= python3
 CFLAGS ?= -std=c99 -Wall -Wextra -Werror
 BUILD_DIR := build
 
@@ -13,6 +14,7 @@ test: $(BUILD_DIR)/test_number_format $(BUILD_DIR)/test_ubx_protocol $(BUILD_DIR
 	$(BUILD_DIR)/test_telemetry_crc
 	$(BUILD_DIR)/test_telemetry_format
 	$(BUILD_DIR)/test_ubx_parser
+	$(PYTHON) test_decode_data.py
 
 $(BUILD_DIR)/test_number_format: test_number_format.c ../firmware/number_format.c
 	mkdir -p $(BUILD_DIR)
