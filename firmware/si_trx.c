@@ -289,7 +289,7 @@ int16_t si_trx_get_voltage(void)
 
 
 /**
-* Sets the internal frac-n pll synthesiser divisiors
+* Sets the internal frac-n pll synthesiser dividers
 */
 static void si_trx_frequency_control_set_divider(uint8_t integer_divider,
 												 uint32_t fractional_divider)
@@ -312,7 +312,7 @@ static void si_trx_frequency_control_set_band(uint8_t band, uint8_t sy_sel)
 /**
 * Sets the modem frequency deviation. This is how much the external
 * pin deviates the synthesiser from the centre frequency. In units of
-* the resolution of the frac-n pll synthsiser.
+* the resolution of the frac-n pll synthesiser.
 *
 * This is an unsigned 17-bit value.
 */
@@ -324,7 +324,7 @@ static void si_trx_modem_set_deviation(uint32_t deviation)
 }
 /**
 * Sets the modem frequency offset manually. In units of the
-* resolution of the frac-n pll synthsiser.
+* resolution of the frac-n pll synthesiser.
 *
 * This is a signed 16-bit value.
 */
@@ -412,7 +412,7 @@ static float si_trx_set_frequency(uint32_t frequency, uint16_t deviation)
 	/* Set the frac-n PLL divisior */
 	si_trx_frequency_control_set_divider(n, m);
 	
-	/* Set the external pin frequency deviation to the LSB tuning resoultion */
+	/* Set the external pin frequency deviation to the LSB tuning resolution */
 	si_trx_modem_set_deviation(deviation);
 	
 	/* Return the LSB tuning resolution of the frac-n pll synthesiser. */
