@@ -41,7 +41,6 @@ This directory collects external references used during PicoTracker development.
 
 ## Bristol SEDS
 
-- [Main Page](http://www.bristol-seds.co.uk/)
 - [PicoTracker GitHub](https://github.com/bristol-seds/pico-tracker)
 - [HC12 Crystal Problem Discussion](https://picaxeforum.co.uk/threads/hc-12-working-supply.29875/page-3)
 - [More on HC12 Crystal](https://hackaday.com/2018/05/05/fail-of-the-week-never-assume-all-crystals-are-born-equal/)
@@ -53,13 +52,13 @@ This directory collects external references used during PicoTracker development.
 ## uBlox
 
 - [BN-220](https://surehobby.com/desc/HR/HR5512/BN_220_GPS_Antenna_datasheet.pdf)
-- [UBX-M8030 Specification](https://www.u-blox.com/sites/default/files/products/documents/UBX-M8030-KT-FT_ProductSummary_%28UBX-14001605%29.pdf)
-- [Protocol Specification](https://www.u-blox.com/sites/default/files/products/documents/u-blox8-M8_ReceiverDescrProtSpec_%28UBX-13003221%29_Public.pdf)
+- [UBX-M8030 Specification](https://content.u-blox.com/sites/default/files/products/documents/UBX-M8030_ProductSummary_%28UBX-15029937%29.pdf)
+- [Protocol Specification](https://content.u-blox.com/sites/default/files/products/documents/u-blox8-M8_ReceiverDescrProtSpec_UBX-13003221.pdf)
 
 ## IAR Embedded Workbench for STM8
 
 - [Download](https://www.iar.com/iar-embedded-workbench/#!?architecture=STM8)
-- [User Guides](https://www.iar.com/support/user-guides/user-guides-iar-embedded-workbench-for-stmicroelectronics-stm8/)
+- [User Guides](https://wwwfiles.iar.com/stm8/guides/EWSTM8_DevelopmentGuide.pdf)
 
 ## ST-Link programmer/debugger
 
