@@ -43,6 +43,7 @@
 #include "number_format.h"
 #include "fix.h"
 #include "telemetry_crc.h"
+#include "telemetry_format.h"
 
 #define TIMER1_PRESCALE  (HSCLK_FREQUENCY/1000)
 
@@ -244,34 +245,10 @@ void prepare_tx_buffer(void) {
 	i16toa(current_fix.sec, 2, &tx_buf[TX_BUF_TIME_START + 4]);
 	tx_buf[TX_BUF_TIME_START + TIME_LENGTH] = ',';
 	
-	if (current_fix.lat > 0) {
-		tx_buf[TX_BUF_LAT_START] = '+';
-		i32toa(current_fix.lat, 9, &tx_buf[TX_BUF_LAT_START + 1]);
-	} else {
-		tx_buf[TX_BUF_LAT_START] = '-';
-		i32toa(0 - current_fix.lat, 9, &tx_buf[TX_BUF_LAT_START + 1]);
-	}
-	/* copy fraction of degrees one character towards the end, insert dot */
-	/* 012XXXXXX -> 012 XXXXXX */
-	for (i = 8; i >= 3; i--) {
-		tx_buf[TX_BUF_LAT_START + i + 1] = tx_buf[TX_BUF_LAT_START + i];	
-	}
-	tx_buf[TX_BUF_LAT_START + 3] = '.';
+	telemetry_format_latitude(current_fix.lat, &tx_buf[TX_BUF_LAT_START]);
 	tx_buf[TX_BUF_LAT_START + LAT_LENGTH + 1] = ',';
 	
-	if (current_fix.lon > 0) {
-		tx_buf[TX_BUF_LON_START] = '+';
-		i32toa(current_fix.lon, 10, &tx_buf[TX_BUF_LON_START + 1]);
-	} else {
-		tx_buf[TX_BUF_LON_START] = '-';
-		i32toa(0 - current_fix.lon, 10, &tx_buf[TX_BUF_LON_START + 1]);
-	}
-	/* copy fraction of degrees one character towards the end, insert dot */
-	/* 51XXXXXX -> 51 XXXXXX */
-	for (i = 9; i >= 4; i--) {
-		tx_buf[TX_BUF_LON_START + i + 1] = tx_buf[TX_BUF_LON_START + i];	
-	}
-	tx_buf[TX_BUF_LON_START + 4] = '.';
+	telemetry_format_longitude(current_fix.lon, &tx_buf[TX_BUF_LON_START]);
 	tx_buf[TX_BUF_LON_START + LON_LENGTH + 1] = ',';
 	
 	tlm_alt_length = i16toav(current_fix.alt, &tx_buf[TX_BUF_ALT_START]);
@@ -286,13 +263,7 @@ void prepare_tx_buffer(void) {
 	i16toa(current_fix.op_status, OP_STAT_LENGTH, &tx_buf[TX_BUF_OP_STAT_START]);
 	tx_buf[TX_BUF_OP_STAT_START + OP_STAT_LENGTH] = ',';
 	
-	if (current_fix.temp_radio < 0) {
-		tx_buf[TX_BUF_TEMP_START] = '-';
-		i16toa(0 - current_fix.temp_radio, TEMP_LENGTH, &tx_buf[TX_BUF_TEMP_START + 1]);
-	} else {
-		tx_buf[TX_BUF_TEMP_START] = '+';
-		i16toa(current_fix.temp_radio, TEMP_LENGTH, &tx_buf[TX_BUF_TEMP_START + 1]);
-	}
+	telemetry_format_temperature(current_fix.temp_radio, &tx_buf[TX_BUF_TEMP_START]);
 	
 	tx_buf[TX_BUF_TEMP_START + TEMP_LENGTH + 1] = '*';
 	
