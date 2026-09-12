@@ -1,1 +1,8 @@
-# Test Firmware for PicoTracker## HC12CWThis firmware sets the HC12 to be in continuous transmission mode to test the output frequency, frequency drift, and RF output power of the Radio## HC12MODThis firmware sets the HC12 to test the RTTY modulation Baud Rate and timer.
+# Test firmware
+
+This directory contains historical HC-12 test projects used during PicoTracker development.
+
+- `HC12CW/` uses continuous transmission to check output frequency, frequency drift, and RF output power.
+- `HC12MOD/` exercises RTTY modulation, baud rate, and timer behaviour.
+
+These projects are separate from the main tracker firmware in `firmware/`.
