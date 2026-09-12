@@ -33,6 +33,7 @@
 #include <inttypes.h>
 #include "fix.h"
 #include "ubx_protocol.h"
+#include "ubx_parser.h"
 #include <intrinsics.h>
 
 
@@ -275,73 +276,26 @@ uint8_t gps_disable_nmea_output(void) {
  * returns the length of the payload
  *
  */
-static uint16_t gps_receive_payload(uint8_t class_id, uint8_t msg_id, unsigned char *payload, uint16_t payload_capacity) {
-	uint8_t rx_byte;
-	enum {UBX_A, UBX_B, CLASSID, MSGID, LEN_A, LEN_B, PAYLOAD, CHECKSUM_A, CHECKSUM_B} state = UBX_A;
-	uint16_t payload_cnt = 0;
-	uint16_t payload_len = 0;
-	uint16_t checksum = UBX_CHECKSUM_INITIAL;
-	uint8_t received_checksum_a = 0;
-        uint32_t timeout = 0;
-	while(1) {
-		
-		while(!UART1_SR_RXNE){ // wait for rx character
-                      if(timeout++ > UBX_POLL_TIMEOUT) return 0;
-                }
-                
-		rx_byte = UART1_DR; // get byte by byte and see what they are.
-		switch (state) {
-			case UBX_A:
-				if (rx_byte == 0xB5)	state = UBX_B;
-				else 			state = UBX_A;
-				break;
-			case UBX_B:
-				if (rx_byte == 0x62)	state = CLASSID;
-				else			state = UBX_A;
-				break;
-			case CLASSID:
-				if (rx_byte == class_id) {
-					checksum = ubx_checksum_update(UBX_CHECKSUM_INITIAL, rx_byte);
-					state = MSGID;
-				} else			state = UBX_A;
-				break;
-			case MSGID:
-				if (rx_byte == msg_id) {
-					checksum = ubx_checksum_update(checksum, rx_byte);
-					state = LEN_A;
-				} else			state = UBX_A;
-				break;
-			case LEN_A:
-				payload_len = rx_byte;
-				checksum = ubx_checksum_update(checksum, rx_byte);
-				state = LEN_B;
-				break;
-			case LEN_B:
-				payload_len |= ((uint16_t)rx_byte << 8);
-				checksum = ubx_checksum_update(checksum, rx_byte);
-				if (payload_len > payload_capacity) return 0;
-				state = (payload_len == 0) ? CHECKSUM_A : PAYLOAD;
-				break;
-			case PAYLOAD:
-				payload[payload_cnt] = rx_byte;
-				checksum = ubx_checksum_update(checksum, rx_byte);
-				payload_cnt++;
-				if (payload_cnt == payload_len)
-					state = CHECKSUM_A;
-				break;
-			case CHECKSUM_A:
-				received_checksum_a = rx_byte;
-				state = CHECKSUM_B;
-				break;
-			case CHECKSUM_B:
-				if (received_checksum_a != UBX_CHECKSUM_A(checksum) ||
-				    rx_byte != UBX_CHECKSUM_B(checksum)) return 0;
-				return payload_len;
-			default:
-				state = UBX_A;
-		}
-	}
+static uint16_t gps_receive_payload(uint8_t class_id, uint8_t msg_id,
+                                    unsigned char *payload, uint16_t payload_capacity) {
+    struct ubx_parser parser;
+    uint32_t timeout = 0;
+
+    ubx_parser_init(&parser, class_id, msg_id, payload, payload_capacity);
+
+    while (1) {
+        uint8_t result;
+
+        while (!UART1_SR_RXNE) {
+            if (timeout++ > UBX_POLL_TIMEOUT) return 0;
+        }
+
+        result = ubx_parser_push(&parser, UART1_DR);
+        if (result == UBX_PARSER_COMPLETE) return parser.payload_length;
+        if (result == UBX_PARSER_ERROR) return 0;
+    }
 }
+
 
 
 /* 
