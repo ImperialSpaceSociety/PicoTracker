@@ -162,7 +162,7 @@ static uint8_t si_trx_boot(void)
 	_si_trx_sdn_disable();
 	for (int i = 0; i < 15*1000; i++);
 
-	return si_trx_power_up(SI_POWER_UP_TCXO, XO_FREQUENCY);
+	return si_trx_power_up(XO_SOURCE, XO_FREQUENCY);
 }
 
 /**
@@ -260,7 +260,7 @@ static void si_trx_get_adc_reading(uint8_t enable, uint8_t configuration,
 	
 	/* Power Up */
 
-	 si_trx_power_up(SI_POWER_UP_TCXO, XO_FREQUENCY);
+	 si_trx_power_up(XO_SOURCE, XO_FREQUENCY);
 
 	_si_trx_transfer(3, 6, buffer);
 
