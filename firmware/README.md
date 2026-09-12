@@ -7,6 +7,7 @@ This directory contains the STM8 firmware for the PicoTracker HC12-based tracker
 - `main.c` / `main.h` - application startup, GPS acquisition, measurements, and tracker control flow.
 - `gps.c` / `gps.h` - u-blox GPS configuration, polling, and fix handling.
 - `telemetry.c` / `telemetry.h` - telemetry generation and transmission control.
+  See [`../docs/telemetry-format.md`](../docs/telemetry-format.md) for the transmitted field order.
 - `energy.c` / `energy.h` - power and sleep-related functions.
 - `si_trx.c` / `si_trx.h` - Si4463 radio interface.
 - `spi_bitbang.c` / `spi_bitbang.h` - software SPI interface used by the radio code.
