@@ -13,7 +13,7 @@ A simple, low-cost pico-balloon tracker originally developed by the Imperial Col
 - [`docs/`](docs/) - technical reference links
 - [`docs/development.md`](docs/development.md) - firmware development, programming, and debugging notes
 - [`docs/gps.md`](docs/gps.md) - GPS notes
-- [`HC12.md`](HC12.md) - HC12 radio notes
+- [`docs/hc12.md`](docs/hc12.md) - HC12 radio notes
 - [`New Tracker.md`](New%20Tracker.md) - later tracker design notes
 - [`Utility scripts/`](Utility%20scripts/) - supporting scripts
 
