@@ -168,13 +168,24 @@ void InitialiseUART(void)
  *
  * transmits a command to the GPS
  */
-void UART_send_buffer(const char *cmd, uint8_t length) {
+static uint8_t uart_wait_tx_ready(void)
+{
+    uint32_t timeout = 0;
+
+    while (!UART1_SR_TXE) {
+        if (timeout++ > UART_TX_TIMEOUT) return 0;
+    }
+    return 1;
+}
+
+uint8_t UART_send_buffer(const char *cmd, uint8_t length) {
 	uint8_t i;
 
 	for (i = 0; i < length; i++) {
-            while (!UART1_SR_TXE);   //  Wait for transmission to complete.
-		UART1_DR = cmd[i];
+        if (!uart_wait_tx_ready()) return 0;
+		UART1_DR = (uint8_t)cmd[i];
 	}
+    return 1;
 }
 
 /* 
@@ -227,7 +238,7 @@ uint8_t gps_disable_nmea_output(void) {
 		0xaa, 0x79							/* checksum */
 	};
 
-	UART_send_buffer(nonmea, sizeof(nonmea));
+	if (!UART_send_buffer(nonmea, sizeof(nonmea))) return 0;
 	return gps_receive_ack(0x06, 0x00);
 }
 
@@ -280,15 +291,15 @@ uint8_t gps_get_fix(struct gps_fix *fix) {
 	int32_t alt_tmp;
 	uint16_t response_length;
 		
-	/* wake up from sleep */
-	while(!UART1_SR_TXE); 
+	/* Wake up from sleep with bounded UART waits. */
+	if (!uart_wait_tx_ready()) return 0;
 	UART1_DR = 0xFF;
-	while(!UART1_SR_TXE); 
+	if (!uart_wait_tx_ready()) return 0;
 	gps_startup_delay();
         
 
 	/* request position */
-	UART_send_buffer(pvt, sizeof(pvt));
+	if (!UART_send_buffer(pvt, sizeof(pvt))) return 0;
 	response_length = gps_receive_payload(0x01, 0x07, response, (uint16_t)sizeof(response));
 	if (response_length != (uint16_t)sizeof(response)) return 0;
     
@@ -329,10 +340,10 @@ uint8_t gps_get_fix(struct gps_fix *fix) {
  */
 uint8_t gps_wake_up(void) {
 
-	/* wake up from sleep */
-	while(!UART1_SR_TXE); 
+	/* Wake up from sleep with bounded UART waits. */
+	if (!uart_wait_tx_ready()) return 0;
 	UART1_DR = 0xFF;
-	while(!UART1_SR_TXE); 
+	if (!uart_wait_tx_ready()) return 0;
 	gps_startup_delay();
 	
 	return 1;
@@ -365,7 +376,7 @@ uint8_t gps_set_gps_only(void) {
 	};
         
        
-	UART_send_buffer(gpsonly, sizeof(gpsonly));
+	if (!UART_send_buffer(gpsonly, sizeof(gpsonly))) return 0;
 	return gps_receive_ack(0x06, 0x3E);
 }
 
@@ -404,7 +415,7 @@ uint8_t gps_set_airborne_model(void) {
 		0x1a, 0x28								/* checksum */
 	};
 
-	UART_send_buffer(model6, sizeof(model6));
+	if (!UART_send_buffer(model6, sizeof(model6))) return 0;
 	return gps_receive_ack(0x06, 0x24);
 }
 
@@ -458,7 +469,7 @@ uint8_t gps_set_power_save(void) {
 	0xC2,0xB0
 	};
 
-	UART_send_buffer(powersave, sizeof(powersave));
+	if (!UART_send_buffer(powersave, sizeof(powersave))) return 0;
 	return gps_receive_ack(0x06, 0x3B);
 }
 
@@ -479,7 +490,7 @@ uint8_t gps_power_save(int on) {
 		recvmgmt[9] = 0x91;
 	}
 
-	UART_send_buffer(recvmgmt, sizeof(recvmgmt));
+	if (!UART_send_buffer(recvmgmt, sizeof(recvmgmt))) return 0;
 	return gps_receive_ack(0x06, 0x11);
 }
 
@@ -498,7 +509,7 @@ uint8_t gps_save_settings(void) {
 		0x58, 0x59
 	};
 
-	UART_send_buffer(cfg, sizeof(cfg));
+	if (!UART_send_buffer(cfg, sizeof(cfg))) return 0;
 	return gps_receive_ack(0x06, 0x09);
 }
 

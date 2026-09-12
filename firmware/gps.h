@@ -39,9 +39,10 @@
 #define UBX_CFG_TIMEOUT         60000     // timeout 
 #define UBX_POLL_RETRIES        3       
 #define UBX_POLL_TIMEOUT        1000000l     // timeout
+#define UART_TX_TIMEOUT         60000UL      // bounded wait for UART TX readiness
 
 void InitialiseUART(void);
-void UART_send_buffer(const char *cmd, uint8_t length);
+uint8_t UART_send_buffer(const char *cmd, uint8_t length);
 
 uint8_t gps_set_gps_only(void);
 uint8_t gps_disable_nmea_output(void);
