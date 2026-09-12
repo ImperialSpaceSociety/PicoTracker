@@ -22,4 +22,10 @@ We found the following UBX-G8030-based boards with LNA and SAW filters to be low
 
 At the time of the original project, the modules above were available for around £6 each. They worked for our prototypes and appeared to use genuine uBlox chips.
 
+## Firmware fix acceptance
+
+The firmware polls `UBX-NAV-PVT` and accepts a response only after its UBX checksum is valid and its payload length matches the 92-byte NAV-PVT payload.
+
+A navigation solution is accepted for tracking only when `fixType` is `3` (3D fix) and the `gnssFixOK` flag is set. 2D, dead-reckoning-only, combined GNSS/dead-reckoning, time-only, and unvalidated fixes are not accepted as position solutions.
+
 ## GPS Power Consumption
