@@ -1,4 +1,4 @@
-# Pico Balloon Tracker
+# PicoTracker
 
 A simple, low-cost pico-balloon tracker originally developed by the Imperial College Space Society.
 
