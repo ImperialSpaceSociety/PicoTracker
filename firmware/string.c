@@ -121,10 +121,9 @@ void atoi8(volatile char *string, uint8_t len, uint8_t *integer) {
  */
 void i32toa(uint32_t in, uint8_t len, volatile char *out) {
 	uint8_t i;
-	uint32_t mult = 1;
 	for (i = len; i > 0; i--) {
-		*(out + i - 1) = ((in % (mult*10)) / mult) + '0';
-		mult *= 10;
+		*(out + i - 1) = (in % 10) + '0';
+		in /= 10;
 	}
 }
 
