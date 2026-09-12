@@ -189,12 +189,23 @@ static uint8_t gps_receive_ack(uint8_t class_id, uint8_t msg_id) {
 	uint8_t match_count = 0;
 	uint8_t msg_ack = 0;
 	uint8_t rx_byte;
-	uint8_t ack[] = {0xB5, 0x62, 0x05, 0x01, 0x02, 0x00, 0x00, 0x00};
-	uint8_t nak[] = {0xB5, 0x62, 0x05, 0x00, 0x02, 0x00, 0x00, 0x00};
+	uint8_t i;
+	uint16_t ack_checksum = UBX_CHECKSUM_INITIAL;
+	uint16_t nak_checksum = UBX_CHECKSUM_INITIAL;
+	uint8_t ack[] = {0xB5, 0x62, 0x05, 0x01, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00};
+	uint8_t nak[] = {0xB5, 0x62, 0x05, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00};
 	ack[6] = class_id;
 	nak[6] = class_id;
 	ack[7] = msg_id;
 	nak[7] = msg_id;
+	for (i = 2; i <= 7; i++) {
+		ack_checksum = ubx_checksum_update(ack_checksum, ack[i]);
+		nak_checksum = ubx_checksum_update(nak_checksum, nak[i]);
+	}
+	ack[8] = UBX_CHECKSUM_A(ack_checksum);
+	ack[9] = UBX_CHECKSUM_B(ack_checksum);
+	nak[8] = UBX_CHECKSUM_A(nak_checksum);
+	nak[9] = UBX_CHECKSUM_B(nak_checksum);
     uint16_t timeout;
 	
 
@@ -217,7 +228,7 @@ static uint8_t gps_receive_ack(uint8_t class_id, uint8_t msg_id) {
 						msg_ack = 0;
 					}
 			  }
-			  if (match_count == 7) { 
+			  if (match_count == 9) {
 					return msg_ack;
 			  }
 		match_count++;
