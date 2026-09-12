@@ -21,9 +21,13 @@ All notable changes to PicoTracker are documented here.
 ### Fixed
 
 - High-altitude and longitude numeric formatting overflow.
-- Potential UBX payload-buffer overflow and acceptance of corrupted packets.
-- Unbounded GPS and Si4463 wait loops in normal operation.
-- Signed radio-temperature conversion and TCXO power-down handling.
+- Potential UBX payload-buffer overflow, malformed ACK acceptance, and acceptance of corrupted packets.
+- Maximum-length telemetry frame buffer sizing and signed 8-bit transmission-length limits.
+- Unbounded GPS, UART, clock-switch, and Si4463 peripheral waits in normal operation.
+- Optimizer-removable GPS and radio timing delays.
+- Radio ADC and RTTY channel-switch failures that could otherwise be reported or transmitted silently.
+- Degraded GPS acquisition overwriting the last accepted navigation solution.
+- Signed radio-temperature conversion, field saturation, and TCXO power-down handling.
 
 ## 1.3 - 2019-03-07
 

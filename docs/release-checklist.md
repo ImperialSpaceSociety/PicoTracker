@@ -14,6 +14,8 @@ Use this checklist before creating a PicoTracker release tag. The development ve
 
 ## Target build gates
 
+Only the maintained `firmware/HC12Tracker.ewp` project is a release target. The projects under `test_firmware/` are historical diagnostics and are not release-qualified.
+
 - [ ] Open `firmware/HC12Tracker.ewp` with the supported IAR Embedded Workbench for STM8 toolchain.
 - [ ] Perform a clean Debug build with zero errors.
 - [ ] Perform a clean Release build with zero errors.

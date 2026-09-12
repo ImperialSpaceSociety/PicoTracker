@@ -15,7 +15,7 @@ This repository is maintained and administered by [Sylvester Kaczmarek](https://
 ## Repository layout
 
 - [`firmware/`](firmware/) - STM8 tracker firmware
-- [`test_firmware/`](test_firmware/) - historical firmware test projects
+- [`test_firmware/`](test_firmware/) - historical diagnostic projects; not release-qualified
 - [`hardware/`](hardware/) - hardware design files
 - [`cad/`](cad/) - mechanical/CAD files
 - [`docs/`](docs/) - project guides and technical references
@@ -36,7 +36,7 @@ This repository is maintained and administered by [Sylvester Kaczmarek](https://
 
 ## Verification
 
-GitHub Actions runs the host regression suite on pushes to `master` and on pull requests. Coverage includes telemetry formatting and CRCs, status packing, UBX checksum and byte-stream parsing, GPS fix validity, radio temperature conversion, sleep policy, repository metadata, IAR project-file references, and the Python telemetry decoder. The remaining release gates are a clean STM8/IAR target build and completion of the hardware validation matrix; these are intentionally still marked pending.
+GitHub Actions runs the host regression suite on pushes to `master` and on pull requests. Coverage includes telemetry formatting, maximum frame sizing and CRCs, status packing, UBX payload and ACK/NAK parsing, GPS fix validity, radio temperature conversion, sleep policy, repository metadata, IAR project-file references, and the Python telemetry decoder. The remaining release gates are a clean STM8/IAR target build and completion of the hardware validation matrix; these are intentionally still marked pending.
 
 ## Objectives
 

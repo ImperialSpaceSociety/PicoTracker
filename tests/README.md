@@ -4,13 +4,15 @@ These tests exercise hardware-independent firmware and tooling logic on the deve
 
 - fixed-width numeric formatting
 - telemetry latitude, longitude, and temperature formatting
+- maximum telemetry-frame capacity and dynamic field layout
 - telemetry CRC reference and captured-frame vectors
 - GPS operational-status packing
 - u-blox checksum and NAV-PVT fix-validity rules
-- synthetic UBX byte-stream packets, checksum rejection, and payload bounds
+- synthetic UBX byte-stream packets, checksum rejection, payload bounds, and strict ACK/NAK parsing
 - radio temperature conversion
 - altitude-dependent sleep policy
 - Python telemetry decoder CRC handling and sample-capture decoding
+- release metadata and IAR project-reference integrity
 
 Run the complete host suite with:
 

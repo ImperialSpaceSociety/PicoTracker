@@ -15,7 +15,7 @@ This directory contains the STM8 firmware for the PicoTracker HC12-based tracker
 - `HC12Board.h` - HC12 board and STM8 hardware definitions.
 - `HC12Tracker.ewp` - IAR Embedded Workbench project file.
 
-Additional headers and helpers provide fix structures, string handling, and telemetry support.
+Additional headers and helpers provide numeric formatting, UBX parsing, status packing, telemetry CRC/field formatting, radio measurement conversion, and sleep-policy logic.
 
 ## Development
 
