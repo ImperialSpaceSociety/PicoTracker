@@ -33,6 +33,7 @@
 #include "spi_bitbang.h"
 #include "si_trx_defs.h"
 #include "main.h"
+#include "radio_measurements.h"
 
 
 #define RF_DEVIATION	500
@@ -294,10 +295,7 @@ int16_t si_trx_get_temperature (void)
 						   &raw_gpio, &raw_battery, &raw_temperature);
         
        
-        uint32_t result = ((899 * (uint32_t) raw_temperature) / 4096) - 293;
-        
-	
-	return result;
+        return si_trx_temperature_from_raw(raw_temperature);
 }
 
 
