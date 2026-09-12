@@ -146,6 +146,21 @@ uint8_t get_fix(void) {
     return 0;
 }
 
+static uint8_t gps_power_mode_with_retries(uint8_t on)
+{
+    uint8_t retry;
+
+    for (retry = 0; retry < UBX_CFG_RETRIES; retry++) {
+        if (gps_power_save(on)) {
+            return 1;
+        }
+        ubx_cfg_fail = OP_STATUS_TRANSIENT_ERROR;
+    }
+
+    ubx_cfg_fail = OP_STATUS_RETRY_EXHAUSTED;
+    return 0;
+}
+
 void get_measurements(void){
     current_fix.temp_radio = si_trx_get_temperature();
     current_fix.op_status = ((uint16_t)gps_fix_attempts << OP_STATUS_FIX_SHIFT) |
