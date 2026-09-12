@@ -2,7 +2,7 @@
 
 This matrix is the final release gate for PicoTracker firmware. Host tests and CI do not replace these target checks.
 
-**Current status:** target validation pending. No IAR STM8 compiler, ST-LINK, or PicoTracker target hardware was available in the connected maintenance environment when this matrix was created.
+**Current status:** target hardware validation pending. The production sources pass the repository host suite and the SDCC STM8 structural compile/link check (8,041-byte flash span and 130 bytes of static DATA with SDCC 4.6.0), but no native IAR STM8 compiler, ST-LINK, or PicoTracker target hardware is available in the connected maintenance environment.
 
 ## Build configurations
 

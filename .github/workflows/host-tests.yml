@@ -23,5 +23,13 @@ jobs:
       - name: Run host regression suite
         run: make -C tests clean test
 
+      - name: Install SDCC
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y sdcc
+
+      - name: Run STM8 structural target check
+        run: make -C tests stm8
+
       - name: Smoke-test telemetry decoder
         run: python3 tools/decode_data.py tools/with_pips_data.txt

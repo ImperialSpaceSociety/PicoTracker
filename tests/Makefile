@@ -3,9 +3,9 @@ PYTHON ?= python3
 CFLAGS ?= -std=c99 -Wall -Wextra -Werror
 BUILD_DIR := build
 
-.PHONY: test clean
+.PHONY: test stm8 clean
 
-test: $(BUILD_DIR)/test_number_format $(BUILD_DIR)/test_ubx_protocol $(BUILD_DIR)/test_radio_measurements $(BUILD_DIR)/test_sleep_policy $(BUILD_DIR)/test_status_word $(BUILD_DIR)/test_telemetry_crc $(BUILD_DIR)/test_telemetry_format $(BUILD_DIR)/test_ubx_parser $(BUILD_DIR)/test_telemetry_layout $(BUILD_DIR)/test_ubx_ack_parser
+test: $(BUILD_DIR)/test_number_format $(BUILD_DIR)/test_ubx_protocol $(BUILD_DIR)/test_radio_measurements $(BUILD_DIR)/test_sleep_policy $(BUILD_DIR)/test_status_word $(BUILD_DIR)/test_telemetry_crc $(BUILD_DIR)/test_telemetry_format $(BUILD_DIR)/test_ubx_parser $(BUILD_DIR)/test_telemetry_layout $(BUILD_DIR)/test_ubx_ack_parser $(BUILD_DIR)/test_radio_synth $(BUILD_DIR)/test_gps_math
 	$(BUILD_DIR)/test_number_format
 	$(BUILD_DIR)/test_ubx_protocol
 	$(BUILD_DIR)/test_radio_measurements
@@ -16,6 +16,8 @@ test: $(BUILD_DIR)/test_number_format $(BUILD_DIR)/test_ubx_protocol $(BUILD_DIR
 	$(BUILD_DIR)/test_ubx_parser
 	$(BUILD_DIR)/test_telemetry_layout
 	$(BUILD_DIR)/test_ubx_ack_parser
+	$(BUILD_DIR)/test_radio_synth
+	$(BUILD_DIR)/test_gps_math
 	$(PYTHON) test_decode_data.py
 	$(PYTHON) test_repository_metadata.py
 
@@ -58,6 +60,17 @@ $(BUILD_DIR)/test_telemetry_layout: test_telemetry_layout.c ../firmware/main.h
 $(BUILD_DIR)/test_ubx_ack_parser: test_ubx_ack_parser.c ../firmware/ubx_ack_parser.h ../firmware/ubx_protocol.h
 	mkdir -p $(BUILD_DIR)
 	$(CC) $(CFLAGS) test_ubx_ack_parser.c -o $@
+
+$(BUILD_DIR)/test_radio_synth: test_radio_synth.c ../firmware/radio_synth.h
+	mkdir -p $(BUILD_DIR)
+	$(CC) $(CFLAGS) test_radio_synth.c -o $@
+
+$(BUILD_DIR)/test_gps_math: test_gps_math.c ../firmware/gps_math.h
+	mkdir -p $(BUILD_DIR)
+	$(CC) $(CFLAGS) test_gps_math.c -o $@
+
+stm8:
+	$(PYTHON) stm8_target_check.py
 
 clean:
 	rm -rf $(BUILD_DIR)

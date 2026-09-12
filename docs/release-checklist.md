@@ -9,6 +9,7 @@ Use this checklist before creating a PicoTracker release tag. The development ve
 - [ ] `CHANGELOG.md` contains release notes for that exact version.
 - [ ] GitHub Actions host tests pass on the release commit.
 - [ ] `make -C tests clean test` passes locally.
+- [ ] `make -C tests stm8` passes with an STM8-capable SDCC installation.
 - [ ] All IAR project source references resolve to tracked files.
 - [ ] No release-blocking TODO, known infinite wait, or unresolved protocol error remains.
 

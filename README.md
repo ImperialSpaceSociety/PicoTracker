@@ -36,7 +36,7 @@ This repository is maintained and administered by [Sylvester Kaczmarek](https://
 
 ## Verification
 
-GitHub Actions runs the host regression suite on pushes to `master` and on pull requests. Coverage includes telemetry formatting, maximum frame sizing and CRCs, status packing, UBX payload and ACK/NAK parsing, GPS fix validity, radio temperature conversion, sleep policy, repository metadata, IAR project-file references, and the Python telemetry decoder. The remaining release gates are a clean STM8/IAR target build and completion of the hardware validation matrix; these are intentionally still marked pending.
+GitHub Actions runs the host regression suite on pushes to `master` and on pull requests. Coverage includes telemetry formatting, maximum frame sizing and CRCs, status packing, UBX payload and ACK/NAK parsing, GPS fix validity, radio temperature conversion, sleep policy, repository metadata, IAR project-file references, and the Python telemetry decoder. A separate SDCC structural target check also compiles and links the production sources with an STM8 backend and verifies that the resulting structural image remains within the STM8S003F3 flash/RAM window. That check uses compatibility shims and is not flashable. The remaining release gates are the native IAR STM8 build and completion of the hardware validation matrix.
 
 ## Objectives
 

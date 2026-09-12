@@ -10,6 +10,7 @@ All notable changes to PicoTracker are documented here.
 - Bounded GPS acquisition and radio command failure handling.
 - Explicit UBX checksum, payload-length, and navigation-fix validation.
 - Reorganized project documentation, test infrastructure, and release-preparation material.
+- Added a repeatable SDCC STM8 structural compile/link and flash/RAM size check.
 
 ### Changed
 
@@ -17,6 +18,7 @@ All notable changes to PicoTracker are documented here.
 - Oscillator source and frequency configuration are centralized.
 - Altitude-dependent sleep behavior is explicit and host-tested.
 - Telemetry decoder runs without third-party dependencies for normal decoding.
+- Replaced floating-point radio synthesizer arithmetic with exact integer fixed-point calculations and removed unused firmware helpers to reduce flash use.
 
 ### Fixed
 
