@@ -18,6 +18,19 @@ static void expect_u16(uint16_t value, uint8_t width, const char *expected)
     }
 }
 
+
+static void expect_u32(uint32_t value, uint8_t width, const char *expected)
+{
+    char output[12] = {0};
+    i32toa(value, width, output);
+    output[width] = '\0';
+    if (strcmp(output, expected) != 0) {
+        fprintf(stderr, "i32toa(%lu, %u): got %s, expected %s\n",
+                (unsigned long)value, (unsigned)width, output, expected);
+        failures++;
+    }
+}
+
 int main(void)
 {
     expect_u16(0, 2, "00");
@@ -28,6 +41,10 @@ int main(void)
     expect_u16(40000, 5, "40000");
     expect_u16(50000, 5, "50000");
     expect_u16(65535, 5, "65535");
+
+    expect_u32(0, 9, "000000000");
+    expect_u32(515362480, 9, "515362480");
+    expect_u32(999999999, 10, "0999999999");
 
     if (failures != 0) {
         return 1;
