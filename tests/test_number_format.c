@@ -23,6 +23,11 @@ int main(void)
     expect_u16(0, 2, "00");
     expect_u16(42, 2, "42");
     expect_u16(3175, 4, "3175");
+    expect_u16(32767, 5, "32767");
+    expect_u16(34464, 5, "34464");
+    expect_u16(40000, 5, "40000");
+    expect_u16(50000, 5, "50000");
+    expect_u16(65535, 5, "65535");
 
     if (failures != 0) {
         return 1;
