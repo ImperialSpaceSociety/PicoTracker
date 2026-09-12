@@ -79,10 +79,20 @@ extern uint16_t tlm_sent_id_length;
 extern uint16_t tlm_alt_length;    
 
 
-/* Retry counters and Operational Status*/
+/* Retry counters and operational status.
+ * Bits 7..4: GPS fix poll attempts, saturated at 15.
+ * Bits 3..2: GPS configuration status.
+ * Bits 1..0: GPS poll status.
+ */
+#define GPS_FIX_ATTEMPTS_MAX       0x0F
+#define OP_STATUS_ERROR_MASK       0x03
+#define OP_STATUS_CFG_SHIFT        2
+#define OP_STATUS_FIX_SHIFT        4
+
 uint8_t  ubx_cfg_fail = 0;
 uint8_t  ubx_retry_count;
 uint8_t  ubx_poll_fail = 0;
+static uint8_t gps_fix_attempts = 0;
 
 
 
@@ -93,6 +103,7 @@ struct gps_fix current_fix;
 
 void get_fix(void) {
     ubx_poll_fail = 0;
+    gps_fix_attempts = 0;
     
     /* 
     * The tracker outputs Pips while waiting for a good GPS fix.
@@ -105,7 +116,8 @@ void get_fix(void) {
         
         /* check if we have a fix*/
         for(ubx_retry_count=0; ubx_retry_count < UBX_POLL_RETRIES ; ubx_retry_count++){ 
-            if( gps_get_fix(&current_fix)) break;
+            if (gps_fix_attempts < GPS_FIX_ATTEMPTS_MAX) gps_fix_attempts++;
+            if (gps_get_fix(&current_fix)) break;
             ubx_poll_fail = 1;
             if(ubx_retry_count == (UBX_POLL_RETRIES -1)) ubx_poll_fail = 2;
     	} 
@@ -126,8 +138,9 @@ void get_fix(void) {
 
 void get_measurements(void){
     current_fix.temp_radio = si_trx_get_temperature();
-    current_fix.op_status = ((ubx_cfg_fail & 0x03) << 2) | ((ubx_poll_fail & 0x03)); //send operational status
-    // DO we need 4 bytes for op status? it seems to use only one byte at most
+    current_fix.op_status = ((uint16_t)gps_fix_attempts << OP_STATUS_FIX_SHIFT) |
+                            ((uint16_t)(ubx_cfg_fail & OP_STATUS_ERROR_MASK) << OP_STATUS_CFG_SHIFT) |
+                            (ubx_poll_fail & OP_STATUS_ERROR_MASK);
     current_fix.voltage_radio =  si_trx_get_voltage();
 }
 
