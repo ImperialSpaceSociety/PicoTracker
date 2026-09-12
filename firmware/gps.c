@@ -32,6 +32,7 @@
 #include "gps.h"
 #include <inttypes.h>
 #include "fix.h"
+#include "ubx_protocol.h"
 #include <intrinsics.h>
 
 
@@ -268,6 +269,7 @@ static uint16_t gps_receive_payload(uint8_t class_id, uint8_t msg_id, unsigned c
 	enum {UBX_A, UBX_B, CLASSID, MSGID, LEN_A, LEN_B, PAYLOAD} state = UBX_A;
 	uint16_t payload_cnt = 0;
 	uint16_t payload_len = 0;
+	uint16_t checksum = UBX_CHECKSUM_INITIAL;
         uint32_t timeout = 0;
 	while(1) {
 		
@@ -286,24 +288,31 @@ static uint16_t gps_receive_payload(uint8_t class_id, uint8_t msg_id, unsigned c
 				else			state = UBX_A;
 				break;
 			case CLASSID:
-				if (rx_byte == class_id)state = MSGID;
-				else			state = UBX_A;
+				if (rx_byte == class_id) {
+					checksum = ubx_checksum_update(UBX_CHECKSUM_INITIAL, rx_byte);
+					state = MSGID;
+				} else			state = UBX_A;
 				break;
 			case MSGID:
-				if (rx_byte == msg_id)	state = LEN_A;
-				else			state = UBX_A;
+				if (rx_byte == msg_id) {
+					checksum = ubx_checksum_update(checksum, rx_byte);
+					state = LEN_A;
+				} else			state = UBX_A;
 				break;
 			case LEN_A:
 				payload_len = rx_byte;
+				checksum = ubx_checksum_update(checksum, rx_byte);
 				state = LEN_B;
 				break;
 			case LEN_B:
 				payload_len |= ((uint16_t)rx_byte << 8);
+				checksum = ubx_checksum_update(checksum, rx_byte);
 				if (payload_len > payload_capacity) return 0;
 				state = PAYLOAD;
 				break;
 			case PAYLOAD:
 				payload[payload_cnt] = rx_byte;
+				checksum = ubx_checksum_update(checksum, rx_byte);
 				payload_cnt++;
 				if (payload_cnt == payload_len)
 					return payload_len;
