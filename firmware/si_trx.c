@@ -443,10 +443,7 @@ void si_trx_reset(uint8_t modulation_type, uint16_t deviation)
 	for (int i = 0; i < 15*1000; i++); /* Approx. 15ms */
 	
 	
-	uint16_t part_number = si_trx_get_part_info();
-	
-	/* Power Up */
-
+	/* Power Up before issuing any normal radio commands. */
 	si_trx_power_up(SI_POWER_UP_TCXO, VCXO_FREQUENCY);
 	
 	/* Clear pending interrupts */
