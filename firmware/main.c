@@ -296,6 +296,7 @@ int main( void )
 	}
 
 	DeInitAWU();
+	Switch_to_HSI_clock();
 
     } /* while(1)*/
 
