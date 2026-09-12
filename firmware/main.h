@@ -26,12 +26,12 @@
 /* setting up baud rates */
 
 /* 50 baud RTTY */
-#define RTTY_BIT_MS		19         // Miliseconds - 1 of bit period
+#define RTTY_BIT_MS		19         // Milliseconds - 1 of bit period
 /* 200 baud RTTY */
-//#define RTTY_BIT_MS		4         // Miliseconds - 1 of bit period
+//#define RTTY_BIT_MS		4         // Milliseconds - 1 of bit period
 ////////////////////////////////////////////////////////////////////////////////
 
-/* telemetry string prefix for RX syncronisation */
+/* telemetry string prefix for RX synchronisation */
 #define SYNC_PREFIX		"  $$"
 /* telemetry string postfix for tlm parser */
 #define TX_BUF_POSTFIX		"\n\n"
