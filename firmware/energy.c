@@ -144,4 +144,5 @@ __interrupt void AWU_IRQHandler(void)
     volatile unsigned char reg;
 
     reg = AWU_CSR1;     // Reading AWU_CSR1 register clears the interrupt flag.
+    (void)reg;
 }

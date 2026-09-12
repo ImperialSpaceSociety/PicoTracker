@@ -20,7 +20,7 @@ static uint16_t ubx_checksum_update(uint16_t checksum, uint8_t byte)
     ck_a = (uint8_t)(ck_a + byte);
     ck_b = (uint8_t)(ck_b + ck_a);
 
-    return ((uint16_t)ck_b << 8) | ck_a;
+    return (uint16_t)(((uint16_t)ck_b << 8) | (uint16_t)ck_a);
 }
 
 static uint8_t ubx_nav_pvt_fix_is_usable(uint8_t fix_type, uint8_t flags)

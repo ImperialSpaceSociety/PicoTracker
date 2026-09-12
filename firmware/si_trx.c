@@ -175,10 +175,10 @@ static uint8_t si_trx_power_up(uint8_t clock_source, uint32_t xo_freq)
 	buffer[0] = SI_CMD_POWER_UP;
 	buffer[1] = SI_POWER_UP_FUNCTION;
 	buffer[2] = clock_source;
-	buffer[3] = (xo_freq >> 24);
-	buffer[4] = (xo_freq >> 16);
-	buffer[5] = (xo_freq >> 8);
-	buffer[6] = (xo_freq);
+	buffer[3] = (uint8_t)(xo_freq >> 24);
+	buffer[4] = (uint8_t)(xo_freq >> 16);
+	buffer[5] = (uint8_t)(xo_freq >> 8);
+	buffer[6] = (uint8_t)xo_freq;
 	
 	return _si_trx_transfer(7, 0, buffer);
 }
@@ -209,7 +209,7 @@ static uint16_t si_trx_get_part_info(void)
 		return 0;
 	}
 	
-	return (buffer[1] << 8) | buffer[2];
+	return (uint16_t)(((uint16_t)buffer[1] << 8) | (uint16_t)buffer[2]);
 }
 /**
 * Clears pending interrupts. Set the corresponding bit low to clear
@@ -373,7 +373,7 @@ static uint8_t si_trx_modem_set_offset(int16_t offset)
 {
 	return _si_trx_set_property_16(SI_PROPERTY_GROUP_MODEM,
 							SI_MODEM_FREQ_OFFSET,
-							offset);
+							(uint16_t)offset);
 }
 
 /**
@@ -428,9 +428,9 @@ static uint8_t si_trx_set_frequency(uint32_t frequency, uint16_t deviation)
 		outdiv = 24; band = SI_MODEM_CLKGEN_FVCO_DIV_24;
 	}
 	
-	float f_pfd = nprescaler * XO_FREQUENCY / outdiv;
+	float f_pfd = ((float)nprescaler * (float)XO_FREQUENCY) / (float)outdiv;
 	
-	uint16_t n = ((uint16_t)(frequency / f_pfd)) - 1;
+	uint16_t n = ((uint16_t)((float)frequency / f_pfd)) - 1U;
 	
 	float ratio = (float)frequency / f_pfd;
 	float rest  = ratio - (float)n;
@@ -451,7 +451,7 @@ static uint8_t si_trx_set_frequency(uint32_t frequency, uint16_t deviation)
 	
 	
 	/* Set the frac-n PLL divider */
-	if (si_trx_frequency_control_set_divider(n, m) != SI_TRX_OK) return SI_TRX_ERROR;
+	if (si_trx_frequency_control_set_divider((uint8_t)n, m) != SI_TRX_OK) return SI_TRX_ERROR;
 	
 	/* Set the external pin frequency deviation to the LSB tuning resolution */
 	if (si_trx_modem_set_deviation(deviation) != SI_TRX_OK) return SI_TRX_ERROR;

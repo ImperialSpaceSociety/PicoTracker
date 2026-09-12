@@ -114,8 +114,8 @@ void InitialiseUART(void)
     //  Clear the Idle Line Detected bit in the status rerister by a read
     //  to the UART1_SR register followed by a Read to the UART1_DR register.
     //
-    unsigned char tmp = UART1_SR;
-    unsigned char tmp1 = UART1_DR;
+    (void)UART1_SR;
+    (void)UART1_DR;
     //
     //  Reset the UART registers to the reset values.
     //
@@ -307,7 +307,7 @@ uint8_t gps_get_fix(struct gps_fix *fix) {
 	fix->num_svs = response[23];
 	fix->type = response[UBX_NAV_PVT_FIX_TYPE_OFFSET];
 	fix->flags = response[UBX_NAV_PVT_FLAGS_OFFSET];
-	fix->year = response[4] + (response[5] << 8);
+	fix->year = (uint16_t)((uint16_t)response[4] | ((uint16_t)response[5] << 8));
 	fix->month = response[6];
 	fix->day = response[7];
 	fix->hour = response[8];
@@ -529,7 +529,7 @@ void gps_startup_delay(void) {
 /*
  * UART power save mode turn on or off
  */
-void uart_power_save(int on) {
+void uart_power_save(uint8_t on) {
   /* UARTD: UART Disable (for low power consumption).
    * When this bit is set the UART prescaler and outputs are stopped at the end of the current byte
    * transfer in order to reduce power consumption. This bit is set and cleared by software.

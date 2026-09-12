@@ -241,7 +241,7 @@ static uint16_t calculate_txbuf_checksum(void)
 */
 void prepare_tx_buffer(void) {
 	static uint16_t sent_id = 0;
-	int i;
+	uint16_t i;
 	uint16_t crc;
 	
 	sent_id++;

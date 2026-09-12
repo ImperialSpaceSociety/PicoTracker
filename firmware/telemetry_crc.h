@@ -4,7 +4,7 @@
 #include <stdint.h>
 
 #define TELEMETRY_CRC_INITIAL 0xFFFFU
-#define TELEMETRY_CRC_POLYNOMIAL 0x1021U
+#define TELEMETRY_CRC_POLYNOMIAL ((uint16_t)0x1021U)
 
 static uint16_t telemetry_crc_update(uint16_t crc, uint8_t data)
 {
@@ -13,7 +13,7 @@ static uint16_t telemetry_crc_update(uint16_t crc, uint8_t data)
     crc ^= (uint16_t)data << 8;
     for (i = 0; i < 8; i++) {
         crc = (crc & 0x8000U) ?
-              (uint16_t)((crc << 1) ^ TELEMETRY_CRC_POLYNOMIAL) :
+              (uint16_t)((uint16_t)(crc << 1) ^ TELEMETRY_CRC_POLYNOMIAL) :
               (uint16_t)(crc << 1);
     }
 
