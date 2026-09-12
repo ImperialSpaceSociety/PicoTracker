@@ -266,10 +266,11 @@ uint8_t gps_disable_nmea_output(void) {
  */
 static uint16_t gps_receive_payload(uint8_t class_id, uint8_t msg_id, unsigned char *payload, uint16_t payload_capacity) {
 	uint8_t rx_byte;
-	enum {UBX_A, UBX_B, CLASSID, MSGID, LEN_A, LEN_B, PAYLOAD} state = UBX_A;
+	enum {UBX_A, UBX_B, CLASSID, MSGID, LEN_A, LEN_B, PAYLOAD, CHECKSUM_A, CHECKSUM_B} state = UBX_A;
 	uint16_t payload_cnt = 0;
 	uint16_t payload_len = 0;
 	uint16_t checksum = UBX_CHECKSUM_INITIAL;
+	uint8_t received_checksum_a = 0;
         uint32_t timeout = 0;
 	while(1) {
 		
@@ -308,15 +309,23 @@ static uint16_t gps_receive_payload(uint8_t class_id, uint8_t msg_id, unsigned c
 				payload_len |= ((uint16_t)rx_byte << 8);
 				checksum = ubx_checksum_update(checksum, rx_byte);
 				if (payload_len > payload_capacity) return 0;
-				state = PAYLOAD;
+				state = (payload_len == 0) ? CHECKSUM_A : PAYLOAD;
 				break;
 			case PAYLOAD:
 				payload[payload_cnt] = rx_byte;
 				checksum = ubx_checksum_update(checksum, rx_byte);
 				payload_cnt++;
 				if (payload_cnt == payload_len)
-					return payload_len;
+					state = CHECKSUM_A;
 				break;
+			case CHECKSUM_A:
+				received_checksum_a = rx_byte;
+				state = CHECKSUM_B;
+				break;
+			case CHECKSUM_B:
+				if (received_checksum_a != UBX_CHECKSUM_A(checksum) ||
+				    rx_byte != UBX_CHECKSUM_B(checksum)) return 0;
+				return payload_len;
 			default:
 				state = UBX_A;
 		}
