@@ -230,12 +230,8 @@ int main( void )
     get_measurements();
 
 
-    /* activate power save mode as fix is stable. 1 to activate power save.*/
-    for(ubx_retry_count=0; ubx_retry_count < UBX_CFG_RETRIES; ubx_retry_count++){ // Power Save Mode ON
-        if((gps_power_save(1))) break;
-        ubx_cfg_fail = OP_STATUS_TRANSIENT_ERROR;
-        if(ubx_retry_count == (UBX_CFG_RETRIES -1)) ubx_cfg_fail = OP_STATUS_RETRY_EXHAUSTED;
-    }
+    /* Activate power save mode after the initial acquisition attempt. */
+    (void)gps_power_mode_with_retries(1);
 
 
     for(ubx_retry_count=0; ubx_retry_count < UBX_CFG_RETRIES; ubx_retry_count++){ // Save setup to GPS flash
