@@ -179,7 +179,7 @@ static uint8_t uart_wait_tx_ready(void)
     return 1;
 }
 
-uint8_t UART_send_buffer(const char *cmd, uint8_t length) {
+uint8_t UART_send_buffer(const uint8_t *cmd, uint8_t length) {
 	uint8_t i;
 
 	for (i = 0; i < length; i++) {
@@ -229,7 +229,7 @@ static uint8_t gps_receive_ack(uint8_t class_id, uint8_t msg_id) {
  *
  */
 uint8_t gps_disable_nmea_output(void) {
-	char nonmea[] = {
+	static const uint8_t nonmea[] = {
 		0xB5, 0x62, 0x06, 0x00, 20, 0x00,	/* UBX-CFG-PRT */
 		0x01, 0x00, 0x00, 0x00, 			/* UART1, reserved, no TX ready */
 		0xe0, 0x08, 0x00, 0x00,				/* UART mode (8N1) */
@@ -292,7 +292,7 @@ uint8_t gps_get_fix(struct gps_fix *fix) {
         /* UBX-NAV-PVT
          * Section 33.17.14 in the Ublox M8Q reference manual
          */
-	char pvt[] = {0xB5, 0x62, 0x01, 0x07, 0x00, 0x00, 0x08, 0x19};
+	static const uint8_t pvt[] = {0xB5, 0x62, 0x01, 0x07, 0x00, 0x00, 0x08, 0x19};
 	uint16_t response_length;
 		
 	/* Wake up from sleep with bounded UART waits. */
@@ -361,7 +361,7 @@ uint8_t gps_wake_up(void) {
 uint8_t gps_set_gps_only(void) {
 
  
-	char gpsonly[] = {
+	static const uint8_t gpsonly[] = {
 		0xB5,0x62,0x06,0x3E,0x3C,0x00,			/* UBX-CFG-GNSS */
 		0x00,0x00,0x20,0x07,				/* use 32 channels, 7 configs following */
 		0x00,0x00,0x00,0x00,0x01,0x00,0x00,0x01,	/* GPS enable */
@@ -391,7 +391,7 @@ uint8_t gps_set_gps_only(void) {
  *
  */
 uint8_t gps_set_airborne_model(void) {
-	char model6[] = {
+	static const uint8_t model6[] = {
 		0xB5, 0x62, 0x06, 0x24, 0x24, 0x00, 	/* UBX-CFG-NAV5 */
 		0xFF, 0xFF, 							/* parameter bitmask */
 		0x06, 									/* dynamic model */
@@ -433,7 +433,7 @@ uint8_t gps_set_power_save(void) {
 	 * through software settings 
 	 * This config uses the on/off-mode, not the cyclic power save mode */
 	
-//	char powersave[] = {
+//	static const uint8_t powersave[] = {
 //		0xB5, 0x62, 0x06, 0x3B, 44, 0,	/* UBX-CFG-PM2 */
 //		0x01, 0x00, 0x00, 0x00, 		/* v1, reserved 1..3 */
 //		0x00, 0x10, 0x00, 0x00,     	/* on/off-mode, update ephemeris */
@@ -451,7 +451,7 @@ uint8_t gps_set_power_save(void) {
 //	};
 //	
 	/* put the tracker to sleep forever until I manualy wake it up */
-	char powersave[]= {
+	static const uint8_t powersave[] = {
 	0xB5,0x62,0x06,0x3B,0x2C,0x00,  /* UBX-CFG-PM2 */
 	0x01,0x06,0x01,0x00,			/* v1, reserved 1..3 */
 	0x0E,0x90,0x40,0x01,			/* on/off-mode, update ephemeris */
@@ -478,18 +478,19 @@ uint8_t gps_set_power_save(void) {
  * enables or disables the power save mode (which was configured before)
  */
 uint8_t gps_power_save(int on) {
-	char recvmgmt[] = {
-		0xB5, 0x62, 0x06, 0x11, 2, 0,	/* UBX-CFG-RXM */
-		0x08, 0x01,						/* reserved, enable power save mode */
+	static const uint8_t recvmgmt_psm[] = {
+		0xB5, 0x62, 0x06, 0x11, 2, 0,
+		0x08, 0x01,
 		0x22, 0x92
 	};
-	if (!on) {
-		recvmgmt[7] = 0x00;		/* continuous mode */
-		recvmgmt[8] = 0x21;		/* new checksum */
-		recvmgmt[9] = 0x91;
-	}
+	static const uint8_t recvmgmt_continuous[] = {
+		0xB5, 0x62, 0x06, 0x11, 2, 0,
+		0x08, 0x00,
+		0x21, 0x91
+	};
+	const uint8_t *command = on ? recvmgmt_psm : recvmgmt_continuous;
 
-	if (!UART_send_buffer(recvmgmt, sizeof(recvmgmt))) return 0;
+	if (!UART_send_buffer(command, (uint8_t)sizeof(recvmgmt_psm))) return 0;
 	return gps_receive_ack(0x06, 0x11);
 }
 
@@ -500,7 +501,7 @@ uint8_t gps_power_save(int on) {
  * settings are configured. 
  */
 uint8_t gps_save_settings(void) {
-	char cfg[] = {
+	static const uint8_t cfg[] = {
 		0xB5, 0x62, 0x06, 0x09, 12, 0,	/* UBX-CFG-CFG */
 		0x00, 0x00, 0x00, 0x00,		    /* clear no sections */
 		0x1f, 0x1e, 0x00, 0x00,		    /* save all sections */
