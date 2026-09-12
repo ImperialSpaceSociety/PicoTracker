@@ -61,3 +61,6 @@ Backup*
 *.hex
 *.map
 *.bak
+
+# Host test build output
+tests/build/
