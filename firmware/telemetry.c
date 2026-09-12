@@ -40,7 +40,7 @@
 #include "si_trx.h"
 #include "si_trx_defs.h"
 #include "main.h"
-#include "string.h"
+#include "number_format.h"
 #include "fix.h"
 
 #define TIMER1_PRESCALE  (HSCLK_FREQUENCY/1000)

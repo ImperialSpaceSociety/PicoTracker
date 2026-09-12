@@ -10,9 +10,9 @@ test: $(BUILD_DIR)/test_number_format $(BUILD_DIR)/test_ubx_protocol $(BUILD_DIR
 	$(BUILD_DIR)/test_radio_measurements
 	$(BUILD_DIR)/test_sleep_policy
 
-$(BUILD_DIR)/test_number_format: test_number_format.c ../firmware/string.c
+$(BUILD_DIR)/test_number_format: test_number_format.c ../firmware/number_format.c
 	mkdir -p $(BUILD_DIR)
-	$(CC) $(CFLAGS) test_number_format.c ../firmware/string.c -o $@
+	$(CC) $(CFLAGS) test_number_format.c ../firmware/number_format.c -o $@
 
 $(BUILD_DIR)/test_ubx_protocol: test_ubx_protocol.c ../firmware/ubx_protocol.h
 	mkdir -p $(BUILD_DIR)

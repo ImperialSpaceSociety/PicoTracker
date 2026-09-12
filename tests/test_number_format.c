@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "../firmware/string.h"
+#include "../firmware/number_format.h"
 
 static int failures = 0;
 
