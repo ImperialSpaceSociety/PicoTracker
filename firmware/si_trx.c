@@ -160,7 +160,9 @@ static uint16_t si_trx_get_part_info(void)
 	
 	buffer[0] = SI_CMD_PART_INFO;
 	
-	_si_trx_transfer(1, 3, buffer);
+	if (_si_trx_transfer(1, 3, buffer) != SI_TRX_OK) {
+		return 0;
+	}
 	
 	return (buffer[1] << 8) | buffer[2];
 }
