@@ -2,7 +2,9 @@
 
 Low-cost pico-balloon tracker hardware and firmware using an HC-12 radio, STM8 processor, u-blox GPS, and 433 MHz RTTY, originally developed by the Imperial College Space Society.
 
-> **Project status:** Active maintenance resumed in 2026. The original design dates from 2018–2019; current work focuses on preserving the hardware and firmware, improving documentation, and making incremental firmware fixes. Anyone building a unit today should revalidate component availability, prices, tooling, and test assumptions.
+> **Project status:** Active maintenance resumed in 2026. The original design dates from 2018–2019; current work focuses on firmware correctness, host-side regression testing, documentation, and preparation for a future validated release. Anyone building a unit today should revalidate component availability, prices, tooling, and test assumptions.
+
+**Maintainer:** [Sylvester Kaczmarek](https://SylvesterKaczmarek.com)
 
 ## Repository layout
 
@@ -12,6 +14,7 @@ Low-cost pico-balloon tracker hardware and firmware using an HC-12 radio, STM8 p
 - [`cad/`](cad/) - mechanical/CAD files
 - [`docs/`](docs/) - project guides and technical references
 - [`tools/`](tools/) - supporting scripts
+- [`tests/`](tests/) - host-side regression tests for firmware logic
 
 ### Key documentation
 
@@ -20,6 +23,11 @@ Low-cost pico-balloon tracker hardware and firmware using an HC-12 radio, STM8 p
 - [`docs/hc12.md`](docs/hc12.md) - HC-12 radio and processor notes
 - [`docs/telemetry-format.md`](docs/telemetry-format.md) - transmitted telemetry field order
 - [`docs/status-word.md`](docs/status-word.md) - operational-status field layout
+- [`tests/README.md`](tests/README.md) - host-test scope and usage
+
+## Verification
+
+Host-side regression tests currently cover telemetry number formatting and u-blox UBX checksum/fix-validation logic. Target STM8/IAR builds and hardware-in-the-loop validation are still required before a new release is considered validated.
 
 ## Objectives
 
@@ -70,10 +78,6 @@ The tracker was designed to work with existing high-altitude balloon tracking ne
 ## Contributing
 
 Small maintenance fixes, documentation improvements, test notes, and well-scoped technical contributions are welcome. See [`CONTRIBUTING.md`](CONTRIBUTING.md).
-
-## Maintainer
-
-This repository is maintained by [Sylvester Kaczmarek](https://SylvesterKaczmarek.com).
 
 ## License
 
