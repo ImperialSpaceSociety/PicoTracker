@@ -45,7 +45,7 @@ void InitialiseSystemClock(void)
     CLK_CKDIVR = 0;                     //  Ensure the clocks are running at full speed.
 	
     CLK_PCKENR1 = 0x8C;                 //  Enable clock to only UART 1/2/3/4, Enable TIM 1, disable other timers, SPI, I2C
-    CLK_PCKENR2 = 0x04;                 //  Enable clock to only to AWU register clock, (does not disable counter clock), not to ADC
+    CLK_PCKENR2 = 0x04;                 //  Enable clock only to AWU register clock, (does not disable counter clock), not to ADC
 	
     CLK_CCOR = 0;                       //  Turn off CCO.
     CLK_HSITRIMR = 0;                   //  Turn off any HSIU trimming.
