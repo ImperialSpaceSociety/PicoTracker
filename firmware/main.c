@@ -99,39 +99,33 @@ static uint8_t gps_fix_attempts = 0;
 struct gps_fix current_fix;
 
 static uint8_t get_fix(void) {
+    struct gps_fix candidate;
+
     ubx_poll_fail = OP_STATUS_OK;
     gps_fix_attempts = 0;
 
-    /*
-    * The tracker outputs Pips while waiting for a good GPS fix.
-    */
-
-    current_fix.num_svs = 0;
-    current_fix.type = 0;
-    current_fix.flags = 0;
-
     while (gps_fix_attempts < GPS_FIX_ATTEMPTS_MAX) {
-
-        /* check if we have a fix*/
-        for(ubx_retry_count=0;
-            ubx_retry_count < UBX_POLL_RETRIES && gps_fix_attempts < GPS_FIX_ATTEMPTS_MAX;
-            ubx_retry_count++){
+        for (ubx_retry_count = 0;
+             ubx_retry_count < UBX_POLL_RETRIES && gps_fix_attempts < GPS_FIX_ATTEMPTS_MAX;
+             ubx_retry_count++) {
+            candidate = current_fix;
+            candidate.type = 0;
+            candidate.flags = 0;
             gps_fix_attempts++;
-            if (gps_get_fix(&current_fix)) break;
-            ubx_poll_fail = OP_STATUS_TRANSIENT_ERROR;
-            if(ubx_retry_count == (UBX_POLL_RETRIES -1)) ubx_poll_fail = OP_STATUS_RETRY_EXHAUSTED;
+
+            if (!gps_get_fix(&candidate)) {
+                ubx_poll_fail = OP_STATUS_TRANSIENT_ERROR;
+                if (ubx_retry_count == (UBX_POLL_RETRIES - 1U)) {
+                    ubx_poll_fail = OP_STATUS_RETRY_EXHAUSTED;
+                }
+                continue;
+            }
+
+            if (ubx_nav_pvt_fix_is_usable(candidate.type, candidate.flags)) {
+                current_fix = candidate;
+                return 1;
+            }
         }
-
-        /* accept only a valid 3D navigation solution */
-        if (ubx_nav_pvt_fix_is_usable(current_fix.type, current_fix.flags)) {
-            return 1;
-        }
-
-        /* Pip because we don't have a fix yet*/
-        //telemetry_start(TELEMETRY_PIPS, 1);
-
-        /* Sleep Wait */
-        //while (telemetry_active());
     }
 
     ubx_poll_fail = OP_STATUS_DEGRADED;
