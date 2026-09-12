@@ -383,7 +383,7 @@ static uint8_t _si_trx_set_property_32(uint8_t group, uint8_t property, uint32_t
   buffer[2] = 4;
   buffer[3] = property;
   buffer[4] = (uint8_t)(value >> 24);
-  buffer[5] = (value >> 16);
+  buffer[5] = (uint8_t)(value >> 16);
   buffer[6] = (uint8_t)(value >> 8);
   buffer[7] = (uint8_t)value;
 

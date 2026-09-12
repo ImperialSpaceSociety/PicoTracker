@@ -25,9 +25,9 @@ void atoid32(char *string, uint8_t len, uint32_t *integer, uint32_t *decimal) {
 			int_port = 1;
 		} else {
 			if (int_port) {
-				*integer += mult * (*(string + len - j - 1) - '0');
+				*integer += mult * (uint32_t)(uint8_t)(*(string + len - j - 1) - '0');
 			} else {
-				*decimal += mult * (*(string + len - j - 1) - '0');
+				*decimal += mult * (uint32_t)(uint8_t)(*(string + len - j - 1) - '0');
 			}
 			mult *= 10;
 		}
@@ -46,7 +46,7 @@ void atod32(char *string, uint8_t len, uint32_t *decimal) {
 		if (*(string + len - j - 1) == '.') {
 			return;
 		} else {
-			*decimal += mult * (*(string + len - j - 1) - '0');
+			*decimal += mult * (uint32_t)(uint8_t)(*(string + len - j - 1) - '0');
 			mult *= 10;
 		}
 	}
@@ -69,7 +69,7 @@ void atoi32(volatile char *string, uint8_t len, uint32_t *integer) {
 			start = 1;
 		} else {
 			if (start) {
-				*integer += mult * (*(string + len - j - 1) - '0');
+				*integer += mult * (uint32_t)(uint8_t)(*(string + len - j - 1) - '0');
 				mult *= 10;
 			}
 		}
@@ -93,7 +93,7 @@ void atoi16(volatile char *string, uint8_t len, uint16_t *integer) {
 			start = 1;
 		} else {
 			if (start) {
-				*integer += mult * (*(string + len - j - 1) - '0');
+				*integer += mult * (uint32_t)(uint8_t)(*(string + len - j - 1) - '0');
 				mult *= 10;
 			}
 		}
@@ -112,7 +112,7 @@ void atoi8(volatile char *string, uint8_t len, uint8_t *integer) {
 
 	*integer = 0;
 	for (j = 0; j < len; j++) {
-		*integer += mult * (*(string + len - j - 1) - '0');
+		*integer += mult * (uint32_t)(uint8_t)(*(string + len - j - 1) - '0');
 		mult *= 10;
 	}
 }
