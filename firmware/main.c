@@ -201,11 +201,8 @@ int main( void )
         if(ubx_retry_count == (UBX_CFG_RETRIES -1)) ubx_cfg_fail = OP_STATUS_RETRY_EXHAUSTED;
     }
 
-    for(ubx_retry_count=0; ubx_retry_count < UBX_CFG_RETRIES; ubx_retry_count++){ // Power Save Mode Off
-        if((gps_power_save(0))) break;
-        ubx_cfg_fail = OP_STATUS_TRANSIENT_ERROR;
-        if(ubx_retry_count == (UBX_CFG_RETRIES -1)) ubx_cfg_fail = OP_STATUS_RETRY_EXHAUSTED;
-    }
+    /* Put the GPS in continuous mode before configuration. */
+    (void)gps_power_mode_with_retries(0);
 
     for(ubx_retry_count=0; ubx_retry_count < UBX_CFG_RETRIES; ubx_retry_count++){ // Setup for no NMEA Messages
         if((gps_disable_nmea_output())) break;
