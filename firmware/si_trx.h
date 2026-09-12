@@ -35,7 +35,7 @@
 int16_t si_trx_get_temperature(void);
 int16_t si_trx_get_voltage(void);
 
-void si_trx_on(uint8_t modulation_type, uint16_t deviation);
+uint8_t si_trx_on(uint8_t modulation_type, uint16_t deviation);
 void si_trx_off(void);
 void si_trx_switch_channel(int16_t channel);
 

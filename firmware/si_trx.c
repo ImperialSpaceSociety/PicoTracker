@@ -475,10 +475,16 @@ static uint8_t si_trx_reset(uint8_t modulation_type, uint16_t deviation)
 /**
 * Enables the radio and starts transmitting
 */
-void si_trx_on(uint8_t modulation_type, uint16_t deviation)
+uint8_t si_trx_on(uint8_t modulation_type, uint16_t deviation)
 {
-	si_trx_reset(modulation_type, deviation);
-	si_trx_start_tx(0);
+	if (si_trx_reset(modulation_type, deviation) != SI_TRX_OK ||
+	    si_trx_start_tx(0) != SI_TRX_OK) {
+		_si_trx_sdn_enable();
+		PA_ODR_ODR3 = 0;
+		return SI_TRX_ERROR;
+	}
+
+	return SI_TRX_OK;
 }
 /**
 * Disables the radio and places it in shutdown
