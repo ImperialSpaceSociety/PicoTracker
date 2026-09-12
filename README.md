@@ -10,7 +10,7 @@ Low-cost pico-balloon tracker hardware and firmware using an HC-12 radio, STM8 p
 - [`test_firmware/`](test_firmware/) - historical firmware test projects
 - [`hardware/`](hardware/) - hardware design files
 - [`cad/`](cad/) - mechanical/CAD files
-- [`docs/`](docs/) - technical reference links
+- [`docs/`](docs/) - project guides and technical references
 - [`tools/`](tools/) - supporting scripts
 
 ### Key documentation
