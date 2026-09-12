@@ -39,6 +39,7 @@
 #define UBX_CFG_TIMEOUT         60000     // timeout 
 #define UBX_POLL_RETRIES        3       
 #define UBX_POLL_TIMEOUT        1000000l     // timeout
+#define UBX_RX_BYTE_LIMIT       1024U        // maximum bytes scanned for one response
 #define UART_TX_TIMEOUT         60000UL      // bounded wait for UART TX readiness
 
 void InitialiseUART(void);

@@ -199,6 +199,7 @@ uint8_t UART_send_buffer(const char *cmd, uint8_t length) {
 static uint8_t gps_receive_ack(uint8_t class_id, uint8_t msg_id) {
     struct ubx_ack_parser parser;
     uint16_t timeout = 0;
+    uint16_t bytes_received = 0;
 
     ubx_ack_parser_init(&parser, class_id, msg_id);
 
@@ -209,6 +210,7 @@ static uint8_t gps_receive_ack(uint8_t class_id, uint8_t msg_id) {
             if (timeout++ > UBX_CFG_TIMEOUT) return 0;
         }
 
+        if (++bytes_received > UBX_RX_BYTE_LIMIT) return 0;
         result = ubx_ack_parser_push(&parser, UART1_DR);
         if (result == UBX_ACK_ACCEPTED) return 1;
         if (result == UBX_NAK_ACCEPTED || result == UBX_ACK_ERROR) return 0;
@@ -255,6 +257,7 @@ static uint16_t gps_receive_payload(uint8_t class_id, uint8_t msg_id,
                                     unsigned char *payload, uint16_t payload_capacity) {
     struct ubx_parser parser;
     uint32_t timeout = 0;
+    uint16_t bytes_received = 0;
 
     ubx_parser_init(&parser, class_id, msg_id, payload, payload_capacity);
 
@@ -265,6 +268,7 @@ static uint16_t gps_receive_payload(uint8_t class_id, uint8_t msg_id,
             if (timeout++ > UBX_POLL_TIMEOUT) return 0;
         }
 
+        if (++bytes_received > UBX_RX_BYTE_LIMIT) return 0;
         result = ubx_parser_push(&parser, UART1_DR);
         if (result == UBX_PARSER_COMPLETE) return parser.payload_length;
         if (result == UBX_PARSER_ERROR) return 0;
