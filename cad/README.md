@@ -2,7 +2,7 @@
 
 Mechanical design files used by the PicoTracker project are kept here.
 
-- `Battery Clip.stl` - battery-retention clip.
+- `battery-clip.stl` - battery-retention clip.
 - `HC12 Clip.stl` - HC12 module clip.
 - `TinyTrack.stl` - tracker body mesh.
 - `TinyTrack v7.f3d` - editable Fusion 360 design source.
