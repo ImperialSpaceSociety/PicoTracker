@@ -24,4 +24,4 @@ jobs:
         run: make -C tests clean test
 
       - name: Smoke-test telemetry decoder
-        run: python3 tools/decode_data.py --summary tools/with_pips_data.txt
+        run: python3 tools/decode_data.py tools/with_pips_data.txt
