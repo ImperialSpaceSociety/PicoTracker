@@ -95,116 +95,73 @@ int telemetry_active(void) {
 * Returns 0 on success, 1 if already active
 */
 int telemetry_start(enum telemetry_t type, uint16_t length) {
-	if (!telemetry_active()) {
-		
-		/* Initialise */
-		telemetry_type = type;
-		telemetry_index = 0;
-		telemetry_string_length = length;
-		
-		/* Setup timer tick */
-		switch(telemetry_type) {
-		case TELEMETRY_RTTY:
-			timer1_tick_init(RTTY_BIT_MS);
-			break;
-		case TELEMETRY_PIPS:
-			timer1_tick_init(PIPS_RATE_MS);
-			break;
-		}
-		return 0; /* Success */
-	} else {
-		return 1; /* Already active */
-	}
-}
+	if (telemetry_active()) return 1;
 
-
-static uint8_t is_telemetry_finished(void) {
-	if (telemetry_index >= telemetry_string_length) {
-		/* All done, deactivate */
-		telemetry_string_length = 0;
-		
-		/* Turn radio off */
-		if (radio_on) {
-			si_trx_off(); radio_on = 0;
-		}
-		
-		/* De-init timer */
-		timer1_tick_deinit();
-		
-		return 1;
-	}
+	telemetry_type = type;
+	telemetry_index = 0;
+	telemetry_string_length = length;
+	timer1_tick_init((type == TELEMETRY_RTTY) ? RTTY_BIT_MS : PIPS_RATE_MS);
 	return 0;
 }
 
+static void telemetry_stop(void) {
+	telemetry_string_length = 0;
+	if (radio_on) {
+		si_trx_off();
+		radio_on = 0;
+	}
+	timer1_tick_deinit();
+}
 
+static uint8_t is_telemetry_finished(void) {
+	if (telemetry_index < telemetry_string_length) return 0;
+	telemetry_stop();
+	return 1;
+}
 
 /**
 * Called at the telemetry mode's baud rate
 */
 static void telemetry_tick(void) {
-	if (telemetry_active()) {
-		switch (telemetry_type) {
-			
-		case TELEMETRY_RTTY: /* ---- ---- A character mode */
-			if (!radio_on) {
-				/* RTTY: We use the modem offset to modulate */
-				if (si_trx_on(SI_TRX_MODULATION_CW, 1) != SI_TRX_OK) {
-					telemetry_string_length = 0;
-					timer1_tick_deinit();
-					return;
-				}
-				radio_on = 1;
-				rtty_preamble();
+	if (!telemetry_active()) return;
+
+	if (telemetry_type == TELEMETRY_RTTY) {
+		uint8_t rtty_status;
+
+		if (!radio_on) {
+			if (si_trx_on(SI_TRX_MODULATION_CW, 1) != SI_TRX_OK) {
+				telemetry_stop();
+				return;
 			}
-			
-			{
-				uint8_t rtty_status = rtty_tick();
-
-				if (rtty_status == RTTY_ERROR) {
-					telemetry_string_length = 0;
-					si_trx_off();
-					radio_on = 0;
-					timer1_tick_deinit();
-					return;
-				}
-
-				if (rtty_status == RTTY_COMPLETE) {
-					/* Transmission Finished */
-					if (is_telemetry_finished()) return;
-
-					/* Let's start again */
-					uint8_t data = (uint8_t)tx_buf[telemetry_index];
-
-					telemetry_index++;
-					rtty_start(data);
-				}
-			}
-			
-			break;
-			
-		case TELEMETRY_PIPS: /* ---- ---- A pips mode! */
-			
-			if (!radio_on) { /* Turn on */
-				/* Pips: Cw */
-				if (si_trx_on(SI_TRX_MODULATION_CW, 1) != SI_TRX_OK) {
-					telemetry_string_length = 0;
-					timer1_tick_deinit();
-					return;
-				}
-				radio_on = 1;
-				timer1_tick_time(PIPS_LENGTH_MS);
-				
-			} else { /* Turn off */
-				si_trx_off();
-				radio_on = 0;
-				timer1_tick_time(PIPS_RATE_MS);
-				
-				telemetry_index++;
-				if (is_telemetry_finished())
-					
-					return;
-			}
+			radio_on = 1;
+			rtty_preamble();
 		}
+
+		rtty_status = rtty_tick();
+		if (rtty_status == RTTY_ERROR) {
+			telemetry_stop();
+			return;
+		}
+		if (rtty_status == RTTY_COMPLETE) {
+			if (is_telemetry_finished()) return;
+			rtty_start((uint8_t)tx_buf[telemetry_index++]);
+		}
+		return;
+	}
+
+	if (!radio_on) {
+		if (si_trx_on(SI_TRX_MODULATION_CW, 1) != SI_TRX_OK) {
+			telemetry_stop();
+			return;
+		}
+		radio_on = 1;
+		timer1_tick_time(PIPS_LENGTH_MS);
+	} else {
+		si_trx_off();
+		radio_on = 0;
+		timer1_tick_time(PIPS_RATE_MS);
+		telemetry_index++;
+		(void)is_telemetry_finished();
 	}
 }
 

@@ -34,11 +34,7 @@ void i32toa(uint32_t in, uint8_t len, volatile char *out) {
  * 16 bit number to fixed-length output char
  */
 void i16toa(uint16_t in, uint8_t len, volatile char *out) {
-	uint8_t i;
-	for (i = len; i > 0; i--) {
-		*(out + i - 1) = (in % 10) + '0';
-		in /= 10;
-	}
+	i32toa((uint32_t)in, len, out);
 }
 
 /* i16toa
@@ -47,32 +43,14 @@ void i16toa(uint16_t in, uint8_t len, volatile char *out) {
  * returns:	length of string
  */
 uint8_t i16toav(uint16_t in, volatile char *out) {
-	uint16_t mult = 10000;
-	uint8_t cnt = 0;
-	uint8_t start = 0;
-	uint8_t len = 0;
-	if (in == 0) {
-		*out = '0';
-		return 1;
-	}
+	char digits[5];
+	uint8_t first = 0U;
+	uint8_t i;
 
-	while(mult > 0) {
-		if (in >= mult) {
-			in = in - mult;
-			cnt++;
-			start = 1;
-		} else {
-			*out = cnt + '0';
-			cnt = 0;
-			mult /= 10;
-			if (start) {
-				out++;
-				len++;
-			}
-		}
-	}
-
-	return len;
+	i16toa(in, 5U, digits);
+	while (first < 4U && digits[first] == '0') first++;
+	for (i = first; i < 5U; i++) out[i - first] = digits[i];
+	return (uint8_t)(5U - first);
 }
 
 /* i16tox
@@ -81,15 +59,10 @@ uint8_t i16toav(uint16_t in, volatile char *out) {
  * writes 4 chars to the output pointer
  */
 void i16tox(uint16_t x, char *out) {
+	static const char hex[] = "0123456789ABCDEF";
 	uint8_t i;
-	uint8_t tmp;
-	for (i = 0; i < 4; i++) {
-		tmp = (uint8_t) ((x >> (4*i)) & 0x000f);
-		if (tmp < 10) {
-			*(out+3-i) = '0' + tmp;
-		} else {
-			*(out+3-i) = 'A' + tmp - 10;
-		}
+	for (i = 0U; i < 4U; i++) {
+		out[3U - i] = hex[x & 0x0FU];
+		x >>= 4;
 	}
 }
-
