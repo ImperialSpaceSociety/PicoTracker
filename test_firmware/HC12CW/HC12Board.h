@@ -59,10 +59,10 @@
 * nIRQ  Receive detected
 */
 
-/* For lower frequenct drift on the HC12 we optionally replace the crystal oscillator with a
- * Temperature Compensated Crystal Oscilator. It is powered from a spare GPIO on the processor
- * The TCXO has a different Frequency (32MHz) from the Crystal (30MHz), so we need to changes
-* to have the correct frequency and deviation. The Si4463 also need the XO configuration changed
+/* For lower frequency drift on the HC12 we optionally replace the crystal oscillator with a
+ * Temperature Compensated Crystal Oscillator. It is powered from a spare GPIO on the processor
+ * The TCXO has a different Frequency (32MHz) from the Crystal (30MHz), so we need changes
+* to have the correct frequency and deviation. The Si4463 also needs the XO configuration changed
 */
 
 #define XO_TCXO         // define if TCXO installed, comment out for original Crystal
@@ -81,7 +81,7 @@
 
 
 #define SI406X_TCXO_FREQUENCY	30000000L  // si4463 clock frequency Crystal
-//#define SI406X_TCXO_FREQUENCY	32000000L  // si4463 clock frequency TYCXO
+//#define SI406X_TCXO_FREQUENCY	32000000L  // si4463 clock frequency TCXO
 
 #define HSCLK_FREQUENCY         16000000L  // Processor internal clock frequency
 
