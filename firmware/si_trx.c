@@ -299,21 +299,21 @@ int16_t si_trx_get_voltage(void)
 /**
 * Sets the internal frac-n pll synthesiser dividers
 */
-static void si_trx_frequency_control_set_divider(uint8_t integer_divider,
+static uint8_t si_trx_frequency_control_set_divider(uint8_t integer_divider,
 												 uint32_t fractional_divider)
 {
 	uint32_t divider = (fractional_divider & 0xFFFFFF) | ( (uint32_t) integer_divider << 24);
 	
-	_si_trx_set_property_32(SI_PROPERTY_GROUP_FREQ_CONTROL,
+	return _si_trx_set_property_32(SI_PROPERTY_GROUP_FREQ_CONTROL,
 							SI_FREQ_CONTROL_INTE,
 							divider);
 }
 /**
 * Sets the output divider of the frac-n pll synthesiser
 */
-static void si_trx_frequency_control_set_band(uint8_t band, uint8_t sy_sel)
+static uint8_t si_trx_frequency_control_set_band(uint8_t band, uint8_t sy_sel)
 {
-	_si_trx_set_property_8(SI_PROPERTY_GROUP_MODEM,
+	return _si_trx_set_property_8(SI_PROPERTY_GROUP_MODEM,
 						   SI_MODEM_CLKGEN_BAND,
 						   sy_sel | (band & 0x7));
 }
@@ -324,9 +324,9 @@ static void si_trx_frequency_control_set_band(uint8_t band, uint8_t sy_sel)
 *
 * This is an unsigned 17-bit value.
 */
-static void si_trx_modem_set_deviation(uint32_t deviation)
+static uint8_t si_trx_modem_set_deviation(uint32_t deviation)
 {
-	_si_trx_set_property_24(SI_PROPERTY_GROUP_MODEM,
+	return _si_trx_set_property_24(SI_PROPERTY_GROUP_MODEM,
 							SI_MODEM_FREQ_DEV,
 							deviation);
 }
@@ -336,9 +336,9 @@ static void si_trx_modem_set_deviation(uint32_t deviation)
 *
 * This is a signed 16-bit value.
 */
-static void si_trx_modem_set_offset(int16_t offset)
+static uint8_t si_trx_modem_set_offset(int16_t offset)
 {
-	_si_trx_set_property_16(SI_PROPERTY_GROUP_MODEM,
+	return _si_trx_set_property_16(SI_PROPERTY_GROUP_MODEM,
 							SI_MODEM_FREQ_OFFSET,
 							offset);
 }
@@ -346,21 +346,21 @@ static void si_trx_modem_set_offset(int16_t offset)
 /**
 * Sets the modulation mode
 */
-static void si_trx_modem_set_modulation(uint8_t tx_direct_mode,
+static uint8_t si_trx_modem_set_modulation(uint8_t tx_direct_mode,
 										uint8_t tx_direct_gpio,
 										uint8_t tx_modulation_source,
 										uint8_t modulation_type)
 {
-	_si_trx_set_property_8(SI_PROPERTY_GROUP_MODEM, SI_MODEM_MOD_TYPE,
+	return _si_trx_set_property_8(SI_PROPERTY_GROUP_MODEM, SI_MODEM_MOD_TYPE,
 						   tx_direct_mode | tx_direct_gpio |
 							   tx_modulation_source | modulation_type);
 }
 /**
 * Sets the tx power
 */
-static void si_trx_set_tx_power(uint8_t tx_power)
+static uint8_t si_trx_set_tx_power(uint8_t tx_power)
 {
-	_si_trx_set_property_8(SI_PROPERTY_GROUP_PA, SI_PA_PWR_LVL, tx_power);
+	return _si_trx_set_property_8(SI_PROPERTY_GROUP_PA, SI_PA_PWR_LVL, tx_power);
 }
 
 /**
@@ -371,7 +371,7 @@ static void si_trx_set_tx_power(uint8_t tx_power)
 *
 * Returns the LSB tuning resolution of the frac-n pll synthesiser.
 */
-static float si_trx_set_frequency(uint32_t frequency, uint16_t deviation)
+static uint8_t si_trx_set_frequency(uint32_t frequency, uint16_t deviation)
 {
 	uint8_t outdiv, band, nprescaler;
 	
@@ -411,20 +411,19 @@ static float si_trx_set_frequency(uint32_t frequency, uint16_t deviation)
 	
 	/* Set the frac-n PLL output divider */
 	if (nprescaler == 4) { /* Prescaler */
-		si_trx_frequency_control_set_band(band, SI_MODEM_CLKGEN_SY_SEL_0);
+		if (si_trx_frequency_control_set_band(band, SI_MODEM_CLKGEN_SY_SEL_0) != SI_TRX_OK) return SI_TRX_ERROR;
 	} else { /* Default Mode */
-		si_trx_frequency_control_set_band(band, SI_MODEM_CLKGEN_SY_SEL_1);
+		if (si_trx_frequency_control_set_band(band, SI_MODEM_CLKGEN_SY_SEL_1) != SI_TRX_OK) return SI_TRX_ERROR;
 	}
 	
 	
 	/* Set the frac-n PLL divider */
-	si_trx_frequency_control_set_divider(n, m);
+	if (si_trx_frequency_control_set_divider(n, m) != SI_TRX_OK) return SI_TRX_ERROR;
 	
 	/* Set the external pin frequency deviation to the LSB tuning resolution */
-	si_trx_modem_set_deviation(deviation);
+	if (si_trx_modem_set_deviation(deviation) != SI_TRX_OK) return SI_TRX_ERROR;
 	
-	/* Return the LSB tuning resolution of the frac-n pll synthesiser. */
-	return f_pfd / (float)((uint32_t) 1 << 19);
+	return SI_TRX_OK;
 }
 
 /**
