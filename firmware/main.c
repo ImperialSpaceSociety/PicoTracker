@@ -250,8 +250,8 @@ int main( void )
 	/* now wake up the GPS */
 	gps_wake_up();
 
-	/* put the GPS in full power mode */
-	while(!(gps_power_save(0)));
+	/* Put the GPS in full power mode, but continue if it does not ACK. */
+	(void)gps_power_mode_with_retries(0);
 
 	/* get the GPS fix */
         get_fix();
