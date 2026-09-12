@@ -30,7 +30,9 @@
 #ifndef SI_TRX_DEFS_H
 #define SI_TRX_DEFS_H
 
-
+#define SI_TRX_OK 1U
+#define SI_TRX_ERROR 0U
+#define SI_TRX_CTS_POLL_LIMIT 5000U
 
 
 /**
