@@ -69,7 +69,7 @@ Small maintenance fixes, documentation improvements, test notes, and well-scoped
 
 ## Maintainer
 
-This repository is maintained by [Sylwester Kaczmarek](https://github.com/sylvesterkaczmarek).
+This repository is maintained by [Sylvester Kaczmarek](https://SylvesterKaczmarek.com).
 
 ## License
 
