@@ -331,11 +331,11 @@ uint8_t _si_trx_transfer(int tx_count, int rx_count, uint8_t *data);
 /**
  * Convenience transfer functions
  */
-static void _si_trx_transfer_uint16(uint16_t value)
+static uint8_t _si_trx_transfer_uint16(uint16_t value)
 {
-  _si_trx_transfer(2, 0, (uint8_t*)&value);
+  return _si_trx_transfer(2, 0, (uint8_t*)&value);
 }
-static void _si_trx_set_property_8(uint8_t group, uint8_t property, uint8_t value)
+static uint8_t _si_trx_set_property_8(uint8_t group, uint8_t property, uint8_t value)
 {
   uint8_t buffer[5];
 
@@ -345,9 +345,9 @@ static void _si_trx_set_property_8(uint8_t group, uint8_t property, uint8_t valu
   buffer[3] = property;
   buffer[4] = value;
 
-  _si_trx_transfer(5, 0, buffer);
+  return _si_trx_transfer(5, 0, buffer);
 }
-static void _si_trx_set_property_16(uint8_t group, uint8_t property, uint16_t value)
+static uint8_t _si_trx_set_property_16(uint8_t group, uint8_t property, uint16_t value)
 {
   uint8_t buffer[6];
 
@@ -358,9 +358,9 @@ static void _si_trx_set_property_16(uint8_t group, uint8_t property, uint16_t va
   buffer[4] = (value >> 8);
   buffer[5] = (value);
 
-  _si_trx_transfer(6, 0, buffer);
+  return _si_trx_transfer(6, 0, buffer);
 }
-static void _si_trx_set_property_24(uint8_t group, uint8_t property, uint32_t value)
+static uint8_t _si_trx_set_property_24(uint8_t group, uint8_t property, uint32_t value)
 {
   uint8_t buffer[8];
 
@@ -372,9 +372,9 @@ static void _si_trx_set_property_24(uint8_t group, uint8_t property, uint32_t va
   buffer[5] = (value >> 8);
   buffer[6] = (value);
 
-  _si_trx_transfer(7, 0, buffer);
+  return _si_trx_transfer(7, 0, buffer);
 }
-static void _si_trx_set_property_32(uint8_t group, uint8_t property, uint32_t value)
+static uint8_t _si_trx_set_property_32(uint8_t group, uint8_t property, uint32_t value)
 {
   uint8_t buffer[8];
 
@@ -387,7 +387,7 @@ static void _si_trx_set_property_32(uint8_t group, uint8_t property, uint32_t va
   buffer[6] = (value >> 8);
   buffer[7] = (value);
 
-  _si_trx_transfer(8, 0, buffer);
+  return _si_trx_transfer(8, 0, buffer);
 }
 
 /**
