@@ -151,6 +151,21 @@ static uint8_t si_trx_power_up(uint8_t clock_source, uint32_t xo_freq)
 	
 	return _si_trx_transfer(7, 0, buffer);
 }
+
+static uint8_t si_trx_boot(void)
+{
+	/* Power the TCXO, reset the radio, then issue the mandatory POWER_UP. */
+	PA_ODR_ODR3 = 1;
+	for (int i = 0; i < 5*1000; i++);
+
+	_si_trx_sdn_enable();
+	for (int i = 0; i < 15*1000; i++);
+	_si_trx_sdn_disable();
+	for (int i = 0; i < 15*1000; i++);
+
+	return si_trx_power_up(SI_POWER_UP_TCXO, VCXO_FREQUENCY);
+}
+
 /**
 * Gets the 16 bit part number
 */
@@ -431,19 +446,7 @@ static uint8_t si_trx_set_frequency(uint32_t frequency, uint16_t deviation)
 */
 static uint8_t si_trx_reset(uint8_t modulation_type, uint16_t deviation)
 {
-        /* Power on TCXO and wait for stable*/
-        PA_ODR_ODR3 = 1;
-        for (int i = 0; i < 5*1000; i++); /* Approx. 5ms */
-  
-        _si_trx_sdn_enable();  /* active high shutdown = reset */
-	
-	for (int i = 0; i < 15*1000; i++); /* Approx. 15ms */
-	_si_trx_sdn_disable();   /* booting */
-	for (int i = 0; i < 15*1000; i++); /* Approx. 15ms */
-	
-	
-	/* Power Up before issuing any normal radio commands. */
-	if (si_trx_power_up(SI_POWER_UP_TCXO, VCXO_FREQUENCY) != SI_TRX_OK) return SI_TRX_ERROR;
+	if (si_trx_boot() != SI_TRX_OK) return SI_TRX_ERROR;
 	
 	/* Clear pending interrupts */
 	if (si_trx_clear_pending_interrupts(0, 0) != SI_TRX_OK) return SI_TRX_ERROR;
