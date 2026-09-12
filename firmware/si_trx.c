@@ -405,8 +405,8 @@ static uint8_t si_trx_set_frequency(uint32_t frequency, uint16_t deviation)
 	uint32_t m = (uint32_t)(rest * (float)( (uint32_t) 1 << 19));
 	
 	
-	/* Check n and m are in valid ranges, halt otherwise */
-	if (n > 0x7f || m > 0xfffff) while (1);
+	/* Reject divider values outside the Si4463 property ranges. */
+	if (n > 0x7f || m > 0xfffff) return SI_TRX_ERROR;
 	
 	
 	/* Set the frac-n PLL output divider */
