@@ -4,13 +4,14 @@ BUILD_DIR := build
 
 .PHONY: test clean
 
-test: $(BUILD_DIR)/test_number_format $(BUILD_DIR)/test_ubx_protocol $(BUILD_DIR)/test_radio_measurements $(BUILD_DIR)/test_sleep_policy $(BUILD_DIR)/test_status_word $(BUILD_DIR)/test_telemetry_crc
+test: $(BUILD_DIR)/test_number_format $(BUILD_DIR)/test_ubx_protocol $(BUILD_DIR)/test_radio_measurements $(BUILD_DIR)/test_sleep_policy $(BUILD_DIR)/test_status_word $(BUILD_DIR)/test_telemetry_crc $(BUILD_DIR)/test_telemetry_format
 	$(BUILD_DIR)/test_number_format
 	$(BUILD_DIR)/test_ubx_protocol
 	$(BUILD_DIR)/test_radio_measurements
 	$(BUILD_DIR)/test_sleep_policy
 	$(BUILD_DIR)/test_status_word
 	$(BUILD_DIR)/test_telemetry_crc
+	$(BUILD_DIR)/test_telemetry_format
 
 $(BUILD_DIR)/test_number_format: test_number_format.c ../firmware/number_format.c
 	mkdir -p $(BUILD_DIR)
@@ -35,6 +36,10 @@ $(BUILD_DIR)/test_status_word: test_status_word.c ../firmware/status_word.h
 $(BUILD_DIR)/test_telemetry_crc: test_telemetry_crc.c ../firmware/telemetry_crc.h
 	mkdir -p $(BUILD_DIR)
 	$(CC) $(CFLAGS) test_telemetry_crc.c -o $@
+
+$(BUILD_DIR)/test_telemetry_format: test_telemetry_format.c ../firmware/telemetry_format.h ../firmware/number_format.c
+	mkdir -p $(BUILD_DIR)
+	$(CC) $(CFLAGS) test_telemetry_format.c ../firmware/number_format.c -o $@
 
 clean:
 	rm -rf $(BUILD_DIR)
