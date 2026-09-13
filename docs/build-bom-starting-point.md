@@ -12,42 +12,41 @@ For historical reference, please see the existing files in the following directo
 ## Required Functional Blocks
 
 ### 1. STM8 / HC-12 Radio
-* **Required Characteristics:** 433 MHz band support, UART interface, STM8S-based architecture for firmware compatibility.
-* **Historical Part:** Original HC-12 module (2018-2019 variant).
+* **Required Characteristics:** 433 MHz operation with an STM8S003F3 and a compatible Si4463/Si4438-family radio path. PicoTracker reprograms the STM8S003F3 and controls the radio directly; UART is associated with the original HC-12 module firmware and is not the primary interface used by the maintained PicoTracker firmware.
+* **Historical Part:** HC-12 hardware based on STM8S003F3 and Si4463-compatible radio hardware.
 * **Current Candidates:**
-  * Generic HC-12 Module (SI4463 based): *candidate* - [SI4463 Datasheet](https://www.silabs.com/documents/public/data-sheets/Si4464-63-61-60.pdf)
-  * SV611 (Requires firmware modification): *not yet tested*
+  * HC-12-compatible STM8S003F3 / Si4463 hardware: *candidate* - [Si4463 Datasheet](https://www.silabs.com/documents/public/data-sheets/Si4464-63-61-60.pdf)
+  * Si4438-compatible hardware path: *candidate*
 
 ### 2. GPS
-* **Required Characteristics:** NMEA 0183 protocol, 9600 baud rate (configurable), 3.3V logic level, active antenna support.
-* **Historical Part:** ATGM336H or U-blox NEO-6M.
+* **Required Characteristics:** u-blox M8-compatible GNSS receiver with support for the UBX protocol used by PicoTracker, including UBX-NAV-PVT, and compatible 3.3 V logic.
+* **Historical Part:** M8-based modules such as BN-280 and BN-220.
 * **Current Candidates:**
-  * ATGM336H-5N: *verified* - [ATGM336H Datasheet](http://www.icofchina.com/d/file/xiazai/2016-12-05/857e4e1a6cde9ad12dc79667087611a2.pdf)
-  * U-blox NEO-8M: *candidate* - [NEO-8M Datasheet](https://content.u-blox.com/sites/default/files/NEO-M8-series-hardware-integration-manual_UBX-13003538.pdf)
+  * BN-280 / BN-220 or equivalent u-blox M8-based module: *candidate*
+  * Other u-blox M8-compatible GNSS modules supporting UBX-NAV-PVT: *candidate* - [NEO-M8 Hardware Integration Manual](https://content.u-blox.com/sites/default/files/NEO-M8-series-hardware-integration-manual_UBX-13003538.pdf)
 
 ### 3. Power Stage
-* **Required Characteristics:** 3.7V LiPo battery input, regulated 3.3V output, low quiescent current (LDO).
-* **Historical Part:** HT7333-A (LDO).
+* **Required Characteristics:** AAA lithium primary-cell input with a low-power boost converter providing approximately 3.3 V for the tracker electronics.
+* **Historical Part:** AAA lithium primary cell with a boost-converter power stage as represented by the repository's historical hardware design.
 * **Current Candidates:**
-  * HT7333-A: *verified* - [HT7333 Datasheet](https://www.holtek.com/documents/10179/116711/HT73xx-Av250.pdf)
-  * ME6211: *candidate* - [ME6211 Datasheet](https://datasheet.lcsc.com/lcsc/1809141014_Microne-Nanjing-Micro-One-Elec-ME6211C33M5G-N_C82942.pdf)
+  * Equivalent low-quiescent-current boost converter suitable for a single AAA lithium primary cell: *candidate*
 
 ### 4. Antennas
-* **Required Characteristics:** 433 MHz tuned frequency, 50-ohm impedance, SMA or U.FL connector depending on the mounting choice.
-* **Historical Part:** Standard 433 MHz spring antenna or dipole.
+* **Required Characteristics:** Antenna suitable for the PicoTracker 433 MHz radio path, with impedance and connection method matched to the selected radio hardware and PCB implementation.
+* **Historical Part:** Refer to the repository's historical hardware and CAD files for the original RF implementation.
 * **Current Candidates:**
-  * 433 MHz Spring Antenna: *verified*
-  * 433 MHz SMA Dipole Antenna: *candidate*
+  * 433 MHz antenna compatible with the selected radio implementation: *candidate*
+  * Alternative 433 MHz antenna configurations: *not yet tested*
 
 ### 5. Programming / Debug Interface
-* **Required Characteristics:** SWIM (Single Wire Interface Module) support for STM8.
-* **Historical Part:** ST-Link V2 (Clone or original).
+* **Required Characteristics:** SWIM (Single Wire Interface Module) support for programming the STM8S003F3.
+* **Historical Part:** ST-Link-compatible STM8 programming/debug interface.
 * **Current Candidates:**
-  * ST-Link V2: *verified* - [ST-Link V2 User Manual](https://www.st.com/resource/en/user_manual/dm00026748-stlinkv2-in-circuit-debuggerprogrammer-for-stm8-and-stm32-stmicroelectronics.pdf)
+  * ST-Link V2 or compatible programmer with STM8 SWIM support: *candidate* - [ST-Link V2 User Manual](https://www.st.com/resource/en/user_manual/dm00026748-stlinkv2-in-circuit-debuggerprogrammer-for-stm8-and-stm32-stmicroelectronics.pdf)
 
 ### 6. Mechanical Mounting
-* **Required Characteristics:** Lightweight, securely houses the PCB and battery, minimal RF interference.
-* **Historical Part:** 3D printed enclosure (see `cad/` folder).
+* **Required Characteristics:** Lightweight mounting that securely houses the PCB and battery while avoiding unnecessary interference with the RF implementation.
+* **Historical Part:** Refer to the existing designs in the [`cad/`](../cad/) directory.
 * **Current Candidates:**
-  * Custom 3D printed enclosure (PETG or ABS recommended): *verified*
-
+  * Enclosure or mounting solution based on the existing CAD design: *candidate*
+  * Alternative lightweight enclosure materials and designs: *not yet tested*
