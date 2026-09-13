@@ -11,16 +11,16 @@ Prerequisites are Git, Python 3, `make`, and a C compiler such as GCC or Clang.
 ```sh
 git clone https://github.com/ImperialSpaceSociety/PicoTracker.git
 cd PicoTracker
-make -C tests clean test
-python3 tools/decode_data.py tools/with_pips_data.txt
+make demo
+make test
 ```
 
-The current sample capture should report `165 valid frames`. If both commands complete successfully, you have already exercised the firmware's host-testable logic and decoded real PicoTracker telemetry.
+`make demo` should report `165 valid frames`. If both commands complete successfully, you have already decoded real PicoTracker telemetry and exercised the firmware's host-testable logic.
 
 To inspect the accepted frames themselves:
 
 ```sh
-python3 tools/decode_data.py --print-frames tools/with_pips_data.txt
+make decode DECODE_ARGS=--print-frames
 ```
 
 No IAR installation, radio, GPS receiver, or STM8 board is required for this path.
@@ -59,13 +59,13 @@ The root [`README.md`](../README.md) contains the architecture and firmware-cycl
 Look for open issues labelled [`good first issue`](https://github.com/ImperialSpaceSociety/PicoTracker/issues?q=is%3Aissue%20is%3Aopen%20label%3A%22good%20first%20issue%22). Pick one narrow problem, make the smallest complete change, add or update tests where appropriate, and run:
 
 ```sh
-make -C tests clean test
+make test
 ```
 
 If your change affects target firmware structure and you have an STM8-capable SDCC installation, also run:
 
 ```sh
-make -C tests stm8
+make stm8
 ```
 
 A good first pull request does not need to redesign the tracker. A clear test, decoder improvement, documentation correction, or small firmware fix that makes the system easier to understand or trust is valuable.

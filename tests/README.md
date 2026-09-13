@@ -16,10 +16,9 @@ These tests exercise hardware-independent firmware and tooling logic on the deve
 - Python telemetry decoder CRC handling and sample-capture decoding
 - release metadata and IAR project-reference integrity
 
-Run the complete host suite with:
+From the repository root, run the complete host suite with:
 
 ```sh
-cd tests
 make test
 ```
 
@@ -30,7 +29,7 @@ The host tests complement the STM8/IAR build and physical hardware validation; t
 When SDCC with STM8 support is installed, run:
 
 ```sh
-make -C tests stm8
+make stm8
 ```
 
 This compiles and links the production C sources with SDCC's STM8 backend and checks the STM8S003F3 flash/RAM window. A compatibility shim supplies the IAR register names and removes IAR-specific interrupt declarations, so the generated image is **not flashable** and does not replace the required IAR build or hardware validation. It provides an independent STM8 data-model, code-generation, cross-module link, and approximate size check.

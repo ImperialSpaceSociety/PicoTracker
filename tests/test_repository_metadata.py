@@ -12,6 +12,11 @@ class RepositoryMetadataTests(unittest.TestCase):
         self.assertRegex(version, r"^\d+\.\d+\.\d+(?:-dev)?$")
         self.assertIn(version, (ROOT / "CHANGELOG.md").read_text())
 
+    def test_root_makefile_exposes_developer_entry_points(self):
+        makefile = (ROOT / "Makefile").read_text()
+        for target in ("help:", "demo:", "test:", "stm8:", "decode:", "check:", "clean:"):
+            self.assertIn(target, makefile)
+
     def test_standalone_licenses_exist(self):
         mit = (ROOT / "LICENSES" / "MIT.txt").read_text()
         cern = (ROOT / "LICENSES" / "CERN-OHL-1.2.txt").read_text()

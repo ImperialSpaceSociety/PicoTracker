@@ -28,11 +28,23 @@ New to PicoTracker? You can get a meaningful first result without any hardware:
 ```sh
 git clone https://github.com/ImperialSpaceSociety/PicoTracker.git
 cd PicoTracker
-make -C tests clean test
-python3 tools/decode_data.py tools/with_pips_data.txt
+make demo
+make test
 ```
 
-That runs the host regression suite and decodes the included real telemetry capture, which currently contains **165 valid frames**. From there, [`docs/getting-started.md`](docs/getting-started.md) gives separate paths into firmware, GPS/UBX, radio/telemetry, Python tooling, testing, hardware, CAD, and documentation. See [`docs/roadmap.md`](docs/roadmap.md) for extension ideas ranging from small first contributions to larger hardware and tooling projects.
+`make demo` decodes the included real telemetry capture, which currently contains **165 valid frames**; `make test` runs the complete host regression suite. The root `Makefile` is the canonical developer entry point:
+
+| Command | Purpose |
+| --- | --- |
+| `make` / `make help` | Show the available developer commands |
+| `make demo` | Decode the included flight capture; no C compiler or hardware required |
+| `make test` | Run all host regression tests |
+| `make decode` | Decode a telemetry capture; override with `CAPTURE=path/to/file` |
+| `make stm8` | Run the structural STM8 compile/link check; requires SDCC |
+| `make check` | Run host tests, telemetry decoding, and the STM8 structural check |
+| `make clean` | Remove generated host-test output |
+
+From there, [`docs/getting-started.md`](docs/getting-started.md) gives separate paths into firmware, GPS/UBX, radio/telemetry, Python tooling, testing, hardware, CAD, and documentation. See [`docs/roadmap.md`](docs/roadmap.md) for extension ideas ranging from small first contributions to larger hardware and tooling projects.
 
 ## Why work on PicoTracker
 
@@ -133,22 +145,10 @@ GitHub Actions runs both the host regression suite and the STM8 structural targe
 
 For `v1.4.0`, the CI SDCC 4.2 structural build used **7,787 / 8,192 bytes** of flash span and **130 / 1,024 bytes** of static DATA. The structural SDCC build uses compatibility shims for IAR-specific registers and interrupt declarations, so it is a target-compiler and memory-window check, not a flashable firmware artifact. The release was approved by the maintainer following target/hardware validation; detailed native-IAR logs and quantitative hardware measurements were not archived with that release.
 
-Run the host suite from the repository root:
+The root `Makefile` keeps verification commands consistent across local development and CI. Run the host suite with `make test`, the independent target-structure check with `make stm8`, and the telemetry smoke test with `make decode`. With SDCC installed, the complete repository verification is one command:
 
 ```sh
-make -C tests clean test
-```
-
-With an STM8-capable SDCC installation, run the independent target-structure check:
-
-```sh
-make -C tests stm8
-```
-
-Decode the included telemetry capture with:
-
-```sh
-python3 tools/decode_data.py tools/with_pips_data.txt
+make check
 ```
 
 The maintained production project for native STM8 development is [`firmware/HC12Tracker.ewp`](firmware/HC12Tracker.ewp). See [`docs/development.md`](docs/development.md) for programming and debugging notes.
