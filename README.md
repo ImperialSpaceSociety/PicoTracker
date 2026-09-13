@@ -16,6 +16,11 @@ PicoTracker is a lightweight, low-cost high-altitude balloon tracking platform b
 
 This repository is maintained and administered by [Sylvester Kaczmarek](https://SylvesterKaczmarek.com). Maintenance questions, technical changes, release coordination, and collaboration proposals can be raised through GitHub issues or directed to the maintainer through the website.
 
+<p align="center">
+  <img src="images/readme/flight-edge-of-space.webp" alt="High-altitude view from a PicoTracker balloon flight" width="100%">
+</p>
+<p align="center"><sub>High-altitude view from one of the project balloon flights.</sub></p>
+
 ## Start here
 
 New to PicoTracker? You can get a meaningful first result without any hardware:
