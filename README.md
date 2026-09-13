@@ -194,11 +194,31 @@ The repository retains photographs of the original project hardware. These are u
   </tr>
 </table>
 
-## Launch footage
+## Flight footage
 
-[![PicoTracker high-altitude balloon launch](https://img.youtube.com/vi/OtdXHd_AjtY/hqdefault.jpg)](https://www.youtube.com/watch?v=OtdXHd_AjtY)
+The project has a larger video archive documenting high-altitude balloon flights from launch through ascent, the edge-of-space phase, and descent. The selected clips below are from [Sylvester Kaczmarek's YouTube channel](https://www.youtube.com/@SylvesterKaczmarek) and give a quick visual sense of the environment PicoTracker was built to operate in.
 
-Launch footage from one of the PicoTracker high-altitude balloon flights. Click the preview to watch the video.
+<table>
+  <tr>
+    <td width="33%" align="center">
+      <a href="https://www.youtube.com/watch?v=IWZ5Tttl32g"><img src="https://img.youtube.com/vi/IWZ5Tttl32g/hqdefault.jpg" alt="High Altitude Balloon 2018: 08 Raising" width="100%"></a><br>
+      <strong>Ascent</strong><br>
+      <sub><a href="https://www.youtube.com/watch?v=IWZ5Tttl32g">High Altitude Balloon 2018: 08 Raising</a></sub>
+    </td>
+    <td width="33%" align="center">
+      <a href="https://www.youtube.com/watch?v=OtdXHd_AjtY"><img src="https://img.youtube.com/vi/OtdXHd_AjtY/hqdefault.jpg" alt="High Altitude Balloon 2018: 20 The Edge of Space" width="100%"></a><br>
+      <strong>Edge of space</strong><br>
+      <sub><a href="https://www.youtube.com/watch?v=OtdXHd_AjtY">High Altitude Balloon 2018: 20 The Edge of Space</a></sub>
+    </td>
+    <td width="33%" align="center">
+      <a href="https://www.youtube.com/watch?v=-n3UuoJTzKg"><img src="https://img.youtube.com/vi/-n3UuoJTzKg/hqdefault.jpg" alt="High Altitude Balloon 2018: 34 Landing" width="100%"></a><br>
+      <strong>Descent and landing</strong><br>
+      <sub><a href="https://www.youtube.com/watch?v=-n3UuoJTzKg">High Altitude Balloon 2018: 34 Landing</a> · payload descent about 5 m/s</sub>
+    </td>
+  </tr>
+</table>
+
+More flight footage: [Raising 03](https://www.youtube.com/watch?v=nnN85UmlgXM) · [Edge of Space 11](https://www.youtube.com/watch?v=IkWxLzXfyp0) · [Edge of Space 19](https://www.youtube.com/watch?v=CTOZ2g5Ok2o) · **[watch the full High Altitude Balloon 2018 playlist](https://www.youtube.com/playlist?list=PLf9MwNhV-GcEE7K-Lzd70tIrfB1l1Xk7f)**.
 
 ## Hardware design
 
