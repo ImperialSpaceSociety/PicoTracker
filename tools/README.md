@@ -37,3 +37,14 @@ make simulate SIM_ARGS="--scenario gps-loss --print-frames"
 ```
 
 See [`docs/simulator.md`](../docs/simulator.md) for scenarios, fault injection, capture generation, and fidelity limits.
+
+## Release metadata helper
+
+`release.py` validates release tags against `VERSION` and `CHANGELOG.md` and renders the notes used by the automated release workflow. From the repository root:
+
+```sh
+make release-check RELEASE_TAG=vX.Y.Z
+make release-notes RELEASE_TAG=vX.Y.Z
+```
+
+See [`docs/release-automation.md`](../docs/release-automation.md) for the publication workflow.

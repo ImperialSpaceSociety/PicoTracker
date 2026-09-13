@@ -16,6 +16,7 @@ This directory collects PicoTracker project guides and technical reference mater
 - [Telemetry format](telemetry-format.md)
 - [Operational status field](status-word.md)
 - [Release checklist](release-checklist.md)
+- [Release automation](release-automation.md)
 - [Hardware validation matrix](hardware-validation.md)
 
 ## Repository indexes

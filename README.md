@@ -44,6 +44,8 @@ make test
 | `make stm8` | Run the structural STM8 compile/link check; requires SDCC |
 | `make quality` | Run C static analysis, Python lint/format checks, and whitespace validation |
 | `make format` | Apply Ruff fixes and Python formatting |
+| `make release-check` | Validate `VERSION` and `CHANGELOG.md` for `RELEASE_TAG` |
+| `make release-notes` | Preview generated notes for `RELEASE_TAG` |
 | `make check` | Run quality checks, tests, decoding, simulator, and STM8 verification |
 | `make clean` | Remove generated host-test output |
 | `make container-build` | Build the reproducible Linux development image |
@@ -161,6 +163,8 @@ make check
 ```
 
 The maintained production project for native STM8 development is [`firmware/HC12Tracker.ewp`](firmware/HC12Tracker.ewp). See [`docs/code-quality.md`](docs/code-quality.md) for the quality gate and [`docs/development.md`](docs/development.md) for programming and debugging notes.
+
+Future releases use the tag-driven [`Release` workflow](docs/release-automation.md): an annotated `vX.Y.Z` tag must match `VERSION` and `CHANGELOG.md`, the full reproducible checks must pass, and only then is the GitHub Release created.
 
 ## Telemetry
 
