@@ -29,6 +29,7 @@ class FlightPoint:
     voltage_mv: int
     temperature_c: int
 
+
 @dataclass(frozen=True)
 class TrackerFix:
     utc: datetime
@@ -61,6 +62,7 @@ class CycleResult:
 
 def gps_status_pack(fix_attempts: int, config_status: int, poll_status: int) -> int:
     return ((fix_attempts & 0x0F) << 4) | ((config_status & 0x03) << 2) | (poll_status & 0x03)
+
 
 def poll_status_for_success(attempts: int) -> int:
     if attempts <= 1:
@@ -114,8 +116,24 @@ def build_frame(fix: TrackerFix, sentence_id: int) -> tuple[str, str]:
 
 def synthetic_profile() -> list[FlightPoint]:
     altitudes = [
-        0, 500, 1500, 3000, 5000, 8000, 12000, 16000, 20000,
-        24000, 28000, 30000, 28000, 22000, 16000, 10000, 4000, 1000,
+        0,
+        500,
+        1500,
+        3000,
+        5000,
+        8000,
+        12000,
+        16000,
+        20000,
+        24000,
+        28000,
+        30000,
+        28000,
+        22000,
+        16000,
+        10000,
+        4000,
+        1000,
     ]
     points: list[FlightPoint] = []
     for index, altitude in enumerate(altitudes):
@@ -130,6 +148,7 @@ def synthetic_profile() -> list[FlightPoint]:
             )
         )
     return points
+
 
 def run_simulation(
     points: list[FlightPoint],
@@ -163,8 +182,13 @@ def run_simulation(
             attempts = GPS_FIX_ATTEMPTS_MAX
             poll_status = OP_STATUS_DEGRADED
             if current_fix is None:
-                current_fix = TrackerFix(utc=utc.replace(hour=0, minute=0, second=0), altitude_m=0,
-                                         latitude_e7=0, longitude_e7=0, satellites=0)
+                current_fix = TrackerFix(
+                    utc=utc.replace(hour=0, minute=0, second=0),
+                    altitude_m=0,
+                    latitude_e7=0,
+                    longitude_e7=0,
+                    satellites=0,
+                )
 
         measurement_ok = cycle not in measurement_fail_cycles
         measurement_status = 0 if measurement_ok else OP_STATUS_MEASUREMENT_ERROR
@@ -261,21 +285,32 @@ def print_results(results: list[CycleResult], print_frames: bool = False) -> Non
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--scenario", choices=("nominal", "gps-loss", "faults"), default="nominal")
-    parser.add_argument("--cycles", type=int, help="limit the synthetic flight to the first N cycles")
+    parser.add_argument(
+        "--cycles", type=int, help="limit the synthetic flight to the first N cycles"
+    )
     parser.add_argument("--gps-loss", default="", help="additional GPS-loss cycles, e.g. 8-10,14")
     parser.add_argument("--measurement-fail", default="", help="measurement-failure cycles")
     parser.add_argument("--tx-fail", default="", help="radio transmit-failure cycles")
-    parser.add_argument("--gps-attempts", type=int, choices=range(1, 16), default=1,
-                        help="successful GPS acquisition attempt (1-15)")
-    parser.add_argument("--print-frames", action="store_true", help="print each generated telemetry frame")
-    parser.add_argument("--capture", type=Path, help="write transmitted raw frames to a decoder-compatible capture")
+    parser.add_argument(
+        "--gps-attempts",
+        type=int,
+        choices=range(1, 16),
+        default=1,
+        help="successful GPS acquisition attempt (1-15)",
+    )
+    parser.add_argument(
+        "--print-frames", action="store_true", help="print each generated telemetry frame"
+    )
+    parser.add_argument(
+        "--capture", type=Path, help="write transmitted raw frames to a decoder-compatible capture"
+    )
     args = parser.parse_args()
 
     points = synthetic_profile()
     if args.cycles is not None:
         if args.cycles < 1 or args.cycles > len(points):
             parser.error(f"--cycles must be between 1 and {len(points)}")
-        points = points[:args.cycles]
+        points = points[: args.cycles]
 
     gps_loss, measurement_fail, tx_fail = scenario_faults(args.scenario)
     try:
@@ -301,7 +336,9 @@ def main() -> int:
         args.capture.parent.mkdir(parents=True, exist_ok=True)
         transmitted = "".join(result.raw_frame for result in results if result.tx_success)
         args.capture.write_text(transmitted, encoding="ascii")
-        print(f"Wrote {sum(result.tx_success for result in results)} transmitted frames to {args.capture}")
+        print(
+            f"Wrote {sum(result.tx_success for result in results)} transmitted frames to {args.capture}"
+        )
 
     return 0
 

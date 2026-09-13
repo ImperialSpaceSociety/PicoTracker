@@ -1,9 +1,9 @@
 /*
 * Functions for controlling Si Labs Transceivers
-* 
+*
 * for Pico Balloon Tracker using HC12 radio module and GPS
 * HC12 Module with STM8S003F3 processor and silabs Si4463 Radio
-*  
+*
 * Derived Work Copyright (c) 2018 Imperial College Space Society
 * From original work Copyright (C) 2014  Richard Meadows <richardeoin>
 *
@@ -81,26 +81,26 @@ uint8_t _si_trx_transfer(int tx_count, int rx_count, uint8_t *data)
 {
 	uint8_t response;
 	uint16_t cts_poll_count = 0;
-	
+
 	/* Send command */
-        
+
         /* Enable select */
         if (radio_select_pin == 3) //QFN radio
           PD_ODR_ODR3 = 0;
         else
           PD_ODR_ODR2 = 0;
-	
+
 	for (int i = 0; i < tx_count; i++) {
 		spi_bitbang_transfer(data[i]);
 	}
-	
+
 	/* Disable select */
         if (radio_select_pin == 3)
           PD_ODR_ODR3 = 1;
         else
           PD_ODR_ODR2 = 1;
-        
-	
+
+
 	/**
 	* Poll CTS. From the docs:
 	*
@@ -112,23 +112,23 @@ uint8_t _si_trx_transfer(int tx_count, int rx_count, uint8_t *data)
 	* 0xFF, the host MCU should pull NSEL high and repeat the polling
 	* procedure.
 	*/
-	
+
 	do {
 		si_trx_delay_cycles(200U); /* Approx. 20 us */
-		
+
                 /* Enable select */
                 if (radio_select_pin == 3)
                     PD_ODR_ODR3 = 0;
                 else
                     PD_ODR_ODR2 = 0;
-		
+
 		/* Issue READ_CMD_BUFF */
 		spi_bitbang_transfer(SI_CMD_READ_CMD_BUFF);
 		response = spi_bitbang_transfer(0xFF);
-		
+
 		/* If the reply is 0xFF, read the response */
 		if (response == 0xFF) break;
-		
+
 		/* Otherwise repeat the procedure */
 
 		/* Disable select */
@@ -142,7 +142,7 @@ uint8_t _si_trx_transfer(int tx_count, int rx_count, uint8_t *data)
 			return SI_TRX_ERROR;
 		}
 	} while (1);
-	
+
 	/**
 	* Read response. From the docs:
 	*
@@ -155,7 +155,7 @@ uint8_t _si_trx_transfer(int tx_count, int rx_count, uint8_t *data)
 	for (int i = 0; i < rx_count; i++) {
 		data[i] = spi_bitbang_transfer(0xFF);
 	}
-	
+
 	/* Disable select */
                 if (radio_select_pin == 3)
                     PD_ODR_ODR3 = 1;
@@ -172,7 +172,7 @@ uint8_t _si_trx_transfer(int tx_count, int rx_count, uint8_t *data)
 static uint8_t si_trx_power_up(uint8_t clock_source, uint32_t xo_freq)
 {
 	uint8_t buffer[7];
-	
+
 	buffer[0] = SI_CMD_POWER_UP;
 	buffer[1] = SI_POWER_UP_FUNCTION;
 	buffer[2] = clock_source;
@@ -180,7 +180,7 @@ static uint8_t si_trx_power_up(uint8_t clock_source, uint32_t xo_freq)
 	buffer[4] = (uint8_t)(xo_freq >> 16);
 	buffer[5] = (uint8_t)(xo_freq >> 8);
 	buffer[6] = (uint8_t)xo_freq;
-	
+
 	return _si_trx_transfer(7, 0, buffer);
 }
 
@@ -203,13 +203,13 @@ static uint8_t si_trx_boot(void)
 static uint16_t si_trx_get_part_info(void)
 {
 	uint8_t buffer[3];
-	
+
 	buffer[0] = SI_CMD_PART_INFO;
-	
+
 	if (_si_trx_transfer(1, 3, buffer) != SI_TRX_OK) {
 		return 0;
 	}
-	
+
 	return (uint16_t)(((uint16_t)buffer[1] << 8) | (uint16_t)buffer[2]);
 }
 /**
@@ -220,14 +220,14 @@ static uint8_t si_trx_clear_pending_interrupts(uint8_t packet_handler_clear_pend
 											uint8_t chip_clear_pending)
 {
 	uint8_t buffer[4];
-	
+
 	buffer[0] = SI_CMD_GET_INT_STATUS;
 	buffer[1] = packet_handler_clear_pending & ((1<<5)|(1<<1)); /* Mask used bits */
 	buffer[2] = 0;
 	buffer[3] = chip_clear_pending;
-	
+
 	return _si_trx_transfer(4, 0, buffer);
-	
+
 	/* This command returns the interrupts status, but we don't use it */
 }
 /**
@@ -246,7 +246,7 @@ static uint8_t si_trx_set_gpio_configuration(si_gpio_t gpio0, si_gpio_t gpio1,
 	buffer[5] = SI_GPIO_PIN_CFG_NIRQ_MODE_DONOTHING;
 	buffer[6] = SI_GPIO_PIN_CFG_SDO_MODE_DONOTHING;
 	buffer[7] = drive_strength;
-	
+
 	return _si_trx_transfer(8, 0, buffer);
 }
 /**
@@ -260,7 +260,7 @@ static uint8_t si_trx_start_tx(uint8_t channel)
 	buffer[2] = (1 << 4);
 	buffer[3] = 0;
 	buffer[4] = 0;
-	
+
 	return _si_trx_transfer(5, 0, buffer);
 }
 /**
@@ -337,7 +337,7 @@ static uint8_t si_trx_frequency_control_set_divider(uint8_t integer_divider,
 												 uint32_t fractional_divider)
 {
 	uint32_t divider = (fractional_divider & 0xFFFFFF) | ( (uint32_t) integer_divider << 24);
-	
+
 	return _si_trx_set_property_32(SI_PROPERTY_GROUP_FREQ_CONTROL,
 							SI_FREQ_CONTROL_INTE,
 							divider);
@@ -443,29 +443,29 @@ static uint8_t si_trx_set_frequency(uint32_t frequency, uint16_t deviation)
 static uint8_t si_trx_reset(uint8_t modulation_type, uint16_t deviation)
 {
 	if (si_trx_boot() != SI_TRX_OK) return SI_TRX_ERROR;
-	
+
 	/* Clear pending interrupts */
 	if (si_trx_clear_pending_interrupts(0, 0) != SI_TRX_OK) return SI_TRX_ERROR;
-	
+
 	/* Disable all interrupts */
 	if (_si_trx_set_property_8(SI_PROPERTY_GROUP_INT_CTL, SI_INT_CTL_ENABLE, 0) != SI_TRX_OK) return SI_TRX_ERROR;
-	
+
 	/* Configure GPIOs */
 	if (si_trx_set_gpio_configuration(SI_GPIO_PIN_CFG_GPIO_MODE_INPUT | SI_GPIO_PIN_CFG_PULL_ENABLE,
                                       SI_GPIO_PIN_CFG_GPIO_MODE_INPUT | SI_GPIO_PIN_CFG_PULL_ENABLE,
                                       SI_GPIO_PIN_CFG_GPIO_MODE_DRIVE1,
                                       SI_GPIO_PIN_CFG_GPIO_MODE_DRIVE0,
                                       SI_GPIO_PIN_CFG_DRV_STRENGTH_LOW) != SI_TRX_OK) return SI_TRX_ERROR;
-	
+
 	if (si_trx_set_frequency(RADIO_FREQUENCY, deviation) != SI_TRX_OK) return SI_TRX_ERROR;
 	if (si_trx_set_tx_power(RADIO_POWER) != SI_TRX_OK) return SI_TRX_ERROR;
-	
+
 	/* RTTY from GPIO1 */
 	if (si_trx_modem_set_modulation(SI_MODEM_MOD_DIRECT_MODE_ASYNC,
 								SI_MODEM_MOD_GPIO_1,
 								SI_MODEM_MOD_SOURCE_DIRECT,
 								modulation_type) != SI_TRX_OK) return SI_TRX_ERROR;
-	
+
 	if (si_trx_state_tx_tune() != SI_TRX_OK) return SI_TRX_ERROR;
 
 	return SI_TRX_OK;
@@ -492,10 +492,10 @@ uint8_t si_trx_on(uint8_t modulation_type, uint16_t deviation)
 void si_trx_off(void)
 {
 	si_trx_state_ready();
-	
+
 	/* Physical shutdown */
 	_si_trx_sdn_enable();
-        
+
         /* Power off the external oscillator when present. */
         si_trx_xo_power_off();
 }
@@ -517,37 +517,37 @@ void si_trx_init(void)
     si_trx_xo_power_init();
 
   /* Configure the SDN pin */
- 
+
     PD_DDR_DDR4 = 1;        //  Port D, bit 4 is output.
     PD_CR1_C14 = 1;         //  Pin is set to Push-Pull mode.
     PD_CR2_C24 = 1;         //  Pin can run up to 10 MHz.
-    
+
   /* Put the transciever in shutdown */
   _si_trx_sdn_enable();
-  
+
  /* Configure the SPI serial port */
-  spi_bitbang_init(); 
-  
- /* Determine the SPI select Pin 
+  spi_bitbang_init();
+
+ /* Determine the SPI select Pin
  *  this is different for the TSSOP and QFN versions
  *  Port D bit 3 for QFN
  *  Port D bit 2 for TSSOP */
 
   /* Configure the SPI select pin for QFN*/
 
-  
+
     PD_DDR_DDR3 = 1;        //  Port D, bit 3 is output for QFN.
     PD_CR1_C13 = 1;         //  Pin is set to Push-Pull mode.
     PD_CR2_C23 = 1;         //  Pin can run up to 10 MHz.
     PD_ODR_ODR3 = 1;        //  Select is high
-    
+
    /* Probe the QFN select pin using a complete boot sequence. */
     uint16_t part_number = 0;
     if (si_trx_boot() == SI_TRX_OK) {
         part_number = si_trx_get_part_info();
     }
     if (part_number != 0x4463 && part_number != 0x4438 ){ // Radio chip might be Si4463 or Si4438
-      
+
         radio_select_pin =2;    //  TSSOP pin
         PD_DDR_DDR3 = 0;        //  Port D, bit 3 is input.
         PD_CR1_C13 = 0;         //  Pin has no pullup
@@ -567,18 +567,18 @@ void si_trx_init(void)
   /* Configure the GPIO pins */
     PB_DDR_DDR4 = 0;        //  GPIO0 Port B, bit 4 is input.
     PB_CR1_C14 = 1;         //  Pin is set to pull-up.
-    PB_CR2_C24 = 0;         //  Pin is set to NO Interrupt. 
-    
-   
-    
+    PB_CR2_C24 = 0;         //  Pin is set to NO Interrupt.
+
+
+
     PC_DDR_DDR3 = 1;        //  GPIO1 Port C, bit 3 is output.
     PC_CR1_C13 = 1;         //  Pin is set to Push-Pull mode.
     PC_CR2_C23 = 1;         //  Pin can run up to 10 MHz.
-    
+
     PC_ODR_ODR3 = 0;        // GPIO1 Modulation = 1
-    
-    
- 
+
+
+
 
   /* nIRQ is not used in the direct-transmit path; command completion is polled through CTS over SPI. */
 

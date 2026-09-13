@@ -4,11 +4,12 @@ PicoTracker includes a containerized development environment so contributors can
 
 ## Dev Container
 
-With a Dev Container-compatible editor, open the repository and choose **Reopen in Container**. The configuration in [`.devcontainer/`](../.devcontainer/) installs Python 3.12, GCC, Make, Git, and SDCC and runs `make demo` after the workspace is created.
+With a Dev Container-compatible editor, open the repository and choose **Reopen in Container**. The configuration in [`.devcontainer/`](../.devcontainer/) installs Python 3.12, GCC, Make, Git, SDCC, cppcheck, and Ruff and runs `make demo` after the workspace is created.
 
 Once the container is ready:
 
 ```sh
+make quality
 make test
 make stm8
 make check
@@ -27,4 +28,4 @@ make container-check
 
 ## What the container does not provide
 
-The container intentionally excludes the proprietary IAR STM8 toolchain and physical programming/debug hardware. It validates host-testable firmware logic, telemetry tooling, and the SDCC structural STM8 build; release hardware validation and a native IAR build remain separate activities.
+The container intentionally excludes the proprietary IAR STM8 toolchain and physical programming/debug hardware. It validates static code quality, host-testable firmware logic, telemetry tooling, and the SDCC structural STM8 build; release hardware validation and a native IAR build remain separate activities.

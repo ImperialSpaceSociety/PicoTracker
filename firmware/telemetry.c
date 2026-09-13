@@ -1,9 +1,9 @@
 /*
 * Telemetry strings and formatting
-* 
+*
 * for Pico Balloon Tracker using HC12 radio module and GPS
 * HC12 Module with STM8S003F3 processor and silabs Si4463 Radio
-*  
+*
 * Derived Work Copyright (c) 2018 Imperial College Space Society
 * From original work Copyright (C) 2014  Richard Meadows <richardeoin>
 *
@@ -45,7 +45,7 @@
 
 #define TIMER1_PRESCALE  (HSCLK_FREQUENCY/1000)
 
-/* A lot of work for the telemetry and gps communication is taken from 
+/* A lot of work for the telemetry and gps communication is taken from
 * https://github.com/thasti/utrak
 */
 
@@ -199,44 +199,44 @@ void prepare_tx_buffer(void) {
 	static uint16_t sent_id = 0;
 	uint16_t i;
 	uint16_t crc;
-	
+
 	sent_id++;
 	tlm_sent_id_length = i16toav(sent_id, &tx_buf[TX_BUF_SENT_ID_START]);
 	tx_buf[TX_BUF_SENT_ID_START + tlm_sent_id_length] = ',';
-	
+
 	i16toa(current_fix.hour, 2, &tx_buf[TX_BUF_TIME_START]);
 	i16toa(current_fix.min, 2, &tx_buf[TX_BUF_TIME_START + 2]);
 	i16toa(current_fix.sec, 2, &tx_buf[TX_BUF_TIME_START + 4]);
 	tx_buf[TX_BUF_TIME_START + TIME_LENGTH] = ',';
-	
+
 	telemetry_format_latitude(current_fix.lat, &tx_buf[TX_BUF_LAT_START]);
 	tx_buf[TX_BUF_LAT_START + LAT_LENGTH + 1] = ',';
-	
+
 	telemetry_format_longitude(current_fix.lon, &tx_buf[TX_BUF_LON_START]);
 	tx_buf[TX_BUF_LON_START + LON_LENGTH + 1] = ',';
-	
+
 	tlm_alt_length = i16toav(current_fix.alt, &tx_buf[TX_BUF_ALT_START]);
 	tx_buf[TX_BUF_ALT_START + tlm_alt_length] = ',';
-	
+
 	i16toa(current_fix.num_svs, SAT_LENGTH, &tx_buf[TX_BUF_SAT_START]);
 	tx_buf[TX_BUF_SAT_START + SAT_LENGTH] = ',';
-	
+
 	i16toa(current_fix.voltage_radio, VOLT_LENGTH, &tx_buf[TX_BUF_VOLT_START]);
 	tx_buf[TX_BUF_VOLT_START + VOLT_LENGTH] = ',';
-	
+
 	i16toa(current_fix.op_status, OP_STAT_LENGTH, &tx_buf[TX_BUF_OP_STAT_START]);
 	tx_buf[TX_BUF_OP_STAT_START + OP_STAT_LENGTH] = ',';
-	
+
 	telemetry_format_temperature(current_fix.temp_radio, &tx_buf[TX_BUF_TEMP_START]);
-	
+
 	tx_buf[TX_BUF_TEMP_START + TEMP_LENGTH + 1] = '*';
-	
+
 	crc = calculate_txbuf_checksum();
 	i16tox(crc, &tx_buf[TX_BUF_CHECKSUM_START]);
-	
+
 	for (i = 0; i < TX_BUF_POSTFIX_LENGTH; i++)
 		tx_buf[TX_BUF_POSTFIX_START + i] = TX_BUF_POSTFIX[i];
-	
+
 	tx_buf_length = TX_BUF_FRAME_END;
 }
 
@@ -251,20 +251,20 @@ void prepare_tx_buffer(void) {
 */
 void timer1_tick_init(uint16_t millisecs)
 {
-	
+
 	__disable_interrupt();
 	/* Configure Timer 1 */
-	
-	TIM1_PSCRH = TIMER1_PRESCALE >> 8 ;       //  Prescaler 
-	TIM1_PSCRL = TIMER1_PRESCALE & 0xff ;       //  
-	
+
+	TIM1_PSCRH = TIMER1_PRESCALE >> 8 ;       //  Prescaler
+	TIM1_PSCRL = TIMER1_PRESCALE & 0xff ;       //
+
 	TIM1_ARRH =millisecs >> 8 ;       //  Count Register
-	TIM1_ARRL =millisecs & 0xff ;       //  
-	
-	
+	TIM1_ARRL =millisecs & 0xff ;       //
+
+
 	/* Enable Interrupt */
 	TIM1_IER_UIE = 1;       //  Enable the update interrupts.
-	
+
 	/* Enable Timer */
 	TIM1_CR1_CEN = 1;       //  Enable the timer.
 	__enable_interrupt();
@@ -277,10 +277,10 @@ void timer1_tick_init(uint16_t millisecs)
 */
 void timer1_tick_time(uint16_t millisecs)
 {
-		
+
 	TIM1_ARRH =millisecs >> 8 ;       //  Count Register
-	TIM1_ARRL =millisecs & 0xff ;       //  
-	
+	TIM1_ARRL =millisecs & 0xff ;       //
+
 }
 
 
@@ -300,8 +300,8 @@ void timer1_tick_deinit(void)
 __interrupt void TIM1_UPD_OVF_IRQHandler(void)
 {
 	telemetry_tick();
-	TIM1_SR1_UIF = 0;               //  Reset the interrupt otherwise it will fire again   
-	
+	TIM1_SR1_UIF = 0;               //  Reset the interrupt otherwise it will fire again
+
 }
 
 

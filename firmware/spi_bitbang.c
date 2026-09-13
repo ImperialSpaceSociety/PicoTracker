@@ -1,9 +1,9 @@
 /*
  * SPI bit-banging!
- * 
+ *
  * for Pico Balloon Tracker using HC12 radio module and GPS
  * HC12 Module with STM8S003F3 processor and silabs Si4463 Radio
- *  
+ *
  * Derived Work Copyright (c) 2018 Imperial College Space Society
  * From original work Copyright (C) 2014  Richard Meadows <richardeoin>
  *
@@ -37,31 +37,31 @@ void spi_bitbang_init(void)
 {
 
   /* Configure the output pins */
-  
-  // Configure SCLK Pin  
+
+  // Configure SCLK Pin
 
     PC_DDR_DDR5 = 1;        //  Port C, bit 5 is output.
     PC_CR1_C15 = 1;         //  Pin is set to Push-Pull mode.
     PC_CR2_C25 = 1;         //  Pin can run up to 10 MHz.
-    
-  // Configure MOSI Pin  
+
+  // Configure MOSI Pin
 
     PC_DDR_DDR6 = 1;        //  Port C, bit 6 is output.
     PC_CR1_C16 = 1;         //  Pin is set to Push-Pull mode.
     PC_CR2_C26 = 1;         //  Pin can run up to 10 MHz.
-    
+
   // Configure MISO Pin
-    
+
     PC_DDR_DDR7 = 0;        //  Port C, bit 7 is input.
     PC_CR1_C17 = 1;         //  Pin is set to pull-up mode.
-    PC_CR2_C27 = 0;         //  Pin is interrupt disabled. 
-    
-  
+    PC_CR2_C27 = 0;         //  Pin is interrupt disabled.
+
+
   /* Set output pins to default values */
-    
+
     PC_ODR_ODR5 = 0;  //SCLK is low
     PC_ODR_ODR6 = 1;  //MOSI is high
- 
+
 }
 
 uint8_t spi_bitbang_transfer(uint8_t byte)
@@ -74,10 +74,10 @@ uint8_t spi_bitbang_transfer(uint8_t byte)
       PC_ODR_ODR6 = 0;  //MOSI is low
     }
     byte <<= 1;
-    
+
     /* Latch Data into Slave */
     PC_ODR_ODR5 = 1; // SCK high
-   
+
 
     /* Read Data */
     uint8_t temp = PC_IDR;

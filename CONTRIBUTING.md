@@ -23,7 +23,7 @@ Focused changes are preferred, including:
 
 Please keep behavioural changes narrowly scoped and describe how they were tested. For hardware changes, include the affected component or revision and the evidence supporting the change.
 
-Before submitting a firmware or host-tool change, run `make test`. If you prefer the reproducible containerized toolchain, run `make container-check` instead. Changes intended for a release must also satisfy the gates in [`docs/release-checklist.md`](docs/release-checklist.md).
+Before submitting a firmware or host-tool change, run `make quality` and `make test`. For the complete gate, run `make check`; if you prefer the reproducible containerized toolchain, run `make container-check`. Changes intended for a release must also satisfy the gates in [`docs/release-checklist.md`](docs/release-checklist.md).
 
 ## Repository hygiene
 

@@ -27,7 +27,7 @@ No IAR installation, radio, GPS receiver, or STM8 board is required for this pat
 
 ## Reproducible environment
 
-If you do not want to install GCC or SDCC on your host, use the repository Dev Container or run `make container-check` with Docker. Both use the same container definition exercised by CI. See [`development-environment.md`](development-environment.md).
+If you do not want to install GCC or SDCC on your host, use the repository Dev Container or run `make container-check` with Docker. Both use the same container definition exercised by CI, including cppcheck and Ruff. See [`development-environment.md`](development-environment.md).
 
 ## Why this is a useful project to learn on
 
@@ -64,6 +64,7 @@ The root [`README.md`](../README.md) contains the architecture and firmware-cycl
 Look for open issues labelled [`good first issue`](https://github.com/ImperialSpaceSociety/PicoTracker/issues?q=is%3Aissue%20is%3Aopen%20label%3A%22good%20first%20issue%22). Pick one narrow problem, make the smallest complete change, add or update tests where appropriate, and run:
 
 ```sh
+make quality
 make test
 ```
 

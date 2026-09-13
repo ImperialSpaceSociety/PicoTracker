@@ -1,9 +1,9 @@
 /*
  * Energy Management functions for Clock and Power
- * 
+ *
  * for Pico Balloon Tracker using HC12 radio module and GPS
  * HC12 Module with STM8S003F3 processor and silabs Si4463 Radio
- *  
+ *
  * Derived Work Copyright (c) 2018 Imperial College Space Society
  * From original work Copyright (C) 2014  Richard Meadows <richardeoin>
  *
@@ -35,7 +35,7 @@
 
 /*
  *  Setup the system clock to run at 16MHz using the internal oscillator.
- */	
+ */
 uint8_t InitialiseSystemClock(void)
 {
     uint32_t timeout = 0;
@@ -47,14 +47,14 @@ uint8_t InitialiseSystemClock(void)
         if (timeout++ > CLOCK_READY_TIMEOUT) return 0;
     }
     CLK_CKDIVR = 0;                     //  Ensure the clocks are running at full speed.
-	
+
     CLK_PCKENR1 = 0x8C;                 //  Enable clock to only UART 1/2/3/4, Enable TIM 1, disable other timers, SPI, I2C
     CLK_PCKENR2 = 0x04;                 //  Enable clock only to AWU register clock, (does not disable counter clock), not to ADC
-	
+
     CLK_CCOR = 0;                       //  Turn off CCO.
     CLK_HSITRIMR = 0;                   //  Turn off any HSIU trimming.
     CLK_SWIMCCR = 0;                    //  Set SWIM to run at clock / 2.
-	
+
     CLK_SWR = 0xe1;                     //  Use HSI as the clock source.
     CLK_SWCR = 0;                       //  Reset the clock switch control register.
     CLK_SWCR_SWEN = 1;                  //  Enable switching.
@@ -117,10 +117,10 @@ uint8_t Switch_to_HSI_clock(void)
  * https://blog.mark-stevens.co.uk/2014/06/auto-wakeup-stm8s/
  * Total delay is 30.720s
  * Ref. Section 12.3 AWU functional description in STM8 ref manual
- * At the moment I think the values of AWUTb and APR are outside the 
+ * At the moment I think the values of AWUTb and APR are outside the
  * recommended range in the ref manual. It is running for more than 30 seconds,
  * which is the max in the document
-*/		
+*/
 void InitialiseAWU(void)
 {
     AWU_CSR1_AWUEN = 0;     // Disable the Auto-wakeup feature.
@@ -137,7 +137,7 @@ void DeInitAWU(void)
 
 /*  Auto Wakeup Interrupt Service Routine (ISR).
  *  https://blog.mark-stevens.co.uk/2014/06/auto-wakeup-stm8s/
-*/ 
+*/
 #pragma vector = AWU_vector
 __interrupt void AWU_IRQHandler(void)
 {

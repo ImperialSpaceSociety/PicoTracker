@@ -11,6 +11,7 @@
     "vscode": {
       "extensions": [
         "ms-python.python",
+        "charliermarsh.ruff",
         "ms-vscode.cpptools"
       ]
     }
