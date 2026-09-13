@@ -8,10 +8,11 @@ DEV_IMAGE ?= picotracker-dev
 RUFF ?= ruff
 CPPCHECK ?= cppcheck
 PYTHON_PATHS := tools tests
+RELEASE_TAG ?= v$(shell cat VERSION)
 
 .DEFAULT_GOAL := help
 
-.PHONY: help demo simulate test stm8 decode quality format check clean container-build container-check c-quality python-quality whitespace
+.PHONY: help demo simulate test stm8 decode quality format release-check release-notes check clean container-build container-check c-quality python-quality whitespace
 
 help:
 	@printf '%s\n' \
@@ -24,6 +25,8 @@ help:
 	  '  make stm8    Compile/link the structural STM8 check (requires SDCC)' \
 	  '  make quality Run C/Python static analysis and whitespace checks' \
 	  '  make format  Apply Ruff Python fixes and formatting' \
+	  '  make release-check Validate VERSION and changelog for RELEASE_TAG' \
+	  '  make release-notes Preview generated notes for RELEASE_TAG' \
 	  '  make check   Run quality, tests, decode, simulator, and STM8 verification' \
 	  '  make clean   Remove generated host-test output' \
 	  '  make container-build  Build the reproducible developer image' \
@@ -66,6 +69,12 @@ quality: c-quality python-quality whitespace
 format:
 	$(RUFF) check --fix $(PYTHON_PATHS)
 	$(RUFF) format $(PYTHON_PATHS)
+
+release-check:
+	$(PYTHON) tools/release.py check --tag "$(RELEASE_TAG)"
+
+release-notes: release-check
+	$(PYTHON) tools/release.py notes --tag "$(RELEASE_TAG)" --sha "$$(git rev-parse HEAD)"
 
 check: quality test decode simulate stm8
 	@echo 'All PicoTracker repository checks passed.'

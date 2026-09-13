@@ -23,6 +23,8 @@ class RepositoryMetadataTests(unittest.TestCase):
             "decode:",
             "quality:",
             "format:",
+            "release-check:",
+            "release-notes:",
             "check:",
             "clean:",
             "container-build:",
@@ -52,6 +54,21 @@ class RepositoryMetadataTests(unittest.TestCase):
         self.assertIn("[tool.ruff]", pyproject)
         self.assertIn("[tool.ruff.lint]", pyproject)
         self.assertIn("Whitespace check failed", whitespace)
+
+    def test_release_automation_configuration(self):
+        workflow = (ROOT / ".github" / "workflows" / "release.yml").read_text()
+        release_tool = (ROOT / "tools" / "release.py").read_text()
+        for expected in (
+            "tags:",
+            "contents: write",
+            "--require-annotated",
+            "--require-branch origin/master",
+            "make container-check",
+            "gh release create",
+        ):
+            self.assertIn(expected, workflow)
+        self.assertIn("CHANGELOG.md must contain exactly one", release_tool)
+        self.assertIn("must be an annotated tag", release_tool)
 
     def test_standalone_licenses_exist(self):
         mit = (ROOT / "LICENSES" / "MIT.txt").read_text()

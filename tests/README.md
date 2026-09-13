@@ -15,7 +15,7 @@ These tests exercise hardware-independent firmware and tooling logic on the deve
 - altitude-dependent sleep policy
 - Python telemetry decoder CRC handling and sample-capture decoding
 - hardware-independent simulator behaviour, fault recovery, telemetry vectors, and decoder-compatible captures
-- release metadata and IAR project-reference integrity
+- release metadata, release-note extraction, and IAR project-reference integrity
 
 From the repository root, run the complete host suite with:
 

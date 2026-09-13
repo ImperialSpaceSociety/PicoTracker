@@ -1,0 +1,46 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out tagged source
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Verify release metadata and annotated tag
+        run: |
+          git fetch --no-tags origin master:refs/remotes/origin/master
+          python3 tools/release.py check \
+            --tag "$GITHUB_REF_NAME" \
+            --require-annotated \
+            --require-branch origin/master
+
+      - name: Run reproducible release checks
+        run: make container-check
+
+      - name: Render release notes
+        run: |
+          python3 tools/release.py notes \
+            --tag "$GITHUB_REF_NAME" \
+            --sha "$(git rev-parse HEAD)" \
+            --output "$RUNNER_TEMP/release-notes.md"
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" \
+            --verify-tag \
+            --title "PicoTracker $GITHUB_REF_NAME" \
+            --notes-file "$RUNNER_TEMP/release-notes.md" \
+            --latest
