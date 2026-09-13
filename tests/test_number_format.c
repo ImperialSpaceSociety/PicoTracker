@@ -23,13 +23,11 @@ static void expect_u16_av(uint16_t value, const char *expected)
     char output[8] = {0};
     uint8_t len = i16toav(value, output);
     output[len] = '\0';
-    
     if (strcmp(output, expected) != 0) {
         fprintf(stderr, "i16toav(%u): got %s, expected %s\n",
                 (unsigned)value, output, expected);
         failures++;
     }
-    
     size_t expected_len = strlen(expected);
     if (len != expected_len) {
         fprintf(stderr, "i16toav(%u): returned length %u, expected %zu\n",
