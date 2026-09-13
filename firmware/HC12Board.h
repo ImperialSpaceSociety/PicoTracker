@@ -1,7 +1,7 @@
 /* HC12 Si4463 Radio board definitions file
 * for Pico Balloon Tracker using HC12 radio module and GPS
 * HC12 Module with STM8S003F3 processor and silabs Si4463 Radio
-*  
+*
 * Derived Work Copyright (c) 2018 Imperial College Space Society
 * From original work Copyright (C) 2014  Richard Meadows <richardeoin>
 *
@@ -28,7 +28,7 @@
 
 /*
 * STM8 Processor IO
-* 
+*
 * Pin1  PD4             Si4463 p1 - SDN
 * Pin2  PD5/UART1_TX    TXD Header Pin via level shifter
 * Pin3  PD6/UART1_Rx    RXD Header Pin via level shifter
@@ -70,12 +70,12 @@
 #ifdef  XO_TCXO
 #define XO_FREQUENCY	 32000000L  // si4463 clock frequency
 #define XO_745_DEVIATION     50         // Si4463 745Hz Deviation
-#define XO_SOURCE        SI_POWER_UP_TCXO  
- 
+#define XO_SOURCE        SI_POWER_UP_TCXO
+
 #else
 #define XO_FREQUENCY	 30000000L  // si4463 clock frequency
 #define XO_745_DEVIATION     52         // Si4463 745Hz Deviation
-#define XO_SOURCE        SI_POWER_UP_XTAL   
+#define XO_SOURCE        SI_POWER_UP_XTAL
 #endif
 
 

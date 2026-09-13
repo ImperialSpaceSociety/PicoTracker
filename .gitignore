@@ -6,6 +6,7 @@ Thumbs.db
 *.swp
 *venv*
 __pycache__/
+.ruff_cache/
 *.py[cod]
 
 # Tool-generated data

@@ -2,7 +2,7 @@
  * Functions for the UBLOX 6 GPS
  * for Pico Balloon Tracker using HC12 radio module and GPS
  * HC12 Module with STM8S003F3 processor and silabs Si4463 Radio
- *  
+ *
  * Derived Work Copyright (c) 2018 Imperial College Space Society
  * From original work Copyright (C) 2014  Richard Meadows <richardeoin>
  *
@@ -36,8 +36,8 @@
 
 #define UART_RX_BUFFER_LENGTH   120
 #define UBX_CFG_RETRIES         3
-#define UBX_CFG_TIMEOUT         60000     // timeout 
-#define UBX_POLL_RETRIES        3       
+#define UBX_CFG_TIMEOUT         60000     // timeout
+#define UBX_POLL_RETRIES        3
 #define UBX_POLL_TIMEOUT        1000000l     // timeout
 #define UBX_RX_BYTE_LIMIT       1024U        // maximum bytes scanned for one response
 #define UART_TX_TIMEOUT         60000UL      // bounded wait for UART TX readiness

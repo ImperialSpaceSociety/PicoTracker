@@ -96,7 +96,9 @@ def main() -> None:
         )
 
         map_text = image.with_suffix(".map").read_text()
-        flash_areas = [parse_area(map_text, name) for name in ("HOME", "GSINIT", "INITIALIZER", "CODE")]
+        flash_areas = [
+            parse_area(map_text, name) for name in ("HOME", "GSINIT", "INITIALIZER", "CODE")
+        ]
         flash_end = max(address + size for address, size in flash_areas)
         data_address, data_size = parse_area(map_text, "DATA")
 
@@ -109,10 +111,14 @@ def main() -> None:
                 f"STM8 structural image exceeds RAM: {data_address + data_size} > {RAM_SIZE} bytes"
             )
 
-        print(f"STM8 structural target compile passed with SDCC {subprocess.check_output([sdcc, '--version'], text=True).splitlines()[0]}")
+        print(
+            f"STM8 structural target compile passed with SDCC {subprocess.check_output([sdcc, '--version'], text=True).splitlines()[0]}"
+        )
         print(f"flash span: {flash_end - FLASH_START} / {FLASH_END - FLASH_START} bytes")
         print(f"static DATA: {data_size} / {RAM_SIZE} bytes")
-        print("note: IAR register names and interrupt declarations are shimmed; this image is not flashable")
+        print(
+            "note: IAR register names and interrupt declarations are shimmed; this image is not flashable"
+        )
 
 
 if __name__ == "__main__":

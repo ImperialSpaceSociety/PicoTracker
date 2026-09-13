@@ -4,8 +4,8 @@
 from __future__ import annotations
 
 import argparse
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Iterable
 
 POLYNOMIAL = 0x1021
 PRESET = 0xFFFF
@@ -112,7 +112,9 @@ def plot_deltas(datasets: list[tuple[str, list[int]]]) -> None:
     try:
         import matplotlib.pyplot as plt
     except ImportError as exc:
-        raise SystemExit("Plotting requires: python -m pip install -r tools/requirements.txt") from exc
+        raise SystemExit(
+            "Plotting requires: python -m pip install -r tools/requirements.txt"
+        ) from exc
 
     for label, deltas in datasets:
         if deltas:
@@ -127,7 +129,9 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("files", nargs="*", type=Path, help="raw DL-fldigi capture files")
     parser.add_argument("--plot", action="store_true", help="plot cycle-duration histograms")
-    parser.add_argument("--print-frames", action="store_true", help="print each valid telemetry frame")
+    parser.add_argument(
+        "--print-frames", action="store_true", help="print each valid telemetry frame"
+    )
     args = parser.parse_args()
 
     files = args.files or [Path(__file__).with_name("with_pips_data.txt")]

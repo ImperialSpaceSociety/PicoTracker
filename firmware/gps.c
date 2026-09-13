@@ -2,7 +2,7 @@
  * Functions for the UBLOX 8 GPS
  * for Pico Balloon Tracker using HC12 radio module and GPS
  * HC12 Module with STM8S003F3 processor and silabs Si4463 Radio
- *  
+ *
  * Derived Work Copyright (c) 2018 Imperial College Space Society
  * From original work Copyright (C) 2014  Richard Meadows <richardeoin>
  * Also derived from https://github.com/thasti/utrak
@@ -86,9 +86,9 @@
  * 		CPHA: Clock phase
  * 		LBCL: Last bit clock pulse
  */
-   
-   
-   
+
+
+
 /* millisec delay at @16MHz
  * the 960 comes from the number of instructions to perform the do/while loop in 1 ms
  */
@@ -133,7 +133,7 @@ void InitialiseUART(void)
     UART1_CR1_M = 0;        //  8 Data bits.
     UART1_CR1_PCEN = 0;     //  Disable parity.
     UART1_CR3_STOP = 0;     //  1 stop bit.
-    UART1_BRR2 = 0x02;      //  Set the baud rate registers to 9600 baud 
+    UART1_BRR2 = 0x02;      //  Set the baud rate registers to 9600 baud
     UART1_BRR1 = 0x68;      //  based upon a 16 MHz system clock.
     //
     //  Disable the transmitter and receiver.
@@ -158,13 +158,13 @@ void InitialiseUART(void)
     //
     UART1_CR2_TEN = 1;
     UART1_CR2_REN = 1;
-   
+
 }
 
 
 
 
-/* 
+/*
  * gps_transmit_string
  *
  * transmits a command to the GPS
@@ -189,7 +189,7 @@ uint8_t UART_send_buffer(const uint8_t *cmd, uint8_t length) {
     return 1;
 }
 
-/* 
+/*
  * gps_receive_ack
  *
  * waits for transmission of an ACK/NAK message from the GPS.
@@ -218,11 +218,11 @@ static uint8_t gps_receive_ack(uint8_t class_id, uint8_t msg_id) {
     }
 }
 
-/* 
+/*
  * gps_disable_nmea_output
  *
  * disables all NMEA messages to be output from the GPS.
- * even though the parser can cope with NMEA messages and ignores them, it 
+ * even though the parser can cope with NMEA messages and ignores them, it
  * may save power to disable them completely.
  *
  * returns if ACKed by GPS
@@ -278,10 +278,10 @@ static uint16_t gps_receive_payload(uint8_t class_id, uint8_t msg_id,
 
 
 
-/* 
+/*
  * gps_get_fix
  *
- * retrieves a GPS fix from the module. if validity flag is not set, date/time and position/altitude are 
+ * retrieves a GPS fix from the module. if validity flag is not set, date/time and position/altitude are
  * assumed not to be reliable!
  *
  * argument is call by reference to avoid large stack allocations
@@ -294,13 +294,13 @@ uint8_t gps_get_fix(struct gps_fix *fix) {
          */
 	static const uint8_t pvt[] = {0xB5, 0x62, 0x01, 0x07, 0x00, 0x00, 0x08, 0x19};
 	uint16_t response_length;
-		
+
 	/* Wake up from sleep with bounded UART waits. */
 	if (!uart_wait_tx_ready()) return 0;
 	UART1_DR = 0xFF;
 	if (!uart_wait_tx_ready()) return 0;
 	gps_startup_delay();
-        
+
 
 	/* request position */
 	if (!UART_send_buffer(pvt, sizeof(pvt))) return 0;
@@ -329,12 +329,12 @@ uint8_t gps_get_fix(struct gps_fix *fix) {
 			(uint32_t)response[36] | ((uint32_t)response[37] << 8) |
 			((uint32_t)response[38] << 16) | ((uint32_t)response[39] << 24)));
         return 1;
-			
+
 }
 
 
 
-/* 
+/*
  * GPS wake-up by sending 0xFF to the UART pin
  */
 uint8_t gps_wake_up(void) {
@@ -344,9 +344,9 @@ uint8_t gps_wake_up(void) {
 	UART1_DR = 0xFF;
 	if (!uart_wait_tx_ready()) return 0;
 	gps_startup_delay();
-	
+
 	return 1;
-        		
+
 }
 
 
@@ -360,7 +360,7 @@ uint8_t gps_wake_up(void) {
  */
 uint8_t gps_set_gps_only(void) {
 
- 
+
 	static const uint8_t gpsonly[] = {
 		0xB5,0x62,0x06,0x3E,0x3C,0x00,			/* UBX-CFG-GNSS */
 		0x00,0x00,0x20,0x07,				/* use 32 channels, 7 configs following */
@@ -373,8 +373,8 @@ uint8_t gps_set_gps_only(void) {
 		0x06,0x00,0x00,0x00,0x00,0x00,0x00,0x01,	/* GLONASS disable */
 		0xC4,0xBC									/* checksum */
 	};
-        
-       
+
+
 	if (!UART_send_buffer(gpsonly, sizeof(gpsonly))) return 0;
 	return gps_receive_ack(0x06, 0x3E);
 }
@@ -404,7 +404,7 @@ uint8_t gps_set_airborne_model(void) {
 		0xFA, 0x00,							/* time DOP */
 		0x64, 0x00,							/* position accuracy */
 		0x2C, 0x01,							/* time accuracy */
-		0x00,									/* static hold threshold */ 
+		0x00,									/* static hold threshold */
 		0x3C, 									/* DGPS timeout */
 		0x00, 									/* min. SVs above C/No thresh */
 		0x00, 									/* C/No threshold */
@@ -428,11 +428,11 @@ uint8_t gps_set_airborne_model(void) {
  */
 uint8_t gps_set_power_save(void) {
 	/* All the config options are in section 33.10.21.1 Extended Power
-	 * Management configuration of the UBLOX documentation 
+	 * Management configuration of the UBLOX documentation
 	 * This section is perhaps the most important in saving power
-	 * through software settings 
+	 * through software settings
 	 * This config uses the on/off-mode, not the cyclic power save mode */
-	
+
 //	static const uint8_t powersave[] = {
 //		0xB5, 0x62, 0x06, 0x3B, 44, 0,	/* UBX-CFG-PM2 */
 //		0x01, 0x00, 0x00, 0x00, 		/* v1, reserved 1..3 */
@@ -449,7 +449,7 @@ uint8_t gps_set_power_save(void) {
 //		0x00, 0x00, 0x00, 0x00,			/* reserved 11 */
 //		0xa9, 0x77
 //	};
-//	
+//
 	/* put the tracker to sleep forever until I manualy wake it up */
 	static const uint8_t powersave[] = {
 	0xB5,0x62,0x06,0x3B,0x2C,0x00,  /* UBX-CFG-PM2 */
@@ -498,7 +498,7 @@ uint8_t gps_power_save(int on) {
  * gps_save_settings
  *
  * saves the GPS settings to flash. should be done when power save is disabled and all
- * settings are configured. 
+ * settings are configured.
  */
 uint8_t gps_save_settings(void) {
 	static const uint8_t cfg[] = {

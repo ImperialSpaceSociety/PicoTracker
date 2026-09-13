@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-/* convert decimal degrees to degrees in uBlox output format (scaled by 10^7) */ 
+/* convert decimal degrees to degrees in uBlox output format (scaled by 10^7) */
 #define COORD_UBX(x) ((int32_t) (x * 10000000.0f))
 
 struct gps_fix {

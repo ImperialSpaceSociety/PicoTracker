@@ -8,6 +8,7 @@ This directory collects PicoTracker project guides and technical reference mater
 - [Project roadmap and extension ideas](roadmap.md)
 - [Development and debugging](development.md)
 - [Reproducible development environment](development-environment.md)
+- [Code quality checks](code-quality.md)
 - [Hardware-independent tracker simulator](simulator.md)
 - [GPS notes](gps.md)
 - [HC12 radio notes](hc12.md)

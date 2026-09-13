@@ -2,8 +2,8 @@
 
 import importlib.util
 import tempfile
-from pathlib import Path
 import unittest
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 MODULE_PATH = ROOT / "tools" / "decode_data.py"
@@ -33,8 +33,10 @@ class DecodeDataTests(unittest.TestCase):
         self.assertEqual(len(frames), 165)
 
     def test_cycle_delta_handles_midnight(self):
-        frames = [["X", "1", "235959", "0", "0", "0", "0", "0", "0", "0"],
-                  ["X", "2", "000001", "0", "0", "0", "0", "0", "0", "0"]]
+        frames = [
+            ["X", "1", "235959", "0", "0", "0", "0", "0", "0", "0"],
+            ["X", "2", "000001", "0", "0", "0", "0", "0", "0", "0"],
+        ]
         self.assertEqual(decode_data.cycle_deltas(frames), [2])
 
 

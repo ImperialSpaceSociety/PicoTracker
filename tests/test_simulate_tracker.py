@@ -1,15 +1,15 @@
-from datetime import datetime, timezone
-from pathlib import Path
 import re
 import sys
 import tempfile
 import unittest
+from datetime import datetime, timezone
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
-from decode_data import analyse_data, crc  # noqa: E402
 import simulate_tracker as sim  # noqa: E402
+from decode_data import analyse_data, crc  # noqa: E402
 
 
 class TrackerSimulatorTests(unittest.TestCase):
@@ -19,7 +19,9 @@ class TrackerSimulatorTests(unittest.TestCase):
         sleep_h = (ROOT / "firmware" / "sleep_policy.h").read_text()
         energy_c = (ROOT / "firmware" / "energy.c").read_text()
 
-        self.assertEqual(re.search(r'#define PAYLOAD_NAME "([^"]+)"', main_h).group(1), sim.PAYLOAD_NAME)
+        self.assertEqual(
+            re.search(r'#define PAYLOAD_NAME "([^"]+)"', main_h).group(1), sim.PAYLOAD_NAME
+        )
         self.assertIn("#define GPS_FIX_ATTEMPTS_MAX       0x0FU", status_h)
         self.assertIn("#define HIGH_ALTITUDE_SLEEP_THRESHOLD_M 3000U", sleep_h)
         self.assertIn("Total delay is 30.720s", energy_c)

@@ -42,12 +42,14 @@ make test
 | `make test` | Run all host regression tests |
 | `make decode` | Decode a telemetry capture; override with `CAPTURE=path/to/file` |
 | `make stm8` | Run the structural STM8 compile/link check; requires SDCC |
-| `make check` | Run host tests, telemetry decoding, and the STM8 structural check |
+| `make quality` | Run C static analysis, Python lint/format checks, and whitespace validation |
+| `make format` | Apply Ruff fixes and Python formatting |
+| `make check` | Run quality checks, tests, decoding, simulator, and STM8 verification |
 | `make clean` | Remove generated host-test output |
 | `make container-build` | Build the reproducible Linux development image |
 | `make container-check` | Run the full verification suite inside that image |
 
-For a reproducible Linux toolchain with Python, GCC, Make, and SDCC already installed, use the [Dev Container / Docker environment](docs/development-environment.md).
+For a reproducible Linux toolchain with Python, GCC, Make, SDCC, cppcheck, and Ruff already installed, use the [Dev Container / Docker environment](docs/development-environment.md).
 
 From there, [`docs/getting-started.md`](docs/getting-started.md) gives separate paths into firmware, GPS/UBX, radio/telemetry, Python tooling, testing, hardware, CAD, and documentation. See [`docs/roadmap.md`](docs/roadmap.md) for extension ideas ranging from small first contributions to larger hardware and tooling projects.
 
@@ -148,17 +150,17 @@ Review these settings before programming hardware for a new payload or flight. R
 
 ## Verification and testing
 
-GitHub Actions runs both the host regression suite and the STM8 structural target check on pushes to `master` and on pull requests. The host suite covers numeric formatting, telemetry layout and CRCs, UBX packet parsing and ACK/NAK handling, GPS fix validity, status packing, radio measurements, synthesizer calculations, sleep policy, decoder behaviour, release metadata, and IAR project-reference integrity.
+GitHub Actions runs the full reproducible `make check` gate on pushes to `master` and on pull requests. It includes cppcheck for maintained C, Ruff lint/format verification, maintained-tree whitespace validation, the host regression suite, telemetry decoding, the simulator smoke run, repository metadata checks, and the STM8 structural target check.
 
 For `v1.4.0`, the CI SDCC 4.2 structural build used **7,787 / 8,192 bytes** of flash span and **130 / 1,024 bytes** of static DATA. The structural SDCC build uses compatibility shims for IAR-specific registers and interrupt declarations, so it is a target-compiler and memory-window check, not a flashable firmware artifact. The release was approved by the maintainer following target/hardware validation; detailed native-IAR logs and quantitative hardware measurements were not archived with that release.
 
-The root `Makefile` keeps verification commands consistent across local development and CI. Run the host suite with `make test`, the independent target-structure check with `make stm8`, and the telemetry smoke test with `make decode`. With SDCC installed, the complete repository verification is one command:
+The root `Makefile` keeps verification commands consistent across local development and CI. Run the fast static gate with `make quality`, the host suite with `make test`, the independent target-structure check with `make stm8`, and the telemetry smoke test with `make decode`. With the development tools installed, the complete repository verification is one command:
 
 ```sh
 make check
 ```
 
-The maintained production project for native STM8 development is [`firmware/HC12Tracker.ewp`](firmware/HC12Tracker.ewp). See [`docs/development.md`](docs/development.md) for programming and debugging notes.
+The maintained production project for native STM8 development is [`firmware/HC12Tracker.ewp`](firmware/HC12Tracker.ewp). See [`docs/code-quality.md`](docs/code-quality.md) for the quality gate and [`docs/development.md`](docs/development.md) for programming and debugging notes.
 
 ## Telemetry
 
@@ -185,6 +187,7 @@ The exact field order is documented in [`docs/telemetry-format.md`](docs/telemet
 ## Documentation
 
 - [`docs/development.md`](docs/development.md) - development, programming, debugging, oscillator configuration, and runtime notes
+- [`docs/code-quality.md`](docs/code-quality.md) - static analysis, Python lint/format, and whitespace quality gates
 - [`docs/gps.md`](docs/gps.md) - GPS hardware and integration notes
 - [`docs/hc12.md`](docs/hc12.md) - HC-12, Si4463/Si4438, oscillator, and processor notes
 - [`docs/telemetry-format.md`](docs/telemetry-format.md) - telemetry field order
