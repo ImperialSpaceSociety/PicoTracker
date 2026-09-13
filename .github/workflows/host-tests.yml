@@ -1,4 +1,4 @@
-name: Host tests
+name: Host + STM8 checks
 
 on:
   push:
