@@ -18,6 +18,23 @@ static void expect_u16(uint16_t value, uint8_t width, const char *expected)
     }
 }
 
+static void expect_u16_av(uint16_t value, const char *expected)
+{
+    char output[8] = {0};
+    uint8_t len = i16toav(value, output);
+    output[len] = '\0';
+    if (strcmp(output, expected) != 0) {
+        fprintf(stderr, "i16toav(%u): got %s, expected %s\n",
+                (unsigned)value, output, expected);
+        failures++;
+    }
+    size_t expected_len = strlen(expected);
+    if (len != expected_len) {
+        fprintf(stderr, "i16toav(%u): returned length %u, expected %zu\n",
+                (unsigned)value, (unsigned)len, expected_len);
+        failures++;
+    }
+}
 
 static void expect_u32(uint32_t value, uint8_t width, const char *expected)
 {
@@ -41,6 +58,17 @@ int main(void)
     expect_u16(40000, 5, "40000");
     expect_u16(50000, 5, "50000");
     expect_u16(65535, 5, "65535");
+
+    expect_u16_av(0, "0");
+    expect_u16_av(9, "9");
+    expect_u16_av(10, "10");
+    expect_u16_av(99, "99");
+    expect_u16_av(100, "100");
+    expect_u16_av(999, "999");
+    expect_u16_av(1000, "1000");
+    expect_u16_av(9999, "9999");
+    expect_u16_av(10000, "10000");
+    expect_u16_av(65535, "65535");
 
     expect_u32(0, 9, "000000000");
     expect_u32(515362480, 9, "515362480");
