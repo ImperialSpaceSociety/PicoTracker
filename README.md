@@ -1,51 +1,131 @@
 # PicoTracker
 
-[![Host tests](https://github.com/ImperialSpaceSociety/PicoTracker/actions/workflows/host-tests.yml/badge.svg)](https://github.com/ImperialSpaceSociety/PicoTracker/actions/workflows/host-tests.yml)
+[![Release](https://img.shields.io/github/v/release/ImperialSpaceSociety/PicoTracker?display_name=tag)](https://github.com/ImperialSpaceSociety/PicoTracker/releases/latest)
+[![Host + STM8 checks](https://github.com/ImperialSpaceSociety/PicoTracker/actions/workflows/host-tests.yml/badge.svg)](https://github.com/ImperialSpaceSociety/PicoTracker/actions/workflows/host-tests.yml)
+[![MCU: STM8S003F3](https://img.shields.io/badge/MCU-STM8S003F3-informational)](firmware/)
+[![Software: MIT](https://img.shields.io/badge/software-MIT-blue.svg)](LICENSES/MIT.txt)
+[![Hardware: CERN OHL v1.2](https://img.shields.io/badge/hardware-CERN%20OHL%20v1.2-blue.svg)](LICENSES/CERN-OHL-1.2.txt)
 
-PicoTracker is a lightweight, low-cost high-altitude balloon tracking platform built around an STM8 processor, HC-12/Si4463 radio, u-blox GPS receiver, and 433 MHz RTTY telemetry. The project was originally developed by the Imperial College Space Society.
+PicoTracker is a lightweight, low-cost high-altitude balloon tracking platform built around an STM8 microcontroller, HC-12 radio hardware, u-blox GPS, and 433 MHz RTTY telemetry. The project was originally developed by the Imperial College Space Society and returned to active maintenance in 2026.
 
 ### Project status
 
-Active maintenance resumed in 2026. [`v1.4.0`](CHANGELOG.md) is the current maintained release. It incorporates firmware correctness fixes, regression testing, bounded failure handling, documentation cleanup, release controls, and an automated STM8 structural compile/link check. The original hardware dates from 2018–2019, so anyone building a unit today should still revalidate component availability, RF configuration, power behaviour, and environmental assumptions.
+[`v1.4.0`](https://github.com/ImperialSpaceSociety/PicoTracker/releases/tag/v1.4.0) is the current maintained release. It is a source-only release focused on firmware correctness, bounded failure handling, regression testing, STM8 size verification, and clearer project documentation. The original hardware dates from 2018-2019, so current builders should still revalidate component availability, RF configuration, power behaviour, and environmental assumptions.
 
 ### Maintainer
 
-This repository is maintained and administered by [Sylvester Kaczmarek](https://SylvesterKaczmarek.com). Questions about maintenance, proposed technical changes, release coordination, or collaboration can be raised through GitHub issues where appropriate or directed to the maintainer through the website.
+This repository is maintained and administered by [Sylvester Kaczmarek](https://SylvesterKaczmarek.com). Maintenance questions, technical changes, release coordination, and collaboration proposals can be raised through GitHub issues or directed to the maintainer through the website.
+
+## At a glance
+
+| Item | Current project configuration |
+| --- | --- |
+| MCU | STM8S003F3, 8 KB flash, 1 KB RAM |
+| Radio | HC-12 hardware using Si4463 or compatible Si4438 paths |
+| Default RF frequency | 434.570 MHz |
+| Telemetry | 50 baud RTTY with XMODEM CRC |
+| GPS | u-blox M8 family |
+| Radio oscillator | 32 MHz TCXO by default; 30 MHz crystal compatibility retained |
+| Processor clock | 16 MHz internal HSI |
+| Power | AAA lithium primary cell with 3.3 V boost stage in the original design |
+| Current release | [`v1.4.0`](https://github.com/ImperialSpaceSociety/PicoTracker/releases/tag/v1.4.0) |
+| Production project | [`firmware/HC12Tracker.ewp`](firmware/HC12Tracker.ewp) |
+
+## What changed in v1.4.0
+
+`v1.4.0` is the first maintained release following the 2026 firmware and repository hardening work. Major changes include:
+
+- strict UBX payload length, checksum, ACK/NAK, and valid-3D-fix handling
+- bounded GPS, UART, STM8 clock-switch, and Si4463 command waits
+- corrected Si4463 reset and `POWER_UP` sequencing with explicit error propagation
+- corrected telemetry frame sizing, numeric formatting, temperature handling, and operational-status reporting
+- preserved last-known valid GPS data when acquisition enters degraded mode
+- restored and tested altitude-dependent sleep/wake behaviour and HSI clock recovery
+- removed floating-point radio synthesizer arithmetic and reduced firmware footprint for the 8 KB STM8 target
+- added host regression tests, telemetry decoder tests, repository metadata checks, and a repeatable STM8 structural compile/link check
+
+See [`CHANGELOG.md`](CHANGELOG.md) for the detailed release history.
+
+## How the tracker operates
+
+A normal cycle acquires and validates a u-blox NAV-PVT solution, reads radio voltage and temperature, constructs a CRC-protected telemetry sentence, transmits it over 433 MHz RTTY, powers down the radio and GPS as appropriate, and enters STM8 auto-wakeup sleep. GPS acquisition and radio command paths are bounded so loss of GPS or a radio CTS failure does not create an intentional infinite wait. If a new valid GPS solution cannot be obtained, the tracker continues in degraded mode while retaining the most recently accepted fix.
+
+At altitudes up to 3000 m the maintained firmware uses one auto-wakeup sleep interval. Above 3000 m it uses two intervals before returning to the HSI clock and beginning the next acquisition/transmit cycle.
+
+## Configuration
+
+The main flight configuration is intentionally concentrated in a small number of files:
+
+| Setting | Default | Location |
+| --- | --- | --- |
+| Payload name | `ICSPACE14` | [`firmware/main.h`](firmware/main.h) |
+| RF frequency | `434570000` Hz | [`firmware/main.h`](firmware/main.h) |
+| RTTY timing | 50 baud configuration | [`firmware/main.h`](firmware/main.h) |
+| Radio oscillator | 32 MHz TCXO | [`firmware/HC12Board.h`](firmware/HC12Board.h) |
+| 30 MHz crystal compatibility | Supported by removing `XO_TCXO` | [`firmware/HC12Board.h`](firmware/HC12Board.h) |
+| Sleep cadence | 1 interval through 3000 m, 2 above | [`firmware/sleep_policy.h`](firmware/sleep_policy.h) |
+
+Review these settings before programming hardware for a new payload or flight. RF frequency, output power, antenna configuration, and balloon operation must also comply with the applicable local requirements.
+
+## Verification and testing
+
+GitHub Actions runs both the host regression suite and the STM8 structural target check on pushes to `master` and on pull requests. The host suite covers numeric formatting, telemetry layout and CRCs, UBX packet parsing and ACK/NAK handling, GPS fix validity, status packing, radio measurements, synthesizer calculations, sleep policy, decoder behaviour, release metadata, and IAR project-reference integrity.
+
+For `v1.4.0`, the CI SDCC 4.2 structural build used **7,787 / 8,192 bytes** of flash span and **130 / 1,024 bytes** of static DATA. The structural SDCC build uses compatibility shims for IAR-specific registers and interrupt declarations, so it is a target-compiler and memory-window check, not a flashable firmware artifact. The release was approved by the maintainer following target/hardware validation; detailed native-IAR logs and quantitative hardware measurements were not archived with that release.
+
+Run the host suite from the repository root:
+
+```sh
+make -C tests clean test
+```
+
+With an STM8-capable SDCC installation, run the independent target-structure check:
+
+```sh
+make -C tests stm8
+```
+
+Decode the included telemetry capture with:
+
+```sh
+python3 tools/decode_data.py tools/with_pips_data.txt
+```
+
+The maintained production project for native STM8 development is [`firmware/HC12Tracker.ewp`](firmware/HC12Tracker.ewp). See [`docs/development.md`](docs/development.md) for programming and debugging notes.
+
+## Telemetry
+
+PicoTracker transmits a comma-separated RTTY sentence containing the payload name, sentence ID, UTC time, signed latitude and longitude, altitude, satellite count, radio supply voltage, packed operational status, radio temperature, and a four-digit XMODEM CRC.
+
+```text
+PAYLOAD,ID,HHMMSS,+LAT,-LON,ALT,SATS,VOLTAGE,STATUS,+TEMP*CRC
+```
+
+The exact field order is documented in [`docs/telemetry-format.md`](docs/telemetry-format.md). The packed status field, including GPS acquisition and measurement failure information, is documented in [`docs/status-word.md`](docs/status-word.md).
 
 ## Repository layout
 
-- [`firmware/`](firmware/) - STM8 tracker firmware
-- [`test_firmware/`](test_firmware/) - historical diagnostic projects; not release-qualified
-- [`hardware/`](hardware/) - hardware design files
-- [`cad/`](cad/) - mechanical/CAD files
-- [`docs/`](docs/) - project guides and technical references
-- [`tools/`](tools/) - supporting scripts
-- [`tests/`](tests/) - host-side regression tests for firmware logic
+| Path | Purpose |
+| --- | --- |
+| [`firmware/`](firmware/) | Maintained STM8 tracker firmware and IAR project |
+| [`tests/`](tests/) | Host regression tests and STM8 structural target check |
+| [`tools/`](tools/) | Telemetry decoder and sample captured data |
+| [`hardware/`](hardware/) | Historical hardware design and reference files |
+| [`cad/`](cad/) | Mechanical and printable tracker parts |
+| [`docs/`](docs/) | Development, GPS, radio, telemetry, release, and validation documentation |
+| [`test_firmware/`](test_firmware/) | Historical diagnostic firmware, retained for reference and not release-qualified |
 
-### Key documentation
+## Documentation
 
-- [`docs/development.md`](docs/development.md) - development, programming, and debugging
+- [`docs/development.md`](docs/development.md) - development, programming, debugging, oscillator configuration, and runtime notes
 - [`docs/gps.md`](docs/gps.md) - GPS hardware and integration notes
-- [`docs/hc12.md`](docs/hc12.md) - HC-12 radio and processor notes
-- [`docs/telemetry-format.md`](docs/telemetry-format.md) - transmitted telemetry field order
-- [`docs/status-word.md`](docs/status-word.md) - operational-status field layout
-- [`tests/README.md`](tests/README.md) - host-test scope and usage
-- [`docs/release-checklist.md`](docs/release-checklist.md) - release gates and publication checklist
-- [`docs/hardware-validation.md`](docs/hardware-validation.md) - target hardware validation matrix
-- [`CHANGELOG.md`](CHANGELOG.md) - development and release history
-
-## Verification
-
-GitHub Actions runs the host regression suite on pushes to `master` and on pull requests. Coverage includes telemetry formatting, maximum frame sizing and CRCs, status packing, UBX payload and ACK/NAK parsing, GPS fix validity, radio temperature conversion, sleep policy, repository metadata, IAR project-file references, and the Python telemetry decoder. A separate SDCC structural target check compiles and links the production sources with an STM8 backend and verifies the STM8S003F3 flash/RAM window; the CI result for the release candidate is 7,787 / 8,192 bytes of flash span and 130 / 1,024 bytes of static DATA. The SDCC image uses compatibility shims and is not a flashable release binary. Release `v1.4.0` was approved by the maintainer following target/hardware validation; detailed native-IAR build metadata and quantitative hardware measurements are not archived in this repository.
-
-## Objectives
-
-The Pico balloon tracker was designed as an easy-to-build, low-cost entry point for small helium-filled balloons carrying a tracking payload.
-
-- Low mass: less than 25 g
-- Low cost: historically targeted below £15
-- Compatible with existing HAB tracking systems using 433 MHz RTTY
-- Quick build using off-the-shelf modules where possible
+- [`docs/hc12.md`](docs/hc12.md) - HC-12, Si4463/Si4438, oscillator, and processor notes
+- [`docs/telemetry-format.md`](docs/telemetry-format.md) - telemetry field order
+- [`docs/status-word.md`](docs/status-word.md) - operational-status bit layout
+- [`tests/README.md`](tests/README.md) - regression and structural target-test scope
+- [`docs/release-checklist.md`](docs/release-checklist.md) - release process
+- [`docs/hardware-validation.md`](docs/hardware-validation.md) - target/hardware validation record
+- [`CHANGELOG.md`](CHANGELOG.md) - release history
 
 ## Launch footage
 
@@ -53,40 +133,38 @@ The Pico balloon tracker was designed as an easy-to-build, low-cost entry point 
 
 Launch footage from one of the PicoTracker high-altitude balloon flights. Click the preview to watch the video.
 
-## Design
+## Hardware design
 
 ### GPS
 
-The design uses a u-blox M8-based GPS module suitable for high-altitude balloon use. The original modules contained a u-blox G8030 chip with a TCXO, battery, external flash, LNA, and SAW filter. The original plan was to remove the metal shield and ceramic antenna and replace the antenna with a guitar-wire antenna and ground plane. Historical module mass was approximately 1 g to 13.5 g depending on module and antenna.
+The original design uses a u-blox M8-based GPS module suitable for high-altitude balloon operation. Historical modules incorporated the receiver, TCXO, backup supply, external flash, LNA, SAW filtering, and a ceramic antenna. The original lightweight build concept removed the metal shield and ceramic antenna and replaced the antenna with a wire element and ground plane. Historical mass varied significantly with module and antenna configuration.
 
 ### 433 MHz radio and processor
 
-The tracker uses an HC12 Si4463-based radio with an STM8S003F3 processor. The HC12 module is normally supplied with firmware for a serial interface, but its processor can be reprogrammed for the tracker. The STM8S003F3 has 8 KB of flash and 1 KB of RAM, so firmware size remains an important constraint. Historical module mass was approximately 1 g.
+The tracker reprograms the STM8S003F3 processor already present on HC-12 radio hardware and drives the Si4463 directly. The maintained firmware also retains the historical Si4438-compatible detection path. The STM8S003F3 has 8 KB of flash and 1 KB of RAM, making code size and bounded resource use important design constraints.
 
 ### Battery
 
-The battery supply is based on the earlier [BatteryAAA](https://github.com/ribbotson/rlabTelemetryTx/tree/master/Hardware/BatteryAAA) design, using a AAA lithium primary cell and boost converter to provide 3.3 V to the GPS, radio, and processor. Historical mass was approximately 8 g for the battery and 3.5 g for the holder and boost converter.
+The original battery supply is based on the earlier [BatteryAAA](https://github.com/ribbotson/rlabTelemetryTx/tree/master/Hardware/BatteryAAA) design, using a AAA lithium primary cell and a boost converter to supply approximately 3.3 V to the GPS, radio, and processor. Historical measurements were approximately 8 g for the cell and 3.5 g for the holder and boost converter.
 
 ### Tracker body
 
-The tracker body can be 3D printed or made from polystyrene foam. The original antenna arrangement placed the GPS antenna at the top and the 433 MHz radio antenna at the bottom.
+The tracker body can be 3D printed or made from lightweight foam. The original antenna arrangement placed the GPS antenna at the top and the 433 MHz radio antenna at the bottom. Mechanical files are retained in [`cad/`](cad/).
 
-### Firmware
+## Design constraints
 
-The firmware was derived from earlier Bristol SEDS pico-tracker work and adapted for the more constrained STM8 processor. See [`docs/development.md`](docs/development.md) for programming and debugging notes.
+PicoTracker is intentionally small and resource-constrained. The main engineering constraints are the 8 KB STM8 flash limit, low-temperature operation, oscillator stability, RF configuration, GPS availability at altitude, and energy consumption during acquisition/transmit/sleep cycles. The original modules and mechanical design were developed in 2018-2019, so a new physical build should be treated as a revalidation of the historical hardware rather than an assumption that every original component or measured property is unchanged.
 
-### Tracking
+## Release history
 
-The tracker was designed to work with existing high-altitude balloon tracking networks and software using 433 MHz RTTY. Reception can be performed with an SDR receiver, with RTTY decoding handled by compatible HAB software.
-
-## Design challenges
-
-- **Power consumption:** the original modules were not specifically designed for low-power operation, so firmware-based power management is important.
-- **Low temperature:** operation at high altitude can expose the electronics to temperatures around -50 °C, requiring validation of oscillators, power systems, and packaging.
+| Release | Date | Status |
+| --- | --- | --- |
+| [`v1.4.0`](https://github.com/ImperialSpaceSociety/PicoTracker/releases/tag/v1.4.0) | 2026-09-13 | Current maintained release |
+| [`v1.3`](https://github.com/ImperialSpaceSociety/PicoTracker/releases/tag/v1.3) | 2019-03-07 | Historical, superseded by v1.4.0 |
 
 ## Contributing
 
-Small maintenance fixes, documentation improvements, test notes, and well-scoped technical contributions are welcome. See [`CONTRIBUTING.md`](CONTRIBUTING.md).
+Focused firmware fixes, regression tests, documentation improvements, hardware validation notes, and well-scoped technical contributions are welcome. See [`CONTRIBUTING.md`](CONTRIBUTING.md) before opening a pull request.
 
 ## License
 
