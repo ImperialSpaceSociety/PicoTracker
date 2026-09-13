@@ -218,7 +218,7 @@ The project has a larger video archive documenting high-altitude balloon flights
     <td width="33%" align="center">
       <a href="https://www.youtube.com/watch?v=-n3UuoJTzKg"><img src="https://img.youtube.com/vi/-n3UuoJTzKg/hqdefault.jpg" alt="High Altitude Balloon 2018: 34 Landing" width="100%"></a><br>
       <strong>Descent and landing</strong><br>
-      <sub><a href="https://www.youtube.com/watch?v=-n3UuoJTzKg">High Altitude Balloon 2018: 34 Landing</a> · payload descent about 5 m/s</sub>
+      <sub><a href="https://www.youtube.com/watch?v=-n3UuoJTzKg">High Altitude Balloon 2018: 34 Landing</a></sub>
     </td>
   </tr>
 </table>
