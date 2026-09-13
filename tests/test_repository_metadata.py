@@ -86,6 +86,17 @@ class RepositoryMetadataTests(unittest.TestCase):
         security = (ROOT / "SECURITY.md").read_text()
         self.assertIn("security/advisories/new", security)
 
+    def test_first_project_tutorial(self):
+        tutorial = (ROOT / "docs" / "first-project.md").read_text()
+        for expected in (
+            "165 valid frames",
+            "radio-loss",
+            "13 valid frames",
+            "git diff --",
+            "Do **not** open a pull request",
+        ):
+            self.assertIn(expected, tutorial)
+
     def test_standalone_licenses_exist(self):
         mit = (ROOT / "LICENSES" / "MIT.txt").read_text()
         cern = (ROOT / "LICENSES" / "CERN-OHL-1.2.txt").read_text()
