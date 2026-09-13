@@ -66,6 +66,8 @@ int main(void)
     expect_u16_av(10, "10");
     expect_u16_av(99, "99");
     expect_u16_av(100, "100");
+    expect_u16_av(999, "999");
+    expect_u16_av(1000, "1000");
     expect_u16_av(9999, "9999");
     expect_u16_av(10000, "10000");
     expect_u16_av(65535, "65535");
