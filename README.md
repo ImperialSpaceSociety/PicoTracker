@@ -270,7 +270,7 @@ PicoTracker is intentionally small and resource-constrained. The main engineerin
 
 ## Contributing
 
-Focused firmware fixes, regression tests, decoder/tooling improvements, documentation, hardware validation notes, and well-scoped technical contributions are welcome. New contributors should begin with [`docs/getting-started.md`](docs/getting-started.md), then see [`CONTRIBUTING.md`](CONTRIBUTING.md) before opening a pull request.
+Focused firmware fixes, regression tests, decoder/tooling improvements, documentation, hardware validation notes, and well-scoped technical contributions are welcome. New contributors should begin with [`docs/getting-started.md`](docs/getting-started.md), then see [`CONTRIBUTING.md`](CONTRIBUTING.md) before opening a pull request. Project conduct, support, and security reporting are covered by [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md), [`SUPPORT.md`](SUPPORT.md), and [`SECURITY.md`](SECURITY.md).
 
 ## License
 
