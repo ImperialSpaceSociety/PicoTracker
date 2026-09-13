@@ -16,6 +16,25 @@ PicoTracker is a lightweight, low-cost high-altitude balloon tracking platform b
 
 This repository is maintained and administered by [Sylvester Kaczmarek](https://SylvesterKaczmarek.com). Maintenance questions, technical changes, release coordination, and collaboration proposals can be raised through GitHub issues or directed to the maintainer through the website.
 
+## Start here
+
+New to PicoTracker? You can get a meaningful first result without any hardware:
+
+```sh
+git clone https://github.com/ImperialSpaceSociety/PicoTracker.git
+cd PicoTracker
+make -C tests clean test
+python3 tools/decode_data.py tools/with_pips_data.txt
+```
+
+That runs the host regression suite and decodes the included real telemetry capture, which currently contains **165 valid frames**. From there, [`docs/getting-started.md`](docs/getting-started.md) gives separate paths into firmware, GPS/UBX, radio/telemetry, Python tooling, testing, hardware, CAD, and documentation. See [`docs/roadmap.md`](docs/roadmap.md) for extension ideas ranging from small first contributions to larger hardware and tooling projects.
+
+## Why work on PicoTracker
+
+PicoTracker is unusual in that one small repository spans almost the complete path from a battery-powered embedded device to received, decoded flight telemetry. You can work on constrained C firmware, GPS protocols, RF control, power management, telemetry, Python tooling, tests, hardware, or CAD and still see how your change fits into the whole system.
+
+The STM8 target has only **8 KB of flash and 1 KB of RAM**, so engineering trade-offs are visible rather than hidden behind abundant resources. At the same time, the repository contains historical flight hardware, launch footage, and real captured telemetry, while the maintained codebase now has regression tests and reproducible structural checks. That combination makes it useful both as a learning platform and as a base for serious improvements in tooling, hardware accessibility, power, validation, and ground-side analysis.
+
 ## At a glance
 
 | Item | Current project configuration |
@@ -212,7 +231,7 @@ PicoTracker is intentionally small and resource-constrained. The main engineerin
 
 ## Contributing
 
-Focused firmware fixes, regression tests, documentation improvements, hardware validation notes, and well-scoped technical contributions are welcome. See [`CONTRIBUTING.md`](CONTRIBUTING.md) before opening a pull request.
+Focused firmware fixes, regression tests, decoder/tooling improvements, documentation, hardware validation notes, and well-scoped technical contributions are welcome. New contributors should begin with [`docs/getting-started.md`](docs/getting-started.md), then see [`CONTRIBUTING.md`](CONTRIBUTING.md) before opening a pull request.
 
 ## License
 

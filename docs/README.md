@@ -1,9 +1,11 @@
 # Documentation
 
-This directory collects external references used during PicoTracker development. Some links are historical and may have moved since the original work.
+This directory collects PicoTracker project guides and technical reference material. Some external links are historical and may have moved since the original work.
 
 ## Project guides
 
+- [Start here: getting started](getting-started.md)
+- [Project roadmap and extension ideas](roadmap.md)
 - [Development and debugging](development.md)
 - [GPS notes](gps.md)
 - [HC12 radio notes](hc12.md)
