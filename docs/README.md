@@ -5,6 +5,7 @@ This directory collects PicoTracker project guides and technical reference mater
 ## Project guides
 
 - [Start here: getting started](getting-started.md)
+- [First project: trace a failed telemetry transmission](first-project.md)
 - [Project roadmap and extension ideas](roadmap.md)
 - [Development and debugging](development.md)
 - [Reproducible development environment](development-environment.md)

@@ -23,7 +23,7 @@ To inspect the accepted frames themselves:
 make decode DECODE_ARGS=--print-frames
 ```
 
-No IAR installation, radio, GPS receiver, or STM8 board is required for this path. You can also run `make simulate` to exercise a complete synthetic tracker flight cycle and fault scenarios before touching hardware.
+No IAR installation, radio, GPS receiver, or STM8 board is required for this path. You can also run `make simulate` to exercise a complete synthetic tracker flight cycle and fault scenarios before touching hardware. For a guided first code-and-test exercise, continue with [`first-project.md`](first-project.md).
 
 ## Reproducible environment
 

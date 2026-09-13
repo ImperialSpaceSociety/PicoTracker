@@ -5,7 +5,7 @@ PicoTracker is a small embedded hardware and firmware project with historical de
 
 ## New contributors
 
-If this is your first time in the repository, start with [`docs/getting-started.md`](docs/getting-started.md). It gives you a hardware-free first run, explains the main subsystems, and suggests contribution paths by interest. Open tasks labelled [`good first issue`](https://github.com/ImperialSpaceSociety/PicoTracker/issues?q=is%3Aissue%20is%3Aopen%20label%3A%22good%20first%20issue%22) are intended to be narrow enough to enter without prior PicoTracker knowledge.
+If this is your first time in the repository, start with [`docs/getting-started.md`](docs/getting-started.md). It gives you a hardware-free first run, explains the main subsystems, and suggests contribution paths by interest. The [`first-project tutorial`](docs/first-project.md) then walks through one complete reproduce → change → test → diff workflow. Open tasks labelled [`good first issue`](https://github.com/ImperialSpaceSociety/PicoTracker/issues?q=is%3Aissue%20is%3Aopen%20label%3A%22good%20first%20issue%22) are intended to be narrow enough to enter without prior PicoTracker knowledge.
 
 You do not need IAR or physical tracker hardware for documentation, decoder, host-test, protocol-test, and many tooling contributions.
 

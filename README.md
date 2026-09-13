@@ -53,7 +53,7 @@ make test
 
 For a reproducible Linux toolchain with Python, GCC, Make, SDCC, cppcheck, and Ruff already installed, use the [Dev Container / Docker environment](docs/development-environment.md).
 
-From there, [`docs/getting-started.md`](docs/getting-started.md) gives separate paths into firmware, GPS/UBX, radio/telemetry, Python tooling, testing, hardware, CAD, and documentation. See [`docs/roadmap.md`](docs/roadmap.md) for extension ideas ranging from small first contributions to larger hardware and tooling projects.
+From there, [`docs/getting-started.md`](docs/getting-started.md) gives separate paths into firmware, GPS/UBX, radio/telemetry, Python tooling, testing, hardware, CAD, and documentation. If you want one guided end-to-end exercise first, follow the [`first-project tutorial`](docs/first-project.md). See [`docs/roadmap.md`](docs/roadmap.md) for extension ideas ranging from small first contributions to larger hardware and tooling projects.
 
 ## Why work on PicoTracker
 
