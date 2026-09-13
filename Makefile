@@ -2,18 +2,20 @@ PYTHON ?= python3
 SAMPLE_CAPTURE := tools/with_pips_data.txt
 CAPTURE ?= $(SAMPLE_CAPTURE)
 DECODE_ARGS ?=
+SIM_ARGS ?=
 DOCKER ?= docker
 DEV_IMAGE ?= picotracker-dev
 
 .DEFAULT_GOAL := help
 
-.PHONY: help demo test stm8 decode check clean container-build container-check
+.PHONY: help demo simulate test stm8 decode check clean container-build container-check
 
 help:
 	@printf '%s\n' \
 	  'PicoTracker developer commands' \
 	  '' \
 	  '  make demo    Decode the included flight capture (no C compiler or hardware)' \
+	  '  make simulate Run the hardware-independent tracker simulator' \
 	  '  make test    Run the complete host regression suite' \
 	  '  make decode  Decode CAPTURE (default: tools/with_pips_data.txt)' \
 	  '  make stm8    Compile/link the structural STM8 check (requires SDCC)' \
@@ -31,6 +33,9 @@ demo:
 	@$(PYTHON) tools/decode_data.py $(SAMPLE_CAPTURE)
 	@echo 'Demo complete. Run `make test` next for the host regression suite.'
 
+simulate:
+	$(PYTHON) tools/simulate_tracker.py $(SIM_ARGS)
+
 test:
 	$(MAKE) -C tests clean test
 
@@ -40,7 +45,7 @@ stm8:
 decode:
 	$(PYTHON) tools/decode_data.py $(DECODE_ARGS) $(CAPTURE)
 
-check: test decode stm8
+check: test decode simulate stm8
 	@echo 'All PicoTracker repository checks passed.'
 
 clean:

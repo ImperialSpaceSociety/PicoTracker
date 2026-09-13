@@ -38,6 +38,7 @@ make test
 | --- | --- |
 | `make` / `make help` | Show the available developer commands |
 | `make demo` | Decode the included flight capture; no C compiler or hardware required |
+| `make simulate` | Run a synthetic end-to-end tracker flight cycle with optional fault injection |
 | `make test` | Run all host regression tests |
 | `make decode` | Decode a telemetry capture; override with `CAPTURE=path/to/file` |
 | `make stm8` | Run the structural STM8 compile/link check; requires SDCC |
@@ -108,6 +109,8 @@ See [`CHANGELOG.md`](CHANGELOG.md) for the detailed release history.
 A normal cycle acquires and validates a u-blox NAV-PVT solution, reads radio voltage and temperature, constructs a CRC-protected telemetry sentence, transmits it over 433 MHz RTTY, powers down the radio and GPS as appropriate, and enters STM8 auto-wakeup sleep. GPS acquisition and radio command paths are bounded so loss of GPS or a radio CTS failure does not create an intentional infinite wait. If a new valid GPS solution cannot be obtained, the tracker continues in degraded mode while retaining the most recently accepted fix.
 
 At altitudes up to 3000 m the maintained firmware uses one auto-wakeup sleep interval. Above 3000 m it uses two intervals before returning to the HSI clock and beginning the next acquisition/transmit cycle.
+
+You can exercise this state machine without hardware using `make simulate`. The [hardware-independent simulator](docs/simulator.md) supports GPS-loss, measurement-failure, and radio-transmit fault injection and can generate decoder-compatible synthetic telemetry captures.
 
 ```mermaid
 flowchart TD

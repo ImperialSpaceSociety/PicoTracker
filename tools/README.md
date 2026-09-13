@@ -26,3 +26,14 @@ python3 tools/decode_data.py --plot
 ```
 
 `with_pips_data.txt` is retained as a sample captured dataset and is also exercised by the host regression tests.
+
+## Tracker simulator
+
+`simulate_tracker.py` runs a deterministic hardware-independent flight cycle, including GPS degraded mode, sleep cadence, status packing, telemetry generation, and optional fault injection. From the repository root run:
+
+```sh
+make simulate
+make simulate SIM_ARGS="--scenario gps-loss --print-frames"
+```
+
+See [`docs/simulator.md`](../docs/simulator.md) for scenarios, fault injection, capture generation, and fidelity limits.

@@ -19,6 +19,7 @@ test: $(BUILD_DIR)/test_number_format $(BUILD_DIR)/test_ubx_protocol $(BUILD_DIR
 	$(BUILD_DIR)/test_radio_synth
 	$(BUILD_DIR)/test_gps_math
 	$(PYTHON) test_decode_data.py
+	$(PYTHON) test_simulate_tracker.py
 	$(PYTHON) test_repository_metadata.py
 
 $(BUILD_DIR)/test_number_format: test_number_format.c ../firmware/number_format.c

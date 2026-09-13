@@ -23,7 +23,7 @@ To inspect the accepted frames themselves:
 make decode DECODE_ARGS=--print-frames
 ```
 
-No IAR installation, radio, GPS receiver, or STM8 board is required for this path.
+No IAR installation, radio, GPS receiver, or STM8 board is required for this path. You can also run `make simulate` to exercise a complete synthetic tracker flight cycle and fault scenarios before touching hardware.
 
 ## Reproducible environment
 
@@ -44,6 +44,7 @@ The project also contains historical flight hardware and captured telemetry, whi
 | RF and telemetry | [`firmware/si_trx.c`](../firmware/si_trx.c), [`firmware/telemetry.c`](../firmware/telemetry.c) | Follow a telemetry byte from frame construction to RTTY channel switching |
 | Python/data tooling | [`tools/decode_data.py`](../tools/decode_data.py) | Extend the decoder while keeping it dependency-light and tested |
 | Testing and reliability | [`tests/`](../tests/) | Add a boundary, failure-path, or regression case that protects production firmware |
+| Simulation and fault injection | [`tools/simulate_tracker.py`](../tools/simulate_tracker.py), [`simulator.md`](simulator.md) | Reproduce GPS loss, measurement faults, or telemetry loss without hardware |
 | Hardware and RF | [`docs/hc12.md`](hc12.md), [`hardware/`](../hardware/) | Revalidate a component, interface, measurement, or current replacement part |
 | Mechanical design | [`cad/`](../cad/) | Review or improve a lightweight mounting or enclosure part |
 | Documentation | [`docs/`](./) | Turn a difficult subsystem into a short reproducible guide |

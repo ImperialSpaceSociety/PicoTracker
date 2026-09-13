@@ -15,7 +15,7 @@ class RepositoryMetadataTests(unittest.TestCase):
 
     def test_root_makefile_exposes_developer_entry_points(self):
         makefile = (ROOT / "Makefile").read_text()
-        for target in ("help:", "demo:", "test:", "stm8:", "decode:", "check:", "clean:", "container-build:", "container-check:"):
+        for target in ("help:", "demo:", "simulate:", "test:", "stm8:", "decode:", "check:", "clean:", "container-build:", "container-check:"):
             self.assertIn(target, makefile)
 
     def test_reproducible_development_environment(self):
