@@ -2,10 +2,12 @@ PYTHON ?= python3
 SAMPLE_CAPTURE := tools/with_pips_data.txt
 CAPTURE ?= $(SAMPLE_CAPTURE)
 DECODE_ARGS ?=
+DOCKER ?= docker
+DEV_IMAGE ?= picotracker-dev
 
 .DEFAULT_GOAL := help
 
-.PHONY: help demo test stm8 decode check clean
+.PHONY: help demo test stm8 decode check clean container-build container-check
 
 help:
 	@printf '%s\n' \
@@ -17,6 +19,8 @@ help:
 	  '  make stm8    Compile/link the structural STM8 check (requires SDCC)' \
 	  '  make check   Run test, decode, and stm8 verification' \
 	  '  make clean   Remove generated host-test output' \
+	  '  make container-build  Build the reproducible developer image' \
+	  '  make container-check  Run all checks inside that image' \
 	  '' \
 	  'Examples:' \
 	  '  make decode CAPTURE=path/to/capture.txt' \
@@ -41,3 +45,9 @@ check: test decode stm8
 
 clean:
 	$(MAKE) -C tests clean
+
+container-build:
+	$(DOCKER) build -f .devcontainer/Dockerfile -t $(DEV_IMAGE) .
+
+container-check: container-build
+	$(DOCKER) run --rm --user "$$(id -u):$$(id -g)" -e HOME=/tmp -v "$(CURDIR):/workspace" -w /workspace $(DEV_IMAGE) make check

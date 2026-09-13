@@ -43,6 +43,10 @@ make test
 | `make stm8` | Run the structural STM8 compile/link check; requires SDCC |
 | `make check` | Run host tests, telemetry decoding, and the STM8 structural check |
 | `make clean` | Remove generated host-test output |
+| `make container-build` | Build the reproducible Linux development image |
+| `make container-check` | Run the full verification suite inside that image |
+
+For a reproducible Linux toolchain with Python, GCC, Make, and SDCC already installed, use the [Dev Container / Docker environment](docs/development-environment.md).
 
 From there, [`docs/getting-started.md`](docs/getting-started.md) gives separate paths into firmware, GPS/UBX, radio/telemetry, Python tooling, testing, hardware, CAD, and documentation. See [`docs/roadmap.md`](docs/roadmap.md) for extension ideas ranging from small first contributions to larger hardware and tooling projects.
 

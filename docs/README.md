@@ -7,6 +7,7 @@ This directory collects PicoTracker project guides and technical reference mater
 - [Start here: getting started](getting-started.md)
 - [Project roadmap and extension ideas](roadmap.md)
 - [Development and debugging](development.md)
+- [Reproducible development environment](development-environment.md)
 - [GPS notes](gps.md)
 - [HC12 radio notes](hc12.md)
 - [Later tracker design notes](new-tracker.md)

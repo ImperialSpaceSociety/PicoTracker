@@ -1,4 +1,5 @@
 from pathlib import Path
+import json
 import re
 import unittest
 import xml.etree.ElementTree as ET
@@ -14,8 +15,18 @@ class RepositoryMetadataTests(unittest.TestCase):
 
     def test_root_makefile_exposes_developer_entry_points(self):
         makefile = (ROOT / "Makefile").read_text()
-        for target in ("help:", "demo:", "test:", "stm8:", "decode:", "check:", "clean:"):
+        for target in ("help:", "demo:", "test:", "stm8:", "decode:", "check:", "clean:", "container-build:", "container-check:"):
             self.assertIn(target, makefile)
+
+    def test_reproducible_development_environment(self):
+        config = json.loads((ROOT / ".devcontainer" / "devcontainer.json").read_text())
+        dockerfile = (ROOT / ".devcontainer" / "Dockerfile").read_text()
+        workflow = (ROOT / ".github" / "workflows" / "host-tests.yml").read_text()
+        self.assertEqual(config["build"]["dockerfile"], "Dockerfile")
+        self.assertEqual(config["remoteUser"], "developer")
+        for expected in ("python:3.12-slim-bookworm", "build-essential", "sdcc=${SDCC_VERSION}"):
+            self.assertIn(expected, dockerfile)
+        self.assertIn("make container-check", workflow)
 
     def test_standalone_licenses_exist(self):
         mit = (ROOT / "LICENSES" / "MIT.txt").read_text()

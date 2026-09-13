@@ -25,6 +25,10 @@ make decode DECODE_ARGS=--print-frames
 
 No IAR installation, radio, GPS receiver, or STM8 board is required for this path.
 
+## Reproducible environment
+
+If you do not want to install GCC or SDCC on your host, use the repository Dev Container or run `make container-check` with Docker. Both use the same container definition exercised by CI. See [`development-environment.md`](development-environment.md).
+
 ## Why this is a useful project to learn on
 
 PicoTracker is a complete constrained system rather than an isolated library. A contribution can touch embedded C, UART and SPI, u-blox UBX packets, RF control, RTTY, CRCs, low-power operation, telemetry analysis, mechanical design, or verification. The STM8S003F3 provides only 8 KB of flash and 1 KB of RAM, so apparently small design decisions have visible consequences.

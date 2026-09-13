@@ -1,0 +1,18 @@
+{
+  "name": "PicoTracker",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
+  },
+  "remoteUser": "developer",
+  "updateRemoteUserUID": true,
+  "postCreateCommand": "make demo",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-vscode.cpptools"
+      ]
+    }
+  }
+}
