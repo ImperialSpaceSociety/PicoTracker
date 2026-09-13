@@ -31,6 +31,23 @@ This repository is maintained and administered by [Sylvester Kaczmarek](https://
 | Current release | [`v1.4.0`](https://github.com/ImperialSpaceSociety/PicoTracker/releases/tag/v1.4.0) |
 | Production project | [`firmware/HC12Tracker.ewp`](firmware/HC12Tracker.ewp) |
 
+## System architecture
+
+```mermaid
+flowchart LR
+    BAT["AAA lithium cell"] --> BOOST["3.3 V boost converter"]
+    BOOST --> MCU["STM8S003F3<br/>8 KB flash / 1 KB RAM"]
+    BOOST --> GPS["u-blox M8 GPS"]
+    BOOST --> RADIO["HC-12 radio<br/>Si4463 / Si4438"]
+    MCU <-->|UART| GPS
+    MCU <-->|SPI| RADIO
+    TCXO["32 MHz TCXO<br/>30 MHz crystal compatible"] --> RADIO
+    RADIO --> ANT["433 MHz antenna"]
+    ANT -. "434.570 MHz / 50 baud RTTY" .-> GROUND["Ground receiver / HAB decoder"]
+```
+
+The STM8 runs from its 16 MHz internal HSI clock. The separate 32 MHz TCXO shown above is the maintained default oscillator for the Si4463 radio; the original 30 MHz crystal path is retained as a compatibility configuration.
+
 ## What changed in v1.4.0
 
 `v1.4.0` is the first maintained release following the 2026 firmware and repository hardening work. Major changes include:
@@ -51,6 +68,25 @@ See [`CHANGELOG.md`](CHANGELOG.md) for the detailed release history.
 A normal cycle acquires and validates a u-blox NAV-PVT solution, reads radio voltage and temperature, constructs a CRC-protected telemetry sentence, transmits it over 433 MHz RTTY, powers down the radio and GPS as appropriate, and enters STM8 auto-wakeup sleep. GPS acquisition and radio command paths are bounded so loss of GPS or a radio CTS failure does not create an intentional infinite wait. If a new valid GPS solution cannot be obtained, the tracker continues in degraded mode while retaining the most recently accepted fix.
 
 At altitudes up to 3000 m the maintained firmware uses one auto-wakeup sleep interval. Above 3000 m it uses two intervals before returning to the HSI clock and beginning the next acquisition/transmit cycle.
+
+```mermaid
+flowchart TD
+    WAKE["Wake from auto-wakeup sleep"] --> HSI["Restore HSI clock"]
+    HSI --> GPS["Wake / configure GPS"]
+    GPS --> FIX["Acquire NAV-PVT solution"]
+    FIX --> VALID{"Valid 3D fix + gnssFixOK?"}
+    VALID -- Yes --> MEASURE["Measure radio voltage and temperature"]
+    VALID -- "No, retry budget exhausted" --> DEGRADED["Degraded mode<br/>retain last valid fix + update status"]
+    DEGRADED --> MEASURE
+    MEASURE --> FRAME["Build telemetry sentence + CRC"]
+    FRAME --> TX["Transmit 434.570 MHz RTTY"]
+    TX --> POWER["Power down radio / GPS as appropriate"]
+    POWER --> ALT{"Altitude > 3000 m?"}
+    ALT -- Yes --> SLEEP2["Sleep 2 AWU intervals"]
+    ALT -- No --> SLEEP1["Sleep 1 AWU interval"]
+    SLEEP2 --> WAKE
+    SLEEP1 --> WAKE
+```
 
 ## Configuration
 
@@ -126,6 +162,18 @@ The exact field order is documented in [`docs/telemetry-format.md`](docs/telemet
 - [`docs/release-checklist.md`](docs/release-checklist.md) - release process
 - [`docs/hardware-validation.md`](docs/hardware-validation.md) - target/hardware validation record
 - [`CHANGELOG.md`](CHANGELOG.md) - release history
+
+## Project hardware
+
+The repository retains photographs of the original project hardware. These are useful references for identifying the major modules, although current builders should verify the exact revision and components they source.
+
+<table>
+  <tr>
+    <td align="center"><img src="images/readme/hc12-component.jpg" alt="HC-12 component side" width="300"><br><sub>HC-12 radio / STM8 module</sub></td>
+    <td align="center"><img src="images/readme/gps-module.jpg" alt="u-blox GPS module" width="300"><br><sub>u-blox GPS module</sub></td>
+    <td align="center"><img src="images/readme/battery-booster.jpg" alt="Battery boost converter" width="300"><br><sub>AAA battery boost converter</sub></td>
+  </tr>
+</table>
 
 ## Launch footage
 
