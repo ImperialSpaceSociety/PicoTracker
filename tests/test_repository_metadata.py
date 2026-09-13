@@ -70,6 +70,22 @@ class RepositoryMetadataTests(unittest.TestCase):
         self.assertIn("CHANGELOG.md must contain exactly one", release_tool)
         self.assertIn("must be an annotated tag", release_tool)
 
+    def test_governance_files_exist(self):
+        required = (
+            "SECURITY.md",
+            "SUPPORT.md",
+            "CODE_OF_CONDUCT.md",
+            ".github/CODEOWNERS",
+            ".github/pull_request_template.md",
+        )
+        for relative in required:
+            self.assertTrue((ROOT / relative).is_file(), relative)
+
+        codeowners = (ROOT / ".github" / "CODEOWNERS").read_text()
+        self.assertIn("* @sylvesterkaczmarek", codeowners)
+        security = (ROOT / "SECURITY.md").read_text()
+        self.assertIn("security/advisories/new", security)
+
     def test_standalone_licenses_exist(self):
         mit = (ROOT / "LICENSES" / "MIT.txt").read_text()
         cern = (ROOT / "LICENSES" / "CERN-OHL-1.2.txt").read_text()

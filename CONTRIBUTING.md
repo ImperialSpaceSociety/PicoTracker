@@ -32,3 +32,9 @@ Do not commit generated IAR build output, editor metadata, local virtual environ
 ## Pull requests
 
 Keep pull requests small enough to review independently. Explain what changed, why it changed, and any testing performed. Historical files should be preserved where possible rather than rewritten without a technical reason.
+
+The repository uses `CODEOWNERS`, so the maintainer is automatically requested for review. Pull requests to `master` must pass the required CI check and receive the required maintainer review before merge.
+
+## Community and support
+
+Participation is covered by [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md). General project support is described in [`SUPPORT.md`](SUPPORT.md). Potential security vulnerabilities must follow [`SECURITY.md`](SECURITY.md) rather than being disclosed in a public issue.
