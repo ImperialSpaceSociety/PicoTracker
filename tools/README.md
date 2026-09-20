@@ -18,6 +18,21 @@ Pass one or more capture files explicitly, or add `--print-frames` to print each
 python3 tools/decode_data.py capture.txt --print-frames
 ```
 
+Use `--decode-status` to decode the packed operational status (`op_status`) field into
+human-readable diagnostics (fix attempts, configuration status, polling status, degraded
+mode, and radio measurement failure):
+
+```sh
+python3 tools/decode_data.py capture.txt --decode-status
+```
+
+Combine `--decode-status` with `--print-frames` to display each frame alongside its
+decoded operational status:
+
+```sh
+python3 tools/decode_data.py capture.txt --print-frames --decode-status
+```
+
 Use `--csv-output` to write all CRC-valid frames from the supplied captures to a
 CSV file with headings matching the documented telemetry fields:
 

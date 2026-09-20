@@ -98,8 +98,8 @@ class RepositoryMetadataTests(unittest.TestCase):
             self.assertIn(expected, tutorial)
 
     def test_standalone_licenses_exist(self):
-        mit = (ROOT / "LICENSES" / "MIT.txt").read_text()
-        cern = (ROOT / "LICENSES" / "CERN-OHL-1.2.txt").read_text()
+        mit = (ROOT / "LICENSES" / "MIT.txt").read_text(encoding="utf-8")
+        cern = (ROOT / "LICENSES" / "CERN-OHL-1.2.txt").read_text(encoding="utf-8")
         self.assertIn("MIT License", mit)
         self.assertIn("Imperial College Space Society", mit)
         self.assertIn("CERN Open Hardware Licence v1.2", cern)
