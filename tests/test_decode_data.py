@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import csv
 import importlib.util
 import tempfile
 import unittest
@@ -38,6 +39,45 @@ class DecodeDataTests(unittest.TestCase):
             ["X", "2", "000001", "0", "0", "0", "0", "0", "0", "0"],
         ]
         self.assertEqual(decode_data.cycle_deltas(frames), [2])
+
+    def test_csv_output_contains_only_crc_valid_frames(self):
+        valid = "PICO,42,123456,+51.536248,-000.207353,1234,08,3175,0000,+18"
+        invalid = "PICO,43,123457,+51.536249,-000.207354,1235,07,3174,0001,+17"
+
+        with tempfile.TemporaryDirectory() as directory:
+            directory_path = Path(directory)
+            capture_path = directory_path / "capture.txt"
+            csv_path = directory_path / "frames.csv"
+            capture_path.write_bytes(
+                f"$${valid}*{decode_data.crc(valid):04X}\n$${invalid}*0000\n".encode()
+            )
+
+            self.assertEqual(
+                decode_data.main([str(capture_path), "--csv-output", str(csv_path)]),
+                0,
+            )
+
+            with csv_path.open(newline="", encoding="utf-8") as csv_file:
+                rows = list(csv.reader(csv_file))
+
+        self.assertEqual(
+            rows,
+            [
+                [
+                    "payload_name",
+                    "sentence_id",
+                    "utc_time",
+                    "latitude_deg",
+                    "longitude_deg",
+                    "altitude_m",
+                    "satellites",
+                    "voltage_mv",
+                    "op_status",
+                    "temperature_c",
+                ],
+                valid.split(","),
+            ],
+        )
 
 
 if __name__ == "__main__":

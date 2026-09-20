@@ -4,12 +4,25 @@
 from __future__ import annotations
 
 import argparse
+import csv
 from collections.abc import Iterable
 from pathlib import Path
 
 POLYNOMIAL = 0x1021
 PRESET = 0xFFFF
 FIELD_COUNT = 10
+CSV_FIELDS = [
+    "payload_name",
+    "sentence_id",
+    "utc_time",
+    "latitude_deg",
+    "longitude_deg",
+    "altitude_m",
+    "satellites",
+    "voltage_mv",
+    "op_status",
+    "temperature_c",
+]
 
 
 def _initial(value: int) -> int:
@@ -108,6 +121,13 @@ def cycle_deltas(frames: list[list[str]]) -> list[int]:
     return deltas
 
 
+def write_csv(frames: Iterable[list[str]], output_path: Path) -> None:
+    with output_path.open("w", newline="", encoding="utf-8") as output:
+        writer = csv.writer(output)
+        writer.writerow(CSV_FIELDS)
+        writer.writerows(frames)
+
+
 def plot_deltas(datasets: list[tuple[str, list[int]]]) -> None:
     try:
         import matplotlib.pyplot as plt
@@ -125,25 +145,34 @@ def plot_deltas(datasets: list[tuple[str, list[int]]]) -> None:
     plt.show()
 
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("files", nargs="*", type=Path, help="raw DL-fldigi capture files")
     parser.add_argument("--plot", action="store_true", help="plot cycle-duration histograms")
     parser.add_argument(
         "--print-frames", action="store_true", help="print each valid telemetry frame"
     )
-    args = parser.parse_args()
+    parser.add_argument(
+        "--csv-output", type=Path, help="write valid telemetry frames to this CSV file"
+    )
+    args = parser.parse_args(argv)
 
     files = args.files or [Path(__file__).with_name("with_pips_data.txt")]
     datasets: list[tuple[str, list[int]]] = []
+    accepted_frames: list[list[str]] = []
 
     for file_path in files:
         frames = analyse_data(file_path, print_frames=args.print_frames)
+        accepted_frames.extend(frames)
         deltas = cycle_deltas(frames)
         datasets.append((file_path.name, deltas))
         print(f"{file_path}: {len(frames)} valid frames")
         if deltas:
             print(f"  cycle duration: min={min(deltas)}s max={max(deltas)}s")
+
+    if args.csv_output:
+        write_csv(accepted_frames, args.csv_output)
+        print(f"{args.csv_output}: wrote {len(accepted_frames)} valid frames")
 
     if args.plot:
         plot_deltas(datasets)

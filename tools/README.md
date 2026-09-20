@@ -18,6 +18,16 @@ Pass one or more capture files explicitly, or add `--print-frames` to print each
 python3 tools/decode_data.py capture.txt --print-frames
 ```
 
+Use `--csv-output` to write all CRC-valid frames from the supplied captures to a
+CSV file with headings matching the documented telemetry fields:
+
+```sh
+python3 tools/decode_data.py capture.txt --csv-output flight-data.csv
+```
+
+Invalid frames are omitted. When multiple captures are supplied, their accepted
+frames are written to the same CSV file in command-line order.
+
 Plotting is optional. Install the pinned plotting dependency and use `--plot`:
 
 ```sh
