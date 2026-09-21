@@ -91,9 +91,7 @@ class DecodeDataTests(unittest.TestCase):
         self.assertFalse(status.is_degraded)
         self.assertFalse(status.measurement_error)
         self.assertFalse(status.radio_measurement_failed)
-        self.assertEqual(
-            status.format(), "attempts=0, config=ok, poll=ok, radio=ok"
-        )
+        self.assertEqual(status.format(), "attempts=0, config=ok, poll=ok, radio=ok")
         self.assertEqual(str(status), status.format())
 
     def test_decode_op_status_fields_and_formats(self):
@@ -169,4 +167,3 @@ class DecodeDataTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-

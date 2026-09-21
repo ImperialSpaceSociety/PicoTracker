@@ -181,7 +181,6 @@ def summarize_op_status(frames: Iterable[list[str]]) -> dict[str, int]:
     }
 
 
-
 def _initial(value: int) -> int:
     crc = 0
     value <<= 8
