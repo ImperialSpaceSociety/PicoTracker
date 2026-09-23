@@ -2,6 +2,7 @@
 
 import csv
 import importlib.util
+import json
 import tempfile
 import unittest
 from pathlib import Path
@@ -77,6 +78,77 @@ class DecodeDataTests(unittest.TestCase):
                 ],
                 valid.split(","),
             ],
+        )
+
+    def test_json_output_preserves_raw_fields_and_capture_order_with_csv(self):
+        first = "PICO,0042,000001,+51.536248,-000.207353,1234,08,3175,0004,-08"
+        second = "TEST,0043,000002,-00.000001,+000.000000,0,00,3000,0251,+00"
+        invalid = "PICO,44,000003,+51.536249,-000.207354,1235,07,3174,0001,+17"
+        incomplete = "PICO,45,000004"
+
+        with tempfile.TemporaryDirectory() as directory:
+            directory_path = Path(directory)
+            captures = [directory_path / "first.txt", directory_path / "second.txt"]
+            json_path = directory_path / "frames.json"
+            csv_path = directory_path / "frames.csv"
+            captures[0].write_bytes(
+                f"noise$${first}*{decode_data.crc(first):04X}\n"
+                f"$${invalid}*{decode_data.crc(invalid) ^ 1:04X}\n"
+                f"$${incomplete}*{decode_data.crc(incomplete):04X}\n".encode()
+            )
+            captures[1].write_bytes(f"$${second}*{decode_data.crc(second):04X}".encode())
+
+            self.assertEqual(
+                decode_data.main(
+                    [str(path) for path in captures]
+                    + ["--json-output", str(json_path), "--csv-output", str(csv_path)]
+                ),
+                0,
+            )
+            records = json.loads(json_path.read_text(encoding="utf-8"))
+            with csv_path.open(newline="", encoding="utf-8") as csv_file:
+                csv_records = list(csv.DictReader(csv_file))
+
+        self.assertEqual(len(records), 2)
+        self.assertEqual(
+            records[0],
+            {
+                "payload_name": "PICO",
+                "sentence_id": "0042",
+                "utc_time": "000001",
+                "latitude_deg": "+51.536248",
+                "longitude_deg": "-000.207353",
+                "altitude_m": "1234",
+                "satellites": "08",
+                "voltage_mv": "3175",
+                "op_status": "0004",
+                "temperature_c": "-08",
+            },
+        )
+        self.assertEqual(list(records[1].values()), second.split(","))
+        self.assertEqual(records, csv_records)
+
+    def test_json_output_without_accepted_frames_is_empty_array(self):
+        with tempfile.TemporaryDirectory() as directory:
+            capture_path = Path(directory) / "capture.txt"
+            json_path = Path(directory) / "frames.json"
+            capture_path.write_bytes(b"noise without telemetry")
+            self.assertEqual(
+                decode_data.main([str(capture_path), "--json-output", str(json_path)]),
+                0,
+            )
+            self.assertEqual(json.loads(json_path.read_text(encoding="utf-8")), [])
+
+    def test_json_output_uses_default_sample_when_no_capture_is_supplied(self):
+        with tempfile.TemporaryDirectory() as directory:
+            json_path = Path(directory) / "frames.json"
+            self.assertEqual(decode_data.main(["--json-output", str(json_path)]), 0)
+            records = json.loads(json_path.read_text(encoding="utf-8"))
+
+        self.assertEqual(len(records), 165)
+        self.assertEqual(
+            [list(record.values()) for record in records],
+            decode_data.analyse_data(ROOT / "tools" / "with_pips_data.txt"),
         )
 
     def test_decode_op_status_nominal(self):

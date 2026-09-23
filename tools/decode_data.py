@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import json
 from collections.abc import Iterable
 from pathlib import Path
 
@@ -292,6 +293,14 @@ def write_csv(frames: Iterable[list[str]], output_path: Path) -> None:
         writer.writerows(frames)
 
 
+def write_json(frames: Iterable[list[str]], output_path: Path) -> None:
+    """Write accepted telemetry fields as strings, preserving their raw values."""
+    records = [dict(zip(CSV_FIELDS, frame, strict=True)) for frame in frames]
+    with output_path.open("w", encoding="utf-8") as output:
+        json.dump(records, output, indent=2)
+        output.write("\n")
+
+
 def plot_deltas(datasets: list[tuple[str, list[int]]]) -> None:
     try:
         import matplotlib.pyplot as plt
@@ -318,6 +327,9 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument(
         "--csv-output", type=Path, help="write valid telemetry frames to this CSV file"
+    )
+    parser.add_argument(
+        "--json-output", type=Path, help="write valid telemetry frames to this JSON file"
     )
     parser.add_argument(
         "--decode-status",
@@ -353,6 +365,10 @@ def main(argv: list[str] | None = None) -> int:
     if args.csv_output:
         write_csv(accepted_frames, args.csv_output)
         print(f"{args.csv_output}: wrote {len(accepted_frames)} valid frames")
+
+    if args.json_output:
+        write_json(accepted_frames, args.json_output)
+        print(f"{args.json_output}: wrote {len(accepted_frames)} valid frames")
 
     if args.plot:
         plot_deltas(datasets)

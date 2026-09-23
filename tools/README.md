@@ -43,6 +43,41 @@ python3 tools/decode_data.py capture.txt --csv-output flight-data.csv
 Invalid frames are omitted. When multiple captures are supplied, their accepted
 frames are written to the same CSV file in command-line order.
 
+Use `--json-output` for a JSON array with the same field names as the CSV headings:
+
+```sh
+python3 tools/decode_data.py capture.txt --json-output flight-data.json
+python3 tools/decode_data.py first.txt second.txt --json-output flight-data.json --csv-output flight-data.csv
+```
+
+Each object represents one accepted frame. All values remain **strings**, preserving
+leading zeros, explicit signs, precision, and the original telemetry units. In
+particular, `utc_time` stays `HHMMSS`, voltage stays in millivolts, and `op_status`
+stays the raw packed decimal value, even when `--decode-status` is also used.
+
+```json
+[
+  {
+    "payload_name": "PICO",
+    "sentence_id": "0042",
+    "utc_time": "000001",
+    "latitude_deg": "+51.536248",
+    "longitude_deg": "-000.207353",
+    "altitude_m": "1234",
+    "satellites": "08",
+    "voltage_mv": "3175",
+    "op_status": "0004",
+    "temperature_c": "-08"
+  }
+]
+```
+
+JSON includes only CRC-valid frames with all ten telemetry fields, in input-file
+order and then capture order. No accepted frames produces `[]`. Without input
+files, the bundled sample is used as usual. JSON and CSV exports can be requested
+together; terminal summaries, `--print-frames`, and plotting remain available.
+JSON export uses only the Python standard library.
+
 Plotting is optional. Install the pinned plotting dependency and use `--plot`:
 
 ```sh
