@@ -34,3 +34,11 @@ make stm8
 ```
 
 This compiles and links the production C sources with SDCC's STM8 backend and checks the STM8S003F3 flash/RAM window. A compatibility shim supplies the IAR register names and removes IAR-specific interrupt declarations, so the generated image is **not flashable** and does not replace the required IAR build or hardware validation. It provides an independent STM8 data-model, code-generation, cross-module link, and approximate size check.
+
+The check enforces both the STM8S003F3 architectural capacities (8192 bytes of
+flash and 1024 bytes of RAM) and tighter project regression budgets (7800 bytes
+of flash and 256 bytes of static RAM span). The budgets leave deliberate room
+for the stack and future fixes while making unexpected growth fail in
+`make stm8` and CI. When an intentional change must raise a budget, update the
+constants in `stm8_target_check.py` in the same pull request and record the new
+measured usage and rationale in that change's description.

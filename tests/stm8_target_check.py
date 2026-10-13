@@ -12,6 +12,8 @@ COMPAT = Path(__file__).resolve().parent / "stm8_compat"
 FLASH_START = 0x8000
 FLASH_END = 0xA000
 RAM_SIZE = 1024
+FLASH_BUDGET = 7800
+RAM_BUDGET = 256
 
 
 def run(*args: str, cwd: Path | None = None) -> None:
@@ -36,6 +38,25 @@ def parse_area(map_text: str, name: str) -> tuple[int, int]:
     if not match:
         raise RuntimeError(f"missing {name} area in SDCC map")
     return int(match.group(1), 16), int(match.group(2), 16)
+
+
+def check_size_limits(flash_used: int, ram_used: int) -> None:
+    if flash_used > FLASH_END - FLASH_START:
+        raise SystemExit(
+            f"STM8 structural image exceeds flash capacity: {flash_used} > {FLASH_END - FLASH_START} bytes"
+        )
+    if ram_used > RAM_SIZE:
+        raise SystemExit(
+            f"STM8 structural image exceeds RAM capacity: {ram_used} > {RAM_SIZE} bytes"
+        )
+    if flash_used > FLASH_BUDGET:
+        raise SystemExit(
+            f"STM8 structural image exceeds flash regression budget: {flash_used} > {FLASH_BUDGET} bytes"
+        )
+    if ram_used > RAM_BUDGET:
+        raise SystemExit(
+            f"STM8 structural image exceeds RAM regression budget: {ram_used} > {RAM_BUDGET} bytes"
+        )
 
 
 def main() -> None:
@@ -102,20 +123,21 @@ def main() -> None:
         flash_end = max(address + size for address, size in flash_areas)
         data_address, data_size = parse_area(map_text, "DATA")
 
-        if flash_end > FLASH_END:
-            raise SystemExit(
-                f"STM8 structural image exceeds flash: end=0x{flash_end:04X}, limit=0x{FLASH_END:04X}"
-            )
-        if data_address + data_size > RAM_SIZE:
-            raise SystemExit(
-                f"STM8 structural image exceeds RAM: {data_address + data_size} > {RAM_SIZE} bytes"
-            )
+        flash_used = flash_end - FLASH_START
+        ram_used = data_address + data_size
+        check_size_limits(flash_used, ram_used)
 
         print(
             f"STM8 structural target compile passed with SDCC {subprocess.check_output([sdcc, '--version'], text=True).splitlines()[0]}"
         )
-        print(f"flash span: {flash_end - FLASH_START} / {FLASH_END - FLASH_START} bytes")
-        print(f"static DATA: {data_size} / {RAM_SIZE} bytes")
+        print(
+            f"flash span: {flash_used} bytes "
+            f"(regression budget {FLASH_BUDGET}, capacity {FLASH_END - FLASH_START})"
+        )
+        print(
+            f"static RAM span: {ram_used} bytes "
+            f"(regression budget {RAM_BUDGET}, capacity {RAM_SIZE})"
+        )
         print(
             "note: IAR register names and interrupt declarations are shimmed; this image is not flashable"
         )

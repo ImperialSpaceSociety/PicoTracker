@@ -22,6 +22,7 @@ test: $(BUILD_DIR)/test_number_format $(BUILD_DIR)/test_ubx_protocol $(BUILD_DIR
 	$(PYTHON) test_simulate_tracker.py
 	$(PYTHON) test_release.py
 	$(PYTHON) test_repository_metadata.py
+	$(PYTHON) test_stm8_target_check.py
 
 $(BUILD_DIR)/test_number_format: test_number_format.c ../firmware/number_format.c
 	mkdir -p $(BUILD_DIR)
